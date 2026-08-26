@@ -1,7 +1,7 @@
 # Challenge 1
 
 ## 📍 Objetivo
-    O primeiro challenge tem como objetivo desenvolver um sistema de Machine Learning capaz de identificar Fake News. O desafio é dividido em **Engage**, **Investigate** and **Act**. Cada parte do desafio é dividido pelas aulas ministradas segundas e quartas, do dia **12/08** até **07/10**
+O primeiro challenge tem como objetivo desenvolver um sistema de Machine Learning capaz de identificar Fake News. O desafio é dividido em **Engage**, **Investigate** and **Act**. Cada parte do desafio é dividido pelas aulas ministradas segundas e quartas, do dia **12/08** até **07/10**
 
 ## 🗓️ Schedule
 - **12/08:** Big Idea and Essetial Questions

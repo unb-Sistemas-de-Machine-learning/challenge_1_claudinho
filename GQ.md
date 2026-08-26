@@ -13,39 +13,39 @@
 
 ### 1. Qual(is) tipo(s) de dados vamos usar?
 * **Classificação:** Responder já
-* **Responsável:**
-* **Tarefa:** Listar os campos essenciais (ex: idade, peso, tabelas nutricionais, alimentos) necessários para o MVP.
+* **Responsável:** Beatriz
+* **Tarefa:** Sexo, Altura, Peso, Doenças, Idade, Restrições Alimentares, Rotina.
 
 ### 2. Onde vamos guardar eles? (SQL, JSON)
 * **Classificação:** Planejar
-* **Responsável:**
-* **Tarefa:** Optar pela solução mais rápida e simples (ex: JSON local ou Firebase) para evitar burocracia técnica.
+* **Responsável:** Beatriz
+* **Tarefa:** Utilizaremos SQL pela segurança dos dados.
 
 ### 3. Qual a fonte dos dados? (portais, pesquisas, etc.)
 * **Classificação:** Responder já
-* **Responsável:**
-* **Tarefa:** Mapear 3 fontes de dados governamentais ou acadêmicas confiáveis (ex: tabelas TACO).
+* **Responsável:** Beatriz
+* **Tarefa:** Artigos científicos brasileiros relacionados à nutrição, dietas extremas, transtornos alimentares, e dietas voltadas à problemas de saúde.
 
 ---
 
 ## 👤 Usuário
 
 ### 1. Quem é o usuário que queremos alcançar?
-*(Comunidade de nutrição, pessoas com TA, pessoas que se preocupam com a saúde)*
+*Pessoas que querem melhorar a alimentação, e acompanha-la, sem cair no terrorismo nutricional.*
 * **Classificação:** Responder já
-* **Responsável:**
+* **Responsável:** Beatriz
 * **Tarefa:** Criar a "Persona do MVP" (ex: "Estudante universitário que quer se alimentar melhor mas tem pouco tempo").
 
 ### 2. Como o usuário pode ter acesso ao nosso programa?
-*(App, extensão web)*
+*App*
 * **Classificação:** Planejar
-* **Responsável:**
-* **Tarefa:** Comparar esforço de desenvolvimento (extensão vs. site) e escolher o canal de menor fricção para o usuário.
+* **Responsável:** Beatriz
+* **Tarefa:** Aplicativo mobile.
 
 ### 3. Por que o usuário buscaria a nossa aplicação?
-*(Recomendação médica, necessidade de buscar fontes confiáveis)*
+*Recomendação médica juntamente com necessidade de buscar fontes confiáveis*
 * **Classificação:** Responder já
-* **Responsável:**
+* **Responsável:** Beatriz
 * **Tarefa:** Definir o "Elevator Pitch" da solução em uma frase curta.
 
 ---

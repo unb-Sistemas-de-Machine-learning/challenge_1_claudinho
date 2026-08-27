@@ -113,20 +113,20 @@ O primeiro challenge tem como objetivo desenvolver um sistema de Machine Learnin
 ### 1. Como garantir que a aplicação não transforme informações nutricionais potencialmente perigosas ou sem evidência científica em recomendações confiáveis?
 *(Verificando fontes científicas e sinalizando informações sem evidência)*
 * **Classificação:** Se sobrar tempo
-* **Responsável:**
-* **Tarefa:** Criar um banco de "testes de estresse" com perguntas que a IA deve negar responder.
+* **Responsável:** Maria Clara
+* **Tarefa:** Criar um banco de "testes de estresse" com perguntas que a IA deve identificar e recursar-se a responder, garantindo que apenas informações baseadas em ciência sejam validadas.
 
 ### 2. Como proteger diferentes perfis de usuário de recomendações nutricionais inadequadas?
 *(Considerando as necessidades individuais e evitando recomendações generalizadas)*
 * **Classificação:** Planejar
-* **Responsável:**
-* **Tarefa:** Implementar filtros de segurança para evitar recomendações para perfis de risco (ex: diagnósticos de transtornos alimentares).
+* **Responsável:** Maria Clara
+* **Tarefa:** Desenvolver filtros de segurança que impeçam a IA de emitir recomendações para grupos de risco, como pessoas com diagnósticos de transtornos alimentares, gestantes ou indivíduos com condições de saúde específicas.
 
 ### 3. Como garantir transparência e responsabilidade nas respostas?
 *(Informando as limitações da IA e indicando quando é necessário procurar um profissional de saúde)*
 * **Classificação:** Responder já
-* **Responsável:**
-* **Tarefa:** Redigir o "Disclaimer" obrigatório que aparecerá em cada resposta (ex: "Não substitui médico").
+* **Responsável:** Maria Clara
+* **Tarefa:** Redigir um "Disclaimer" padrão, obrigratório em todas as respostas, com frases como: "Esta informação não substitui a consulta com um nutricionista ou médico. Sempre procure orientação profissional para decisões sobre sua saúde."
 
 # Fontes e formatos de dados
 * **Fontes:** Artigos Científicos brasileiros disponibilizados no Web Of Science e conteúdoes disponibilizados em redes sociais.

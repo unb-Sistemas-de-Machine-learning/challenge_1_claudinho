@@ -51,7 +51,7 @@ A partir do documento citado, foi criada a estrutura básica deste repositório,
 ### 👤 [Usuário](./User/README.md)
 * **Responsável:** Beatriz Brandão Fidelis Batista
 * [01 - Personas do MVP](./User/01_personas.md): Personas principais e secundárias, dores com terrorismo nutricional e mapa de empatia.
-* [02 - Acesso e Canais](./User/02_acesso_e_canais.md): Plataforma de acesso (Mobile App/PWA) e modos de entrada de dúvidas/links.
+* [02 - Acesso e Canais](./User/02_acesso_e_canais.md): Plataforma de acesso e modos de entrada de dúvidas/links.
 * [03 - Proposta de Valor e Pitch](./User/03_proposta_de_valor_pitch.md): Elevator pitch em 30 segundos, comparativo de diferenciais e *Value Proposition Canvas*.
 
 ### 🤖 [Modelo](./Model/README.md)
@@ -62,7 +62,7 @@ A partir do documento citado, foi criada a estrutura básica deste repositório,
 
 ### 🚀 [Produção](./Production/README.md)
 * **Responsável:** João Pedro Araújo de Freitas Lyra
-* [01 - Plataforma e Estratégia de Deploy](./Production/01_plataforma_e_deploy.md): Arquitetura FastAPI + Supabase + Mobile, especificação de endpoints REST (`/check-claim`, `/feedback`).
+* [01 - Plataforma e Estratégia de Deploy](./Production/01_plataforma_e_deploy.md): Arquitetura e especificação de endpoints REST (`/check-claim`, `/feedback`).
 * [02 - Monitoramento e MLOps](./Production/02_monitoramento_e_mlops.md): Logs estruturados de inferência, detecção de *Data/Concept Drift* e feedback loop.
 * [03 - Escalabilidade e Desempenho](./Production/03_escalabilidade_e_desempenho.md): SLAs de latência, *Semantic Caching* e estimativa de custos operacionais.
 

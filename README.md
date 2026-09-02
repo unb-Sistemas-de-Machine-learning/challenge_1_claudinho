@@ -5,13 +5,14 @@ O primeiro *challenge* visa desenvolver um sistema de *Machine Learning* capaz d
 
 ## 🦾 Devs
 
-| Nome                              | Matrícula | Github         |
-|-----------------------------------|-----------|----------------|
-| Ana Luiza Hoffmann Ferreira       | 202015901 | AnHoff         |
-| Beatriz Brandão Fidelis Batista   | 242005202 | beatrizbranfb  |
-| João Pedro Araújo de Freitas Lyra | 232003661 | jadequilin     |
-| Maria Clara de Freitas Pina       | 232021900 | mariapinaclara |
-
+| Nome                              | Matrícula | Github           |
+|-----------------------------------|-----------|------------------|
+| Ana Luiza Hoffmann Ferreira       | 202015901 | AnHoff           |
+| Beatriz Brandão Fidelis Batista   | 242005202 | beatrizbranfb    |
+| João Pedro Araújo de Freitas Lyra | 232003661 | jadequilin       |
+| Matheus Moreira Lopes Perillo     | 190093421 | matheusperillo03 |
+| Maria Clara de Freitas Pina       | 232021900 | mariapinaclara   |
+   
 ## 🗓️ Agenda
 
 - **12/08:** Big Idea and Essential Questions

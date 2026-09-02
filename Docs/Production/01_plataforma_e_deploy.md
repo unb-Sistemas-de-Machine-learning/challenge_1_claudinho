@@ -8,7 +8,7 @@
 
 ## 1. Arquitetura Geral da Aplicação
 
-Para o MVP do Challenge 1, a arquitetura é orientada a um **monólito modular servido como API REST**, e não a microsserviços. A justificativa é o escopo e o prazo do desafio: com um time de 4 pessoas e 8 semanas, a sobrecarga operacional de orquestrar múltiplos serviços (service discovery, deploy independente, observabilidade distribuída) não se paga. O backend é único, mas internamente dividido em módulos com fronteiras claras (`ingestion`, `retrieval`, `generation`, `guardrails`, `feedback`), o que permite extrair qualquer um deles para um serviço próprio caso o produto escale depois do MVP.
+Para o MVP do Challenge 1, a arquitetura é orientada a um **monólito modular servido como API REST**, e não a microsserviços. A justificativa é o escopo e o prazo do desafio: com um time de 5 pessoas e 8 semanas, a sobrecarga operacional de orquestrar múltiplos serviços (service discovery, deploy independente, observabilidade distribuída) não se paga. O backend é único, mas internamente dividido em módulos com fronteiras claras (`ingestion`, `retrieval`, `generation`, `guardrails`, `feedback`), o que permite extrair qualquer um deles para um serviço próprio caso o produto escale depois do MVP.
 
 A aplicação é entregue como **aplicativo mobile** (decisão da frente de Usuário), que consome a API por HTTPS. Toda a inteligência fica no servidor: o app é apenas a camada de apresentação e captura de entrada (texto, link ou print).
 

@@ -25,7 +25,7 @@
 
 ---
 
-### 2.2. Tabela `articles` — Dados de treinamento
+### 2.2. Tabela `training_data` — Dados de treinamento
 
 | Coluna | Tipo | Descrição |
 | :--- | :--- | :--- |

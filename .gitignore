@@ -1,3 +1,20 @@
-.idea
+# Segredos — NUNCA versionar
 .env
-.venv
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# IDEs
+.idea
+.vscode/
+
+# SO
+.DS_Store

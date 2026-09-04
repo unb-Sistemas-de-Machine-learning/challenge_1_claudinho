@@ -39,36 +39,123 @@ O primeiro *challenge* visa desenvolver um sistema de *Machine Learning* capaz d
 
 ## 📌 Guiding Questions
 
-Em primeiro momento, foram levantadas as *Guiding Questions* (Questões-Guia) para determinar os objetivos e os meios que utilizaremos para alcançá-los. As questões podem ser conferidas no documento [GQ.md](./GQ.md) e contam com classificação e responsável.
+Em primeiro momento, foram levantadas as *Guiding Questions* (Questões-Guia) para determinar os objetivos e os meios que utilizaremos para alcançá-los. As questões podem ser conferidas no documento [GQ.md](./Docs/GQ.md) e contam com classificação e responsável.
 
 A partir do documento citado, foi criada a estrutura básica deste repositório, visando responder a cada tema de forma organizada. As respostas para cada tipo de pergunta estão organizadas conforme se segue.
 
-### 🗄️ [Dados](./Data/README.md)
+### 🗄️ [Dados](./Docs/Data/README.md)
 * **Responsável:** Beatriz Brandão Fidelis Batista
-* [01 - Tipos de Dados](./Data/01_tipos_e_fontes_de_dados.md): Mapeamento de dados tabulares de usuários.
-* [02 - Armazenamento e Modelagem](./Data/02_armazenamento_e_estrutura.md): Schema relacional e vetorial no PostgreSQL/Supabase com extensão `pgvector`.
-* [03 - Fontes de Dados](./Data/01_tipos_e_fontes_de_dados.md): Mapeamento de bases científicas (SciELO, Web of Science, MS) e claims de desinformação.
+* [01 - Tipos de Dados](./Docs/Data/01_tipos_e_fontes_de_dados.md): Mapeamento de dados tabulares de usuários.
+* [02 - Armazenamento e Modelagem](./Docs/Data/02_armazenamento_e_estrutura.md): Schema relacional e vetorial no PostgreSQL/Supabase com extensão `pgvector`.
+* [03 - Fontes de Dados](./Docs/Data/01_tipos_e_fontes_de_dados.md): Mapeamento de bases científicas (SciELO, Web of Science, MS) e claims de desinformação.
 
-### 👤 [Usuário](./User/README.md)
+### 👤 [Usuário](./Docs/User/README.md)
 * **Responsável:** Beatriz Brandão Fidelis Batista
-* [01 - Personas do MVP](./User/01_personas.md): Personas principais e secundárias, dores com terrorismo nutricional e mapa de empatia.
-* [02 - Acesso e Canais](./User/02_acesso_e_canais.md): Plataforma de acesso e modos de entrada de dúvidas/links.
-* [03 - Proposta de Valor e Pitch](./User/03_proposta_de_valor_pitch.md): Elevator pitch em 30 segundos, comparativo de diferenciais e *Value Proposition Canvas*.
+* [01 - Personas do MVP](./Docs/User/01_personas.md): Personas principais e secundárias, dores com terrorismo nutricional e mapa de empatia.
+* [02 - Acesso e Canais](./Docs/User/02_acesso_e_canais.md): Plataforma de acesso e modos de entrada de dúvidas/links.
+* [03 - Proposta de Valor e Pitch](./Docs/User/03_proposta_de_valor_pitch.md): Elevator pitch em 30 segundos, comparativo de diferenciais e *Value Proposition Canvas*.
 
-### 🤖 [Modelo](./Model/README.md)
+### 🤖 [Modelo](./Docs/Model/README.md)
 * **Responsável:** Ana Luiza Hoffmann Ferreira
-* [01 - Métricas de Avaliação e Riscos (FP vs FN)](./Model/01_metricas_e_avaliacao.md): Trade-off entre Falso Positivo e Falso Negativo, métricas prioritárias ($F_2$-Score, Recall) e métricas RAG (Ragas).
-* [02 - Arquitetura de NLP e RAG](./Model/02_arquitetura_nlp_rag.md): Pipeline RAG, embeddings semânticos, grounded generation e prevenção de alucinações.
-* [03 - Processamento de Linguagem da Internet](./Model/03_processamento_linguagem_internet.md): Extração de claims, tratamento de gírias nutricionais, sarcasmo e *Few-Shot Prompting*.
+* [01 - Métricas de Avaliação e Riscos (FP vs FN)](./Docs/Model/01_metricas_e_avaliacao.md): Trade-off entre Falso Positivo e Falso Negativo, métricas prioritárias ($F_2$-Score, Recall) e métricas RAG (Ragas).
+* [02 - Arquitetura de NLP e RAG](./Docs/Model/02_arquitetura_nlp_rag.md): Pipeline RAG, embeddings semânticos, grounded generation e prevenção de alucinações.
+* [03 - Processamento de Linguagem da Internet](./Docs/Model/03_processamento_linguagem_internet.md): Extração de claims, tratamento de gírias nutricionais, sarcasmo e *Few-Shot Prompting*.
 
-### 🚀 [Produção](./Production/README.md)
+### 🚀 [Produção](./Docs/Production/README.md)
 * **Responsável:** João Pedro Araújo de Freitas Lyra
-* [01 - Plataforma e Estratégia de Deploy](./Production/01_plataforma_e_deploy.md): Arquitetura e especificação de endpoints REST (`/check-claim`, `/feedback`).
-* [02 - Monitoramento e MLOps](./Production/02_monitoramento_e_mlops.md): Logs estruturados de inferência, detecção de *Data/Concept Drift* e feedback loop.
-* [03 - Escalabilidade e Desempenho](./Production/03_escalabilidade_e_desempenho.md): SLAs de latência, *Semantic Caching* e estimativa de custos operacionais.
+* [01 - Plataforma e Estratégia de Deploy](./Docs/Production/01_plataforma_e_deploy.md): Arquitetura e especificação de endpoints REST (`/check-claim`, `/feedback`, `/profile`).
+* [02 - Monitoramento e MLOps](./Docs/Production/02_monitoramento_e_mlops.md): Logs estruturados de inferência, detecção de *Data/Concept Drift* e feedback loop.
+* [03 - Escalabilidade e Desempenho](./Docs/Production/03_escalabilidade_e_desempenho.md): SLAs de latência, *Semantic Caching* e estimativa de custos operacionais.
 
-### ⚖️ [Ética](./Ethics/README.md)
+### ⚖️ [Ética](./Docs/Ethics/README.md)
 * **Responsável:** Maria Clara de Freitas Pina
-* [01 - Segurança e Protocolo Anti-Desinformação](./Ethics/01_seguranca_e_anti_alucinacao.md): Suíte de testes de estresse (*Red Teaming*) e política de recusa segura (*Safe Refusal*).
-* [02 - Proteção de Grupos Vulneráveis e Filtros](./Ethics/02_grupos_de_risco_e_filtros.md): Guardrails para transtornos alimentares (TCA), gestantes e condições clínicas crônicas.
-* [03 - Transparência e Disclaimers](./Ethics/03_transparencia_e_disclaimers.md): Textos padrão de disclaimers legais/médicos e rastreabilidade de fontes com DOI.
+* [01 - Segurança e Protocolo Anti-Desinformação](./Docs/Ethics/01_seguranca_e_anti_alucinacao.md): Suíte de testes de estresse (*Red Teaming*) e política de recusa segura (*Safe Refusal*).
+* [02 - Proteção de Grupos Vulneráveis e Filtros](./Docs/Ethics/02_grupos_de_risco_e_filtros.md): Guardrails para transtornos alimentares (TCA), gestantes e condições clínicas crônicas.
+* [03 - Transparência e Disclaimers](./Docs/Ethics/03_transparencia_e_disclaimers.md): Textos padrão de disclaimers legais/médicos e rastreabilidade de fontes com DOI.
+
+---
+
+# 💻 Rodando a API localmente
+
+O backend está em `APP/`. Hoje ele é um **esqueleto**: o contrato dos endpoints é o definitivo, mas `/check-claim` responde com dados **mockados** — o pipeline de RAG ainda não está ligado. Isso permite que o app mobile já seja desenvolvido contra o formato final da resposta.
+
+## Pré-requisitos
+
+* Python **3.12** (versão fixada em `.python-version`)
+* Docker (opcional, para rodar do jeito que vai para produção)
+
+## 1. Configurar as variáveis de ambiente
+
+```bash
+cp .env.example .env
+```
+
+Preencha `SUPABASE_URL` e `SUPABASE_KEY` com os valores do projeto no Supabase (*Project Settings → API*).
+
+> ⚠️ O `.env` **nunca** entra no Git — o `.gitignore` bloqueia. Se precisar adicionar uma variável nova, adicione o **nome** dela (sem valor) no `.env.example` para o resto do time saber que ela existe.
+
+## 2. Instalar as dependências
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements-dev.txt
+```
+
+## 3. Subir o servidor
+
+```bash
+uvicorn APP.main:app --reload
+```
+
+* API: http://127.0.0.1:8000
+* Documentação interativa (Swagger): http://127.0.0.1:8000/docs
+
+Teste rápido:
+
+```bash
+curl http://127.0.0.1:8000/health
+
+curl -X POST http://127.0.0.1:8000/api/v1/check-claim \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer qualquer-token' \
+  -d '{"input_type":"text","text":"água com limão em jejum queima gordura?"}'
+```
+
+## 4. Rodar com Docker
+
+```bash
+docker compose up --build
+```
+
+## 5. Testes e qualidade
+
+Os mesmos comandos que o CI roda a cada push e pull request:
+
+```bash
+pytest -q          # testes
+ruff check .       # lint
+black --check .    # formatação
+```
+
+## Estrutura
+
+| Caminho | O que é |
+| :--- | :--- |
+| `APP/main.py` | Monta a aplicação FastAPI e registra as rotas |
+| `APP/schemas.py` | Modelos Pydantic do contrato ([Produção 01](./Docs/Production/01_plataforma_e_deploy.md), seção 2) |
+| `APP/routers/health.py` | `GET /health` — *liveness probe* |
+| `APP/routers/check_claim.py` | `POST /api/v1/check-claim` — **mockado** |
+| `APP/verdict.py` | Converte `risk_score` em veredito (limiares 0.35 / 0.65) |
+| `APP/auth.py` | **Stub** de autenticação: exige o header `Bearer`, ainda não valida o JWT |
+| `APP/config.py` | Variáveis de ambiente |
+| `APP/model/database.py` | Client do Supabase, criado sob demanda |
+| `tests/` | Suíte do pytest |
+
+## O que ainda falta
+
+- [ ] Validar de verdade o JWT do Supabase Auth (`APP/auth.py` hoje só checa se o header existe)
+- [ ] Endpoints `POST /feedback` e `GET`/`PUT /profile`
+- [ ] Ligar o pipeline real: cache semântico → extração de claim → busca no `pgvector` → geração → guardrails
+- [ ] *Quality gate* de RAGAS no CI (depende do benchmark de 50 perguntas)
+- [ ] Rate limiting e observabilidade (Langfuse + Sentry)

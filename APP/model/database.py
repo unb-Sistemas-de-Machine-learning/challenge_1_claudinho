@@ -1,11 +1,17 @@
-from supabase import create_client, Client
-import os
-from dotenv import load_dotenv
+"""Acesso ao Supabase (PostgreSQL + pgvector).
 
-dotenv.load_dotenv()
+O client e criado sob demanda e reaproveitado: importar este modulo nao exige
+credenciais, o que mantem o CI e os testes rodando sem segredos.
+"""
+
+from functools import lru_cache
+
+from supabase import Client, create_client
+
+from APP.config import obter_settings
 
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+@lru_cache
+def obter_supabase() -> Client:
+    settings = obter_settings()
+    return create_client(settings.supabase_url, settings.supabase_key)

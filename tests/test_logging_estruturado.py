@@ -130,3 +130,15 @@ def test_excecao_inesperada_e_registrada_sem_engolir_o_erro(registros_de_log):
     registro = registros_de_log[0]
     assert registro["status"] == "error"
     assert registro["error"] == "RuntimeError"
+
+
+def test_o_log_carrega_as_versoes_de_modelo_e_de_prompt(client, registros_de_log):
+    """Docs/Production/02, secao 3.1: sem model_version e prompt_version no
+    registro e impossivel atribuir uma queda de qualidade a mudanca que a causou.
+    E o sinal que a secao 2.3 usa para detectar degradacao silenciosa."""
+    resposta = client.post(ROTA, headers=AUTH, json=CORPO)
+
+    geracao = registros_de_log[0]["generation"]
+    corpo = resposta.json()
+    assert geracao["model_version"] == corpo["model_version"]
+    assert geracao["prompt_version"] == corpo["prompt_version"]

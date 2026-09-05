@@ -101,6 +101,13 @@ async def check_claim(
             "risk_score": resposta.risk_score,
             "sources_count": len(resposta.sources),
         },
+        # Sem as versoes no registro nao da para atribuir uma queda de qualidade
+        # a mudanca que a causou (Docs/Production/02, secoes 2.3 e 3.1).
+        # input_tokens, output_tokens e cost_usd entram quando houver LLM de fato.
+        generation={
+            "model_version": resposta.model_version,
+            "prompt_version": resposta.prompt_version,
+        },
         performance={"cache_hit": resposta.cached},
     )
     return resposta

@@ -72,3 +72,90 @@ A partir do documento citado, foi criada a estrutura básica deste repositório,
 * [01 - Segurança e Protocolo Anti-Desinformação](./Docs/Ethics/01_seguranca_e_anti_alucinacao.md): Suíte de testes de estresse (*Red Teaming*) e política de recusa segura (*Safe Refusal*).
 * [02 - Proteção de Grupos Vulneráveis e Filtros](./Docs/Ethics/02_grupos_de_risco_e_filtros.md): Guardrails para transtornos alimentares (TCA), gestantes e condições clínicas crônicas.
 * [03 - Transparência e Disclaimers](./Docs/Ethics/03_transparencia_e_disclaimers.md): Textos padrão de disclaimers legais/médicos e rastreabilidade de fontes com DOI.
+
+---
+
+# 💻 Rodando a API localmente
+
+O backend está em `APP/`. Hoje ele é um **esqueleto**: o contrato dos endpoints é o definitivo, mas `/check-claim` responde com dados **mockados** — o pipeline de RAG ainda não está ligado. Isso permite que o app mobile já seja desenvolvido contra o formato final da resposta.
+
+## Pré-requisitos
+
+* Python **3.12** (versão fixada em `.python-version`)
+* Docker (opcional, para rodar do jeito que vai para produção)
+
+## 1. Configurar as variáveis de ambiente
+
+```bash
+cp .env.example .env
+```
+
+Preencha `SUPABASE_URL` e `SUPABASE_KEY` com os valores do projeto no Supabase (*Project Settings → API*).
+
+> ⚠️ O `.env` **nunca** entra no Git — o `.gitignore` bloqueia. Se precisar adicionar uma variável nova, adicione o **nome** dela (sem valor) no `.env.example` para o resto do time saber que ela existe.
+
+## 2. Instalar as dependências
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements-dev.txt
+```
+
+## 3. Subir o servidor
+
+```bash
+uvicorn APP.main:app --reload
+```
+
+* API: http://127.0.0.1:8000
+* Documentação interativa (Swagger): http://127.0.0.1:8000/docs
+
+Teste rápido:
+
+```bash
+curl http://127.0.0.1:8000/health
+
+curl -X POST http://127.0.0.1:8000/api/v1/check-claim \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer qualquer-token' \
+  -d '{"input_type":"text","text":"água com limão em jejum queima gordura?"}'
+```
+
+## 4. Rodar com Docker
+
+```bash
+docker compose up --build
+```
+
+## 5. Testes e qualidade
+
+Os mesmos comandos que o CI roda a cada push e pull request:
+
+```bash
+pytest -q          # testes
+ruff check .       # lint
+black --check .    # formatação
+```
+
+## Estrutura
+
+| Caminho | O que é |
+| :--- | :--- |
+| `APP/main.py` | Monta a aplicação FastAPI e registra as rotas |
+| `APP/schemas.py` | Modelos Pydantic do contrato ([Produção 01](./Docs/Production/01_plataforma_e_deploy.md), seção 2) |
+| `APP/routers/health.py` | `GET /health` — *liveness probe* |
+| `APP/routers/check_claim.py` | `POST /api/v1/check-claim` — **mockado** |
+| `APP/verdict.py` | Converte `risk_score` em veredito (limiares 0.35 / 0.65) |
+| `APP/auth.py` | **Stub** de autenticação: exige o header `Bearer`, ainda não valida o JWT |
+| `APP/config.py` | Variáveis de ambiente |
+| `APP/model/database.py` | Client do Supabase, criado sob demanda |
+| `tests/` | Suíte do pytest |
+
+## O que ainda falta
+
+- [ ] Validar de verdade o JWT do Supabase Auth (`APP/auth.py` hoje só checa se o header existe)
+- [ ] Endpoints `POST /feedback` e `GET`/`PUT /profile`
+- [ ] Ligar o pipeline real: cache semântico → extração de claim → busca no `pgvector` → geração → guardrails
+- [ ] *Quality gate* de RAGAS no CI (depende do benchmark de 50 perguntas)
+- [ ] Rate limiting e observabilidade (Langfuse + Sentry)

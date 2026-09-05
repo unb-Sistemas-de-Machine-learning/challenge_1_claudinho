@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main, Dev]
+  pull_request:
+
+jobs:
+  qualidade:
+    name: Lint e testes
+    runs-on: ubuntu-latest
+
+    env:
+      # Credenciais falsas: o esqueleto ainda nao fala com o Supabase, mas o
+      # Settings exige as variaveis. Segredos reais entram como GitHub Secrets
+      # quando a integracao existir.
+      SUPABASE_URL: https://ci.supabase.co
+      SUPABASE_KEY: chave-de-ci
+      APP_ENV: staging
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+          cache: pip
+
+      - name: Instalar dependencias
+        run: pip install -r requirements-dev.txt
+
+      - name: Formatacao (black)
+        run: black --check .
+
+      - name: Lint (ruff)
+        run: ruff check .
+
+      - name: Testes (pytest)
+        run: pytest -q
+
+  imagem:
+    name: Build da imagem Docker
+    runs-on: ubuntu-latest
+    needs: qualidade
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: docker build -t claudinho-api:${{ github.sha }} .
+
+# TODO: o quality gate de RAGAS (faithfulness >= 0.90, recall >= 0.95) descrito em
+# Docs/Production/01, secao 3.2, entra como um job aqui depois que o benchmark de
+# 50 perguntas existir.

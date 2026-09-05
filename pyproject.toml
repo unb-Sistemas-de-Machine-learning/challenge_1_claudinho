@@ -1,0 +1,35 @@
+[project]
+name = "claudinho-api"
+version = "0.1.0"
+description = "API de checagem de desinformacao nutricional - Challenge 1"
+requires-python = ">=3.12,<3.13"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+# Aviso de terceiros: starlette 0.41 usa um alias do anyio que ficou obsoleto.
+# Silenciado para que qualquer warning restante na suite seja nosso.
+filterwarnings = [
+    "ignore:The anyio.abc.BlockingPortal alias is deprecated:DeprecationWarning",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.flake8-bugbear]
+# Depends/Header/Query em argumentos default sao o padrao do FastAPI, nao um bug.
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.Header",
+    "fastapi.Query",
+    "fastapi.Path",
+    "fastapi.Body",
+]

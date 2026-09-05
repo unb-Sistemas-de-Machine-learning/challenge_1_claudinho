@@ -1,0 +1,14 @@
+# Ambiente local. Requer um .env preenchido (copie de .env.example).
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      APP_ENV: local
+    volumes:
+      # Codigo montado de fora para o reload pegar as alteracoes sem rebuild.
+      - ./APP:/app/APP:ro
+    command: uvicorn APP.main:app --host 0.0.0.0 --port 8000 --reload

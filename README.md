@@ -146,11 +146,13 @@ black --check .    # formatação
 | `APP/schemas.py` | Modelos Pydantic do contrato ([Produção 01](./Docs/Production/01_plataforma_e_deploy.md), seção 2) |
 | `APP/routers/health.py` | `GET /health` — *liveness probe* |
 | `APP/routers/check_claim.py` | `POST /api/v1/check-claim` — **mockado** |
+| `APP/routers/feedback.py` | `POST /api/v1/feedback` — registra 👍 / 👎 sobre uma resposta |
 | `APP/verdict.py` | Converte `risk_score` em veredito (limiares 0.35 / 0.65) |
 | `APP/auth.py` | **Stub** de autenticação: exige o header `Bearer`, ainda não valida o JWT |
 | `APP/config.py` | Variáveis de ambiente |
 | `APP/observabilidade.py` | Log estruturado de inferência e contexto do `trace_id` |
 | `APP/middleware.py` | Middleware que emite um registro por requisição |
+| `APP/repositorios/feedback.py` | Persistência do feedback — **hoje em memória** |
 | `APP/model/database.py` | Client do Supabase, criado sob demanda |
 | `tests/` | Suíte do pytest |
 
@@ -173,10 +175,17 @@ Três coisas que o log **não** registra, de propósito:
 
 Os blocos `nlp`, `retrieval`, `generation` e `guardrails` já existem no formato, com `null`. Eles passam a ser preenchidos conforme cada etapa do pipeline de RAG for entrando.
 
+## Feedback
+
+`POST /api/v1/feedback` já valida e responde o contrato completo, mas **a persistência ainda é em memória** — o feedback some quando o processo reinicia. A tabela `feedback` no Supabase ainda não existe (é o item 3 da seção 8 do Produção 02).
+
+Quando ela existir, o único ponto a mudar é o retorno de `obter_repositorio_de_feedback`, no fim de `APP/repositorios/feedback.py`. O passo a passo completo — schema sugerido, RLS, e as duas decisões que precisam da frente de Dados e de Ética — está no docstring do `RepositorioSupabase`, no mesmo arquivo.
+
 ## O que ainda falta
 
 - [ ] Validar de verdade o JWT do Supabase Auth (`APP/auth.py` hoje só checa se o header existe)
-- [ ] Endpoints `POST /feedback` e `GET`/`PUT /profile`
+- [ ] Criar a tabela `feedback` no Supabase e trocar o repositório em memória
+- [ ] Endpoints `GET`/`PUT /profile` (dado sensível de LGPD — precisa da frente de Ética)
 - [ ] Ligar o pipeline real: cache semântico → extração de claim → busca no `pgvector` → geração → guardrails
 - [ ] *Quality gate* de RAGAS no CI (depende do benchmark de 50 perguntas)
 - [ ] Instrumentar com o SDK do Langfuse e o Sentry

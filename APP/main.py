@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 
 from APP.errors import registrar_handlers
+from APP.middleware import LoggingDeInferencia
+from APP.observabilidade import configurar_logging
 from APP.routers import check_claim, health
 
 app = FastAPI(
@@ -12,6 +14,8 @@ app = FastAPI(
     ),
 )
 
+configurar_logging()
+app.add_middleware(LoggingDeInferencia)
 registrar_handlers(app)
 app.include_router(health.router)
 app.include_router(check_claim.router)

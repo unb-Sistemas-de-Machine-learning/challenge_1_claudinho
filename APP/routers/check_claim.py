@@ -16,6 +16,7 @@ from fastapi import APIRouter, Depends
 from APP.auth import exigir_autenticacao
 from APP.config import Settings, obter_settings
 from APP.errors import ApiError
+from APP.observabilidade import adicionar_ao_log, trace_id_atual
 from APP.schemas import CheckClaimRequest, CheckClaimResponse, Fonte
 from APP.verdict import classificar_veredito
 
@@ -46,7 +47,10 @@ def _validar_tamanho_da_imagem(image_base64: str | None, settings: Settings) -> 
 
 def montar_resposta_mockada(requisicao: CheckClaimRequest, latency_ms: int) -> CheckClaimResponse:
     return CheckClaimResponse(
-        trace_id=str(uuid.uuid4()),
+        # O trace_id vem do middleware de log, para a resposta e o registro
+        # apontarem para a mesma execucao. O uuid4 aqui e so a rede de seguranca
+        # de quando a rota e chamada fora do ciclo de requisicao (testes unitarios).
+        trace_id=trace_id_atual() or str(uuid.uuid4()),
         canonical_claim=(
             "O consumo de agua com limao em jejum possui efeito termogenico ou de "
             "reducao de retencao hidrica?"
@@ -85,6 +89,35 @@ async def check_claim(
     settings: Settings = Depends(obter_settings),
 ) -> CheckClaimResponse:
     inicio = time.perf_counter()
+    adicionar_ao_log(input=_descrever_entrada(requisicao))
+
     _validar_tamanho_da_imagem(requisicao.image_base64, settings)
     decorrido_ms = int((time.perf_counter() - inicio) * 1000)
-    return montar_resposta_mockada(requisicao, decorrido_ms)
+    resposta = montar_resposta_mockada(requisicao, decorrido_ms)
+
+    adicionar_ao_log(
+        output={
+            "verdict": resposta.verdict,
+            "risk_score": resposta.risk_score,
+            "sources_count": len(resposta.sources),
+        },
+        performance={"cache_hit": resposta.cached},
+    )
+    return resposta
+
+
+def _descrever_entrada(requisicao: CheckClaimRequest) -> dict[str, object]:
+    """Descreve a entrada sem copiar o texto do usuario para o log.
+
+    Docs/Production/02, secao 3.1: o log guarda o formato e o tamanho, nao o
+    conteudo. O texto original fica so na resposta e, quando o pipeline existir,
+    na alegacao canonica do bloco `nlp`.
+    """
+    bruto = requisicao.text or requisicao.url or requisicao.image_base64 or ""
+    return {
+        "input_type": requisicao.input_type,
+        "raw_length": len(bruto),
+        # Fixo por enquanto: o MVP e pt-BR. Vira deteccao quando houver
+        # necessidade de outro idioma.
+        "language": "pt-BR",
+    }

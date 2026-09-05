@@ -149,8 +149,29 @@ black --check .    # formatação
 | `APP/verdict.py` | Converte `risk_score` em veredito (limiares 0.35 / 0.65) |
 | `APP/auth.py` | **Stub** de autenticação: exige o header `Bearer`, ainda não valida o JWT |
 | `APP/config.py` | Variáveis de ambiente |
+| `APP/observabilidade.py` | Log estruturado de inferência e contexto do `trace_id` |
+| `APP/middleware.py` | Middleware que emite um registro por requisição |
 | `APP/model/database.py` | Client do Supabase, criado sob demanda |
 | `tests/` | Suíte do pytest |
+
+## Logs de inferência
+
+Cada requisição gera **uma linha JSON** no stdout, no formato da seção 3 do [Produção 02](./Docs/Production/02_monitoramento_e_mlops.md). O `trace_id` é a chave que liga o log, a resposta da API e o feedback do usuário.
+
+```json
+{"trace_id":"80d16b32-...","endpoint":"/api/v1/check-claim","user_id_hash":"sha256:1cf0...",
+ "input":{"input_type":"text","raw_length":30,"language":"pt-BR"},
+ "output":{"verdict":"desinformacao","risk_score":0.78,"sources_count":1},
+ "performance":{"cache_hit":false,"total_latency_ms":3},"status":"success","error":null}
+```
+
+Três coisas que o log **não** registra, de propósito:
+
+* o texto da pergunta e o comentário do feedback — podem conter condição clínica;
+* o token do usuário — entra como `sha256:...`;
+* o `/health` — o provedor bate nele a cada 30s e afogaria os registros de verdade.
+
+Os blocos `nlp`, `retrieval`, `generation` e `guardrails` já existem no formato, com `null`. Eles passam a ser preenchidos conforme cada etapa do pipeline de RAG for entrando.
 
 ## O que ainda falta
 
@@ -158,4 +179,5 @@ black --check .    # formatação
 - [ ] Endpoints `POST /feedback` e `GET`/`PUT /profile`
 - [ ] Ligar o pipeline real: cache semântico → extração de claim → busca no `pgvector` → geração → guardrails
 - [ ] *Quality gate* de RAGAS no CI (depende do benchmark de 50 perguntas)
-- [ ] Rate limiting e observabilidade (Langfuse + Sentry)
+- [ ] Instrumentar com o SDK do Langfuse e o Sentry
+- [ ] Rate limiting

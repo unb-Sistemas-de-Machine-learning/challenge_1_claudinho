@@ -1,4 +1,4 @@
-# 🚀 Produção (Production)
+# Produção (Production)
 
 Este diretório concentra as diretrizes de arquitetura de software, deploy, monitoramento contínuo (MLOps), escalabilidade e gestão de custos da aplicação.
 
@@ -6,7 +6,7 @@ Este diretório concentra as diretrizes de arquitetura de software, deploy, moni
 
 ---
 
-## 📌 Guiding Questions do Tema
+## Guiding Questions do Tema
 
 | Pergunta | Prioridade | Status | Documento de Referência |
 | :--- | :--- | :--- | :--- |
@@ -16,7 +16,7 @@ Este diretório concentra as diretrizes de arquitetura de software, deploy, moni
 
 ---
 
-## 🧭 Decisões-Chave da Frente
+## Decisões-Chave da Frente
 
 | Decisão | Escolha | Documento |
 | :--- | :--- | :--- |
@@ -30,7 +30,7 @@ Este diretório concentra as diretrizes de arquitetura de software, deploy, moni
 
 ---
 
-## 📁 Estrutura de Documentos
+## Estrutura de Documentos
 
 1. [**01_plataforma_e_deploy.md**](./01_plataforma_e_deploy.md)
    - Arquitetura em monólito modular e fluxo completo de uma requisição de checagem.
@@ -50,7 +50,7 @@ Este diretório concentra as diretrizes de arquitetura de software, deploy, moni
 
 ---
 
-## 🛠️ Estado da Implementação
+## Estado da Implementação
 
 A frente saiu do papel: o esqueleto da API esta em `APP/`, com testes em `tests/` e CI em `.github/workflows/ci.yml`. A tabela abaixo liga cada decisao documentada ao codigo que a implementa.
 
@@ -100,7 +100,7 @@ A documentação interativa gerada pelo FastAPI fica em `http://localhost:8000/d
 
 ---
 
-## 🔗 Dependências entre Frentes
+## Dependências entre Frentes
 
 * **Modelo:** os limiares 0.35/0.65 e as métricas RAGAS alimentam, respectivamente, o campo `verdict` da API e o *quality gate* do CI.
 * **Dados:** o schema `sources` / `articles` / `chunks` define o que a camada de recuperação consulta; a tabela `feedback` precisa ser criada em conjunto.

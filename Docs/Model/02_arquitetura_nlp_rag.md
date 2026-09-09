@@ -35,9 +35,14 @@ sequenceDiagram
 
 ## 2. Componentes Técnicos
 
-### 2.1. Modelos de Embeddings Recomendados
-1. **`text-embedding-3-small` (OpenAI):** 1536 dimensões, excelente suporte multilíngue, alta performance e baixo custo por requisição.
-2. **`multilingual-e5-base` / `bge-m3`:** Modelos open-source para embeddings densos em português, com ótimo desempenho semântico para textos acadêmicos e técnicos.
+### 2.1. Modelos de Embeddings
+
+**Escolhido: `intfloat/multilingual-e5-base`** — 768 dimensões, open source, executado localmente. Bom desempenho semântico em português acadêmico, sem custo por requisição e sem enviar o conteúdo dos artigos para terceiros. A coluna `chunks.embedding` acompanha essa dimensão (ver [Docs/Data/02](../Data/02_armazenamento_e_estrutura.md)).
+
+Alternativas consideradas:
+
+1. **`text-embedding-3-small` (OpenAI):** 1536 dimensões, excelente suporte multilíngue e baixo custo por requisição — descartado por depender de chave de API e de envio do conteúdo para um terceiro.
+2. **`bge-m3`:** 1024 dimensões, open source, forte em textos longos — alternativa direta caso a qualidade do e5-base se mostre insuficiente na avaliação.
 
 ### 2.2. Modelo Gerador (LLM)
 * **Modelos candidatos:** Gemini 1.5 Flash / GPT-4o-mini / Llama-3.1-8B-Instruct.

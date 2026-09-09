@@ -8,6 +8,8 @@
 
 ## 1. O Risco de Endosso de Práticas Perigosas
 
+O uso irrestrito de modelos de linguagem em aplicações de saúde expõe usuários ao risco de **endoso não intencional de práticas novicas**. Em nutrição, postagens de redes sociais frequentemente propragam dietas de restrição calórica extrema, métodos perigosos de "detox" e uso de substâncias inadequadas para ingestão humana.
+Quando um usuário consulta o sistema buscando validação sobre uma dessas práticas, o modelo corre o risco de apresentar *viés de confirmação* ou fornecer instruções passo a passo sob o pretexto de prestar auxílio. O papel do protocolo de segurança é garantir a detecção precoce desses prompts maliciosos ou desinformados, impedindo a geração de conselhos prejudiciais e redirecionando a interação para uma conduta segura e fundamentada.
 
 
 ---

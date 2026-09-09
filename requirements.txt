@@ -6,3 +6,5 @@ pydantic==2.13.5
 pydantic-settings==2.7.0
 python-dotenv==1.0.1
 supabase==2.31.0
+# Rate limiting (Docs/Production/03, secao 2.2)
+slowapi==0.1.9

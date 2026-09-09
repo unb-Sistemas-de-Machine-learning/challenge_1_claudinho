@@ -1,13 +1,14 @@
 import APP.model.database as database
 
 
-def test_importar_o_modulo_nao_cria_client(monkeypatch):
+def test_importar_o_modulo_nao_cria_client():
     """O client so pode ser criado sob demanda: importar o modulo em um ambiente
-    sem credenciais (CI, por exemplo) nao pode quebrar a aplicacao."""
-    chamadas = []
-    monkeypatch.setattr(database, "create_client", lambda url, key: chamadas.append((url, key)))
+    sem credenciais (CI, por exemplo) nao pode quebrar a aplicacao.
 
-    assert chamadas == []
+    O modulo ja foi importado no topo do arquivo; se a criacao fosse feita no
+    import, o cache do lru_cache ja estaria populado neste ponto.
+    """
+    assert database.obter_supabase.cache_info().currsize == 0
 
 
 def test_obter_supabase_usa_as_credenciais_do_settings(monkeypatch):

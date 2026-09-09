@@ -77,7 +77,7 @@ A partir do documento citado, foi criada a estrutura básica deste repositório,
 
 # 💻 Rodando a API localmente
 
-O backend está em `APP/`. Hoje ele é um **esqueleto**: o contrato dos endpoints é o definitivo, mas `/check-claim` responde com dados **mockados** — o pipeline de RAG ainda não está ligado. Isso permite que o app mobile já seja desenvolvido contra o formato final da resposta.
+O backend está em `APP/`. Hoje ele é um **esqueleto**: o contrato dos endpoints é o definitivo, mas `/check-claim` responde com dados **mockados**, porque o pipeline de RAG ainda não está ligado. Isso permite que o app mobile já seja desenvolvido contra o formato final da resposta.
 
 ## Pré-requisitos
 
@@ -92,7 +92,7 @@ cp .env.example .env
 
 Preencha `SUPABASE_URL` e `SUPABASE_KEY` com os valores do projeto no Supabase (*Project Settings → API*).
 
-> ⚠️ O `.env` **nunca** entra no Git — o `.gitignore` bloqueia. Se precisar adicionar uma variável nova, adicione o **nome** dela (sem valor) no `.env.example` para o resto do time saber que ela existe.
+> ⚠️ O `.env` **nunca** entra no Git, o `.gitignore` bloqueia. Se precisar adicionar uma variável nova, adicione o **nome** dela (sem valor) no `.env.example` para o resto do time saber que ela existe.
 
 ## 2. Instalar as dependências
 
@@ -144,18 +144,52 @@ black --check .    # formatação
 | :--- | :--- |
 | `APP/main.py` | Monta a aplicação FastAPI e registra as rotas |
 | `APP/schemas.py` | Modelos Pydantic do contrato ([Produção 01](./Docs/Production/01_plataforma_e_deploy.md), seção 2) |
-| `APP/routers/health.py` | `GET /health` — *liveness probe* |
-| `APP/routers/check_claim.py` | `POST /api/v1/check-claim` — **mockado** |
+| `APP/routers/health.py` | `GET /health`, o *liveness probe* |
+| `APP/routers/check_claim.py` | `POST /api/v1/check-claim`, ainda **mockado** |
+| `APP/routers/feedback.py` | `POST /api/v1/feedback`, registra 👍 / 👎 sobre uma resposta |
 | `APP/verdict.py` | Converte `risk_score` em veredito (limiares 0.35 / 0.65) |
 | `APP/auth.py` | **Stub** de autenticação: exige o header `Bearer`, ainda não valida o JWT |
 | `APP/config.py` | Variáveis de ambiente |
+| `APP/observabilidade.py` | Log estruturado de inferência e contexto do `trace_id` |
+| `APP/middleware.py` | Middleware que emite um registro por requisição |
+| `APP/repositorios/feedback.py` | Persistência do feedback, **hoje em memória** |
 | `APP/model/database.py` | Client do Supabase, criado sob demanda |
 | `tests/` | Suíte do pytest |
+
+## Logs de inferência
+
+Cada requisição gera **uma linha JSON** no stdout, no formato da seção 3 do [Produção 02](./Docs/Production/02_monitoramento_e_mlops.md). O `trace_id` é a chave que liga o log, a resposta da API e o feedback do usuário.
+
+```json
+{"trace_id":"80d16b32-...","endpoint":"/api/v1/check-claim","user_id_hash":"sha256:1cf0...",
+ "input":{"input_type":"text","raw_length":30,"language":"pt-BR"},
+ "output":{"verdict":"desinformacao","risk_score":0.78,"sources_count":1},
+ "generation":{"model_version":"mock@0.1.0","prompt_version":"mock-v0"},
+ "performance":{"cache_hit":false,"total_latency_ms":3},"status":"success","error":null}
+```
+
+Três coisas que o log **não** registra, de propósito:
+
+* o texto da pergunta e o comentário do feedback, que podem conter condição clínica;
+* o token do usuário, que entra como `sha256:...`;
+* o `/health`, porque o provedor bate nele a cada 30s e afogaria os registros de verdade.
+
+Todo registro carrega `model_version` e `prompt_version`. É o que permite atribuir uma queda de qualidade à mudança que a causou, em vez de descobrir tarde demais que o provedor trocou o modelo por baixo dos panos.
+
+Os blocos `nlp`, `retrieval` e `guardrails` já existem no formato, com `null`. Eles passam a ser preenchidos conforme cada etapa do pipeline de RAG for entrando.
+
+## Feedback
+
+`POST /api/v1/feedback` já valida e responde o contrato completo, mas **a persistência ainda é em memória**, ou seja, o feedback some quando o processo reinicia. A tabela `feedback` no Supabase ainda não existe (é o item 3 da seção 8 do Produção 02).
+
+Quando ela existir, o único ponto a mudar é o retorno de `obter_repositorio_de_feedback`, no fim de `APP/repositorios/feedback.py`. O passo a passo completo (schema sugerido, RLS, e as duas decisões que precisam da frente de Dados e de Ética) está no docstring do `RepositorioSupabase`, no mesmo arquivo.
 
 ## O que ainda falta
 
 - [ ] Validar de verdade o JWT do Supabase Auth (`APP/auth.py` hoje só checa se o header existe)
-- [ ] Endpoints `POST /feedback` e `GET`/`PUT /profile`
-- [ ] Ligar o pipeline real: cache semântico → extração de claim → busca no `pgvector` → geração → guardrails
+- [ ] Criar a tabela `feedback` no Supabase e trocar o repositório em memória
+- [ ] Endpoints `GET`/`PUT /profile` (dado sensível de LGPD, precisa da frente de Ética)
+- [ ] Ligar o pipeline real: cache semântico, extração de claim, busca no `pgvector`, geração e guardrails
 - [ ] *Quality gate* de RAGAS no CI (depende do benchmark de 50 perguntas)
-- [ ] Rate limiting e observabilidade (Langfuse + Sentry)
+- [ ] Instrumentar com o SDK do Langfuse e o Sentry
+- [ ] Rate limiting

@@ -11,11 +11,13 @@ import binascii
 import time
 import uuid
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
 from APP.auth import exigir_autenticacao
 from APP.config import Settings, obter_settings
 from APP.errors import ApiError
+from APP.observability import obter_trace_id, registrar_etapa, registrar_usuario
+from APP.ratelimit import LIMITE_CHECK_CLAIM, limiter
 from APP.schemas import CheckClaimRequest, CheckClaimResponse, Fonte
 from APP.verdict import classificar_veredito
 
@@ -46,7 +48,9 @@ def _validar_tamanho_da_imagem(image_base64: str | None, settings: Settings) -> 
 
 def montar_resposta_mockada(requisicao: CheckClaimRequest, latency_ms: int) -> CheckClaimResponse:
     return CheckClaimResponse(
-        trace_id=str(uuid.uuid4()),
+        # O trace_id vem do middleware: o mesmo valor no log, no header X-Trace-Id
+        # e no corpo, para que o /feedback consiga referenciar esta execucao.
+        trace_id=obter_trace_id() or str(uuid.uuid4()),
         canonical_claim=(
             "O consumo de agua com limao em jejum possui efeito termogenico ou de "
             "reducao de retencao hidrica?"
@@ -79,12 +83,38 @@ def montar_resposta_mockada(requisicao: CheckClaimRequest, latency_ms: int) -> C
 
 
 @router.post("/check-claim", response_model=CheckClaimResponse)
+@limiter.limit(LIMITE_CHECK_CLAIM)
 async def check_claim(
+    request: Request,
     requisicao: CheckClaimRequest,
-    _token: str = Depends(exigir_autenticacao),
+    token: str = Depends(exigir_autenticacao),
     settings: Settings = Depends(obter_settings),
 ) -> CheckClaimResponse:
     inicio = time.perf_counter()
+    registrar_usuario(token)
+    registrar_etapa(
+        "input",
+        {
+            "input_type": requisicao.input_type,
+            # Comprimento, e nao o texto: a duvida do usuario pode conter dado de saude.
+            "raw_length": len(requisicao.text or ""),
+            "has_url": requisicao.url is not None,
+            "has_image": requisicao.image_base64 is not None,
+        },
+    )
+
     _validar_tamanho_da_imagem(requisicao.image_base64, settings)
-    decorrido_ms = int((time.perf_counter() - inicio) * 1000)
-    return montar_resposta_mockada(requisicao, decorrido_ms)
+
+    resposta = montar_resposta_mockada(requisicao, int((time.perf_counter() - inicio) * 1000))
+    registrar_etapa(
+        "output",
+        {
+            "verdict": resposta.verdict,
+            "risk_score": resposta.risk_score,
+            "sources_count": len(resposta.sources),
+            "model_version": resposta.model_version,
+            "prompt_version": resposta.prompt_version,
+        },
+    )
+    registrar_etapa("performance", {"cache_hit": resposta.cached})
+    return resposta

@@ -1,4 +1,4 @@
-# 🚀 Produção (Production)
+# Produção (Production)
 
 Este diretório concentra as diretrizes de arquitetura de software, deploy, monitoramento contínuo (MLOps), escalabilidade e gestão de custos da aplicação.
 
@@ -6,7 +6,7 @@ Este diretório concentra as diretrizes de arquitetura de software, deploy, moni
 
 ---
 
-## 📌 Guiding Questions do Tema
+## Guiding Questions do Tema
 
 | Pergunta | Prioridade | Status | Documento de Referência |
 | :--- | :--- | :--- | :--- |
@@ -16,7 +16,7 @@ Este diretório concentra as diretrizes de arquitetura de software, deploy, moni
 
 ---
 
-## 🧭 Decisões-Chave da Frente
+## Decisões-Chave da Frente
 
 | Decisão | Escolha | Documento |
 | :--- | :--- | :--- |
@@ -30,11 +30,11 @@ Este diretório concentra as diretrizes de arquitetura de software, deploy, moni
 
 ---
 
-## 📁 Estrutura de Documentos
+## Estrutura de Documentos
 
 1. [**01_plataforma_e_deploy.md**](./01_plataforma_e_deploy.md)
    - Arquitetura em monólito modular e fluxo completo de uma requisição de checagem.
-   - Especificação dos endpoints REST da API (`/api/v1/check-claim`, `/api/v1/feedback`, `/api/v1/profile`, `/api/v1/health`), com payloads e códigos de erro.
+   - Especificação dos endpoints REST da API (`/api/v1/check-claim`, `/api/v1/feedback`, `/api/v1/profile`, `/health`), com payloads e códigos de erro.
    - Ambientes, estratégia de CI/CD com *quality gate* de avaliação e gestão de segredos.
 
 2. [**02_monitoramento_e_mlops.md**](./02_monitoramento_e_mlops.md)
@@ -50,7 +50,57 @@ Este diretório concentra as diretrizes de arquitetura de software, deploy, moni
 
 ---
 
-## 🔗 Dependências entre Frentes
+## Estado da Implementação
+
+A frente saiu do papel: o esqueleto da API esta em `APP/`, com testes em `tests/` e CI em `.github/workflows/ci.yml`. A tabela abaixo liga cada decisao documentada ao codigo que a implementa.
+
+| Decisao documentada | Onde vive no codigo | Estado |
+| :--- | :--- | :--- |
+| Contrato REST (`/check-claim`, `/feedback`, `/profile`, `/health`) | `APP/schemas.py`, `APP/routers/` | ✅ Contrato congelado, resposta de `/check-claim` mockada |
+| Formato de erro `{"error", "detail"}` | `APP/errors.py` | ✅ |
+| Limiares 0.35 / 0.65 → veredito | `APP/verdict.py` | ✅ |
+| Autenticação Bearer | `APP/auth.py` | ⚠️ Stub: exige o header, ainda não valida o JWT |
+| Log estruturado, um por requisição | `APP/observability.py`, `APP/middleware.py` | ✅ |
+| `trace_id` no log, no header e no corpo | `APP/middleware.py` | ✅ |
+| Nenhum dado de saúde em log | `APP/observability.py` + testes | ✅ |
+| Rate limiting por usuário/IP | `APP/ratelimit.py` | ✅ Contador em memória |
+| Consentimento LGPD para dados clínicos | `APP/schemas.py`, `APP/model/repositorio.py` | ✅ |
+| Persistência de perfil e feedback | `APP/model/repositorio_perfil.py`, `APP/model/repositorio_feedback.py` | ⚠️ Stub em memória, some no restart |
+| Container e ambiente local | `Dockerfile`, `docker-compose.yml` | ✅ |
+| Esteira de CI (lint, testes, build) | `.github/workflows/ci.yml` | ✅ |
+| Pipeline de RAG | — | ❌ Depende das frentes de Dados e Modelo |
+| Cache semântico | — | ❌ Depende dos embeddings |
+| Quality gate de RAGAS no CI | — | ❌ Depende do benchmark de 50 perguntas |
+
+### Como rodar localmente
+
+```bash
+cp .env.example .env      # preencha SUPABASE_URL e SUPABASE_KEY
+docker compose up --build # API em http://localhost:8000
+```
+
+Sem Docker:
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements-dev.txt
+uvicorn APP.main:app --reload
+pytest -q
+```
+
+A documentação interativa gerada pelo FastAPI fica em `http://localhost:8000/docs` — é a forma mais rápida de o pessoal do app conferir o contrato.
+
+### Ordem sugerida dos próximos incrementos
+
+1. **Validar o JWT do Supabase de verdade** em `APP/auth.py` (não depende de ninguém).
+2. **Trocar o repositório em memória por Supabase**, assim que a frente de Dados publicar o schema de `profiles` e `feedback`.
+3. **Ligar a recuperação no pgvector** em `/check-claim`, substituindo a resposta mockada — o primeiro pedaço do pipeline que produz valor real.
+4. **Geração ancorada + guardrails**, com a frente de Ética.
+5. **Cache semântico e quality gate de RAGAS**, que só fazem sentido depois que o pipeline existe.
+
+---
+
+## Dependências entre Frentes
 
 * **Modelo:** os limiares 0.35/0.65 e as métricas RAGAS alimentam, respectivamente, o campo `verdict` da API e o *quality gate* do CI.
 * **Dados:** o schema `sources` / `articles` / `chunks` define o que a camada de recuperação consulta; a tabela `feedback` precisa ser criada em conjunto.

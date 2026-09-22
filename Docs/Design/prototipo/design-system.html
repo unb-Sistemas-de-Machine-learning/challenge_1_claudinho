@@ -505,13 +505,23 @@
 
   <section class="block" aria-labelledby="h-pend">
     <div class="block-head"><h2 id="h-pend">Pendências para o time</h2></div>
+    <p class="lede" style="max-width:66ch">Revisadas em 22 de setembro de 2026. Atenção ao ler: a <code class="mono">Dev</code> de hoje tem a API com autenticação, rate limiting e perfil, mas o pipeline de RAG ainda está nos PRs abertos #13 (modelo e treinamento) e #15 (produção sobre Ollama).</p>
+    <p class="sub" style="margin-top:8px">Resolvidas, aguardando merge</p>
     <ul class="pending">
-      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span>A <b>Docs/User/02</b> ainda justifica app nativo e descarta PWA. Precisa refletir a decisão nova, inclusive a limitação de compartilhar no iPhone.</span></li>
-      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span>O exemplo de resposta da <b>Production/01</b> e o mock da API trazem <code class="mono">risk_score: 0.78</code> com <code class="mono">risk_level: "baixo"</code>. Pelos limiares, 0,78 é risco alto. O protótipo não exibe o nível até isso ser alinhado.</span></li>
-      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span>Falta definir se gestação e amamentação entram em <code class="mono">conditions</code> ou ganham campo próprio. O protótipo trata como condição.</span></li>
-      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span>Uso sem conta depende de ligar o <b>anonymous sign-in</b> no Supabase, com CAPTCHA, limite por IP além do limite por identidade e uma rotina de limpeza das contas anônimas antigas.</span></li>
-      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span>Falta decidir o que acontece quando a pessoa entra numa conta que já tem histórico: manter o do aparelho, o da conta, ou juntar os dois.</span></li>
-      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span>Claudinho é o nome do repositório e da API. Se o produto ganhar outro nome, só a marca muda.</span></li>
+      <li><i data-lucide="circle-check" aria-hidden="true" style="color:var(--c-seguro-ink)"></i><span><b>Nível de risco incoerente com o score.</b> Passa a ser derivado em <code class="mono">APP/model/generator.py</code>. Está nos PRs #13 e #15.</span></li>
+      <li><i data-lucide="circle-check" aria-hidden="true" style="color:var(--c-seguro-ink)"></i><span><b>Disclaimers e restrição de idade só no papel.</b> O <code class="mono">APP/model/disclaimers.py</code> aplica os textos homologados e a recusa para menor de 18. Está no PR #15.</span></li>
+      <li><i data-lucide="circle-check" aria-hidden="true" style="color:var(--c-seguro-ink)"></i><span><b>Gestação e amamentação sem tratamento.</b> O guardrail detecta a menção no texto e injeta o aviso, sem depender do perfil preenchido. Está no PR #15.</span></li>
+    </ul>
+    <p class="sub" style="margin-top:8px">Abertas</p>
+    <ul class="pending">
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>O canal ainda está descrito como app nativo.</b> A <code class="mono">Docs/User/02</code> trata PWA como plano B e a <code class="mono">Docs/Production/01</code> mantém Expo na tabela de deploy e no diagrama, mesmo com o backend já na Vercel. O protótipo assume PWA.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>A tabela de status da <code class="mono">Docs/Production/README</code> vence no merge.</b> Ela diz que o <code class="mono">/check-claim</code> é mockado, o que continua certo hoje e deixa de ser quando o #15 entrar.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>Uso sem conta ainda não existe no backend.</b> Depende de ligar o anonymous sign-in no Supabase, com CAPTCHA, limite por IP além do limite por identidade e limpeza das contas antigas.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>Conflito de dados na conversão.</b> Falta decidir o que acontece quando a pessoa entra numa conta que já tem histórico diferente do que está no aparelho.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>Perfil sem campo próprio para gestação e amamentação.</b> Hoje entram como texto livre em <code class="mono">conditions</code>, e quem detecta de verdade é o guardrail.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>O protótipo não está integrado.</b> A branch <code class="mono">docs/design-prototipo</code> não foi mesclada na <code class="mono">Dev</code>.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>Não existe frontend de produção.</b> O protótipo valida fluxo e visual, mas falta manifest, service worker e integração com a API.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>O nome é provisório.</b> Claudinho é o nome do repositório e da API.</span></li>
     </ul>
   </section>
 </div>

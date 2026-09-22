@@ -85,17 +85,30 @@ def reformular_pergunta_amigavel(texto: str) -> str:
 
     # Mapeamento de termos informais comuns
     regras_amigaveis = [
-        (r"\bsecar 10kg\b", "perder 10 kg"),
-        (r"\bsecar a barriga\b", "reduzir a gordura abdominal"),
-        (r"\bdesinchar a barriga\b", "reduzir o inchaço"),
-        (r"\bdesinchar o corpo\b", "reduzir o inchaço"),
-        (r"\bdesincha a barriga\b", "reduz o inchaço"),
-        (r"\bdesincha o corpo\b", "reduz o inchaço"),
-        (r"\bdesinflama o corpo\b", "reduz a inflamação"),
-        (r"\bshot de vinagre de ma[cç][aã]\b", "vinagre de maçã"),
-        (r"\bshot de vinagre\b", "vinagre de maçã"),
-        (r"(\d+)kg\b", r"\1 kg"),
-        (r"\s+antes de uma festa\b", ""),
+    # --- Emagrecimento e Gordura ---
+    (r"\b(secar|secar a barriga|perder a barriga|definir|trincar)\b", "reduzir a gordura abdominal"),
+    (r"\b(perder peso|emagrecer|queimar gordura|secar 10kg|perder 10 kg)\b", "reduzir o peso corporal"),
+    (r"\b(medida|medidas|perder medida)\b", "reduzir medidas corporais"),
+    
+    # --- Inchaço e Retenção ---
+    (r"\b(desinchar|desincha|desinche|tirar o inchaço|inchaço|retenção de líquido)\b", "reduzir o inchaço"),
+    (r"\b(desinchar a barriga|barriga inchada|estufada)\b", "reduzir a distensão abdominal"),
+    (r"\b(desinflamar|inflamação|inflamado)\b", "reduzir a inflamação"),
+    
+    # --- Termos Específicos e Gírias ---
+    (r"\b(shot de vinagre de ma[cç][aã]|vinagre de maçã|shot de vinagre)\b", "vinagre de maçã"),
+    (r"\b(antes de uma festa|antes da festa|preparo para festa)\b", ""), 
+    (r"\b(detox|limpar o organismo|desintoxicar)\b", "desintoxicação"),
+    (r"\b(shape|corpo perfeito|boa forma)\b", "melhora da composição corporal"),
+    (r"\b(abdômen|abdomen|tanquinho)\b", "região abdominal"),
+    
+    # --- Regras Genéricas de Quantidade (Regex Dinâmico) ---
+    (r"\b(perder|eliminar|queimar|secar)\s+(\d+)\s*(kg|quilos)\b", r"reduzir \2 kg"),
+    
+    # --- Alimentação e Rotina ---
+    (r"\b(dieta|reeducação alimentar|mudança de hábito)\b", "plano alimentar"),
+    (r"\b(jejum|jejum intermitente)\b", "jejum intermitente"),
+    (r"\b(treino|exercício|atividade física|malhar)\b", "prática de exercícios físicos"),
     ]
     for p, r in regras_amigaveis:
         t = re.sub(p, r, t, flags=re.IGNORECASE)

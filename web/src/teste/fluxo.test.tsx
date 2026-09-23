@@ -130,3 +130,20 @@ describe('fluxo de checagem', () => {
     );
   });
 });
+
+describe('entradas que a API ainda não lê', () => {
+  beforeEach(() => {
+    gravar('onboarded', true);
+  });
+
+  it('explica que print e link ainda não dão para checar, em vez de erro genérico', async () => {
+    const usuario = userEvent.setup({ delay: null });
+    abrirApp();
+
+    await usuario.type(screen.getByLabelText(/sua dúvida/i), 'https://www.instagram.com/reel/abc');
+    await usuario.click(screen.getByRole('button', { name: 'Checar' }));
+
+    // O PR #15 passou a recusar com 422 `input_nao_suportado`, em vez de responder errado.
+    expect(await screen.findByText(/Ainda não consigo ler print nem link/)).toBeInTheDocument();
+  });
+});

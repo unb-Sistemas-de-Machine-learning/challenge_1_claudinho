@@ -37,8 +37,9 @@ a página, sem rebuild. O mock fica desligado nesse modo, e o CORS da API já li
 Se preferir sem Docker, rode `uvicorn APP.main:app --reload` na raiz e coloque
 `VITE_API_MOCK=false` no `web/.env.local`.
 
-> Na `Dev` o `/check-claim` ainda é mockado no backend, então a resposta não corresponde
-> à pergunta: ela sempre fala de água com limão. Isso muda quando o PR #15 entrar.
+> Desde o PR #15, a `Dev` responde com o pipeline de verdade, e não mais com dado fixo.
+> Print e link são recusados com `422 input_nao_suportado`, de propósito: sem OCR e sem
+> leitura de página, responder daria veredito confiante sobre o assunto errado.
 >
 > Apontar o app para staging ou produção hoje devolve 401 em toda chamada, porque o token
 > é de desenvolvimento. A sessão anônima de verdade tem issue própria.

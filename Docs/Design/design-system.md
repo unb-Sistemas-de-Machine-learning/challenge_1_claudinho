@@ -257,27 +257,30 @@ O produto é um PWA pensado para o celular de entrada, com uma mão, em sessões
 
 Revisadas em 23 de setembro de 2026.
 
-Um aviso de leitura: nesta data a `Dev` tem a API com autenticação, rate limiting, perfil e o PWA em `web/`, mas **o pipeline de RAG ainda não está nela**. Ele vive nos PRs abertos [#13](https://github.com/unb-Sistemas-de-Machine-learning/challenge_1_claudinho/pull/13) (modelo e treinamento) e [#15](https://github.com/unb-Sistemas-de-Machine-learning/challenge_1_claudinho/pull/15) (produção sobre Ollama).
+Um aviso de leitura: o PR #15 entrou na `Dev`, então o pipeline de RAG, os guardrails, os disclaimers homologados e o deploy na Vercel já são realidade. O PR [#13](https://github.com/unb-Sistemas-de-Machine-learning/challenge_1_claudinho/pull/13) (modelo e treinamento) continua aberto.
 
 ### 10.1. Resolvidas, aguardando merge
 
 | Pendência | O que resolveu | Onde está |
 | :--- | :--- | :--- |
-| `risk_score: 0.78` com `risk_level: "baixo"` no contrato | O nível passa a ser derivado do score, em `APP/model/generator.py` | PR #13 e PR #15 |
-| Disclaimers e restrição de idade só no papel | `APP/model/disclaimers.py` aplica os textos homologados e a recusa para menor de 18 | PR #15 |
-| Gestação e amamentação sem tratamento | O guardrail detecta menção no texto e injeta o aviso, sem depender do perfil preenchido | PR #15 |
-| Não existia frontend | O PWA em `web/` roda checagem, carregamento, resultado com fontes, avaliação e perfil, falando com a API de verdade | Já na `Dev` |
+| `risk_score: 0.78` com `risk_level: "baixo"` no contrato | O nível passa a ser derivado do score, em `APP/model/generator.py` | Na `Dev` |
+| Disclaimers e restrição de idade só no papel | `APP/model/disclaimers.py` aplica os textos homologados e a recusa para menor de 18 | Na `Dev` |
+| Gestação e amamentação sem tratamento | O guardrail detecta menção no texto e injeta o aviso, sem depender do perfil preenchido | Na `Dev` |
+| Não existia frontend | O PWA em `web/` roda checagem, carregamento, resultado com fontes, avaliação e perfil | Na `Dev` |
+| Print e link viravam resposta confiante sobre outro assunto | A API passou a recusar com `422 input_nao_suportado`, e o app mostra o texto certo | Na `Dev` |
 
 ### 10.2. Abertas
 
 1. **O canal ainda está descrito como app nativo.** `Docs/User/02_acesso_e_canais.md` justifica React Native com Expo e trata PWA como plano B, e a `Docs/Production/01_plataforma_e_deploy.md` mantém Expo na tabela de deploy e no diagrama, mesmo com o backend já na Vercel e o PWA no repositório. Os dois documentos precisam ser atualizados, incluindo a limitação de compartilhamento no iPhone.
-2. **A tabela de status da `Docs/Production/README.md` vence no merge do #15.** Ela diz que o `/check-claim` é mockado, o que continua certo para a `Dev` de hoje.
-3. **Uso sem conta ainda não existe no backend.** Depende de ligar o *anonymous sign-in* no Supabase, com CAPTCHA, limite por IP além do limite por identidade, e uma rotina de limpeza das contas antigas. Enquanto isso, o app manda um token de desenvolvimento que só o modo local aceita.
+2. **A tabela de status da `Docs/Production/README.md` está vencida.** Ela ainda diz que o `/check-claim` é mockado e que o pipeline não existe, o que deixou de ser verdade com o merge do #15.
+3. **Uso sem conta ainda não existe no backend.** Depende de ligar o *anonymous sign-in* no Supabase, com CAPTCHA, limite por IP além do limite por identidade, e uma rotina de limpeza das contas antigas. Enquanto isso, o app manda um token de desenvolvimento, e desde o PR #15 o `APP_ENV` tem padrão `production`, então qualquer ambiente fora do local recusa esse token.
 4. **Conflito de dados na conversão.** Falta definir o que acontece quando a pessoa entra numa conta que já tem histórico diferente do que está no aparelho.
 5. **Perfil sem campo próprio para gestação e amamentação.** Hoje entram como texto livre em `conditions`, e quem detecta de verdade é o guardrail.
-6. **Print e link chegam na API e são ignorados.** O pipeline troca toda imagem por uma frase fixa e embeda a URL crua (achado 3 da revisão do PR #15). Até isso mudar, esses dois modos de entrada não têm resposta correta.
+6. **Print e link ainda não viram checagem.** A API agora recusa os dois com `422 input_nao_suportado`, que é o comportamento honesto enquanto OCR e leitura de página não existem. Implementar essas duas leituras continua aberto, e é o que destrava o compartilhamento do Android.
 7. **A alegação extraída não aparece durante o carregamento.** O protótipo mostra "Entendi assim:" antes da resposta chegar, como pede a `Docs/User/02`, seção 2.4. Depende de a API devolver esse campo em separado.
-8. **O nome é provisório.** Claudinho é o nome do repositório e da API.
+8. **O erro `input_nao_suportado` não está no contrato escrito.** A API devolve `422` com esse código desde o PR #15, e a `Docs/Production/01`, seção 2.1, não lista nem ele nem o status. Quem for implementar outro cliente não tem como saber.
+
+9. **O nome é provisório.** Claudinho é o nome do repositório e da API.
 
 ---
 

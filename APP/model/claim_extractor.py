@@ -117,7 +117,6 @@ REGRAS_AMIGAVEIS: list[tuple[str, str]] = [
     ),
     (r"\b(?:perder|baixar|diminuir|eliminar)\s+medidas?\b", "reduzir medidas corporais"),
     (r"\bperda\s+de\s+medidas?\b", "redução de medidas corporais"),
-
     # --- 2. Bebidas Funcionais, Shots, Sucos e Detox ---
     (r"\bch[aá]s?\s+seca[- ]barriga\b", "chá para redução de gordura abdominal"),
     (r"\bch[aá]s?\s+emagrecedor(?:es)?\b", "chá para auxílio no emagrecimento"),
@@ -152,7 +151,6 @@ REGRAS_AMIGAVEIS: list[tuple[str, str]] = [
     ),
     (r"\b(?:eliminar|expulsar|varrer)\s+toxinas\b", "eliminar toxinas do organismo"),
     (r"\bdetox\b", "desintoxicação"),
-
     # --- 3. Gordura Abdominal, Cintura e Gordura Localizada ---
     (r"\bch[aá]\s+para\s+secar\s+(?:a\s+)?barriga\b", "chá para redução de gordura abdominal"),
     (
@@ -186,7 +184,6 @@ REGRAS_AMIGAVEIS: list[tuple[str, str]] = [
     (r"\b(?:pochete|culotes?|pneuzinhos?|dobrinhas?)\b", "gordura localizada"),
     (r"\bgordurinhas?\s+localizadas?\b", "gordura localizada"),
     (r"\bbanha\b", "gordura corporal"),
-
     # --- 4. Inchaço, Retenção Hídrica, Distensão Abdominal e Inflamação ---
     (r"\bbarriga\s+(?:estufada\s+e\s+inchada|inchada\s+e\s+estufada)\b", "distensão abdominal"),
     (r"\bdesinchar\s+(?:a\s+)?barriga\b", "reduzir a distensão abdominal"),
@@ -218,7 +215,6 @@ REGRAS_AMIGAVEIS: list[tuple[str, str]] = [
     (r"\binflamar\s+o\s+(?:corpo|organismo)\b", "provocar inflamação corporal"),
     (r"\binflama\s+o\s+(?:corpo|organismo)\b", "provoca inflamação corporal"),
     (r"\bcorpo\s+inflamado\b", "quadro inflamatório"),
-
     # --- 5. Gordura Corporal, Queima e Perda de Peso ---
     (
         r"\b(?:queimar|derreter|torrar|eliminar)\s+gordura(?:\s+corporal)?\b",
@@ -251,7 +247,6 @@ REGRAS_AMIGAVEIS: list[tuple[str, str]] = [
         r"\b(?:meter\s+o\s+shape|shape|corpo\s+perfeito|boa\s+forma)\b",
         "melhora da composição corporal",
     ),
-
     # --- 6. Mitos Nutricionais e Conceitos Distorcidos ---
     (
         r"\b(?:[eé]|s[aã]o|seria|considerad[oa])\s+(?:um\s+|o\s+)?veneno\s+branco\b",
@@ -272,7 +267,6 @@ REGRAS_AMIGAVEIS: list[tuple[str, str]] = [
     (r"\bqueimar\s+calorias?\b", "aumentar o gasto calórico"),
     (r"\bqueima\s+calorias?\b", "aumenta o gasto calórico"),
     (r"\bqueimam\s+calorias?\b", "aumentam o gasto calórico"),
-
     # --- 7. Hábitos Alimentares, Restrições e Comportamento ---
     (r"\bantes\s+de\s+(?:uma\s+|da\s+)?festa\b", "antes de um evento"),
     (
@@ -323,7 +317,6 @@ REGRAS_AMIGAVEIS: list[tuple[str, str]] = [
     (r"\bengorda\b", "favorece o ganho de peso"),
     (r"\bengordam\b", "favorecem o ganho de peso"),
     (r"\bcomida\s+de\s+verdade\b", "alimentos in natura"),
-
     # --- 8. Exercícios e Treino ---
     (r"\b(?:malhar|puxar\s+ferro)\b", "praticar musculação"),
     (r"\b(?:cardio|aer[oó]bico)\s+em\s+jejum\b", "exercício aeróbico em jejum"),
@@ -331,7 +324,6 @@ REGRAS_AMIGAVEIS: list[tuple[str, str]] = [
         r"\b(?:ganhar|construir|crescer)\s+(?:m[uú]sculos?|massa\s+muscular)\b",
         "promover hipertrofia muscular",
     ),
-
     # --- 9. Ceticismo, Mitos e Promessas Milagrosas ---
     (r"\b(?:ou\s+)?(?:[eé]\s+)?meme\b", "ou é um mito"),
     (

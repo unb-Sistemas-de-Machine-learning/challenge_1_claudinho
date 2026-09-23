@@ -9,6 +9,20 @@ import pytest
 os.environ["SUPABASE_URL"] = "https://teste.supabase.co"
 os.environ["SUPABASE_KEY"] = "chave-de-teste"
 os.environ["APP_ENV"] = "local"
+# Provedores de LLM desligados, mesmo que o .env do dev tenha chaves: variavel de
+# ambiente vence o .env. Sem isto, a suite chamaria o Gemini de verdade na maquina de
+# quem tem a chave configurada, gastando cota e ficando diferente do CI.
+os.environ["GEMINI_API_KEY"] = ""
+os.environ["OPENAI_API_KEY"] = ""
+os.environ["LLM_BASE_URL"] = ""
+os.environ["LLM_API_KEY"] = ""
+# Mesma logica para autenticacao e embeddings: com o SUPABASE_JWT_SECRET de verdade no .env,
+# o modo local (que aceita o token de teste) desligaria e toda a suite viraria 401; com a
+# EMBEDDINGS_URL, a suite chamaria o Hugging Face e gastaria a cota gratuita.
+os.environ["SUPABASE_JWT_SECRET"] = ""
+os.environ["EMBEDDINGS_URL"] = ""
+os.environ["EMBEDDINGS_TOKEN"] = ""
+os.environ["ORIGENS_PERMITIDAS"] = "[]"
 
 import json  # noqa: E402
 import logging  # noqa: E402
@@ -21,10 +35,13 @@ from fastapi.testclient import TestClient  # noqa: E402
 from APP.auth import ALGORITMO, AUDIENCIA  # noqa: E402
 from APP.config import obter_settings  # noqa: E402
 from APP.main import app  # noqa: E402
+from APP.model import retriever  # noqa: E402
+from APP.model.database import obter_supabase  # noqa: E402
 from APP.observabilidade import LOGGER_INFERENCIA  # noqa: E402
 from APP.ratelimit import limpar as limpar_limites  # noqa: E402
 from APP.repositorios.feedback import obter_repositorio_de_feedback  # noqa: E402
 from APP.repositorios.perfil import obter_repositorio_de_perfil  # noqa: E402
+from tests._dubles import SupabaseFalso  # noqa: E402
 
 AUTH = {"Authorization": "Bearer token-de-teste"}
 
@@ -45,10 +62,30 @@ def estado_do_processo():
     limpar_estado()
 
 
+@pytest.fixture(autouse=True)
+def base_de_teste(monkeypatch):
+    """Banco e modelo de embeddings falsos para TODA a suite.
+
+    - Nao baixa o modelo real (mais de 1 GB, a cada execucao do CI).
+    - Nao tenta conectar no Supabase: sem rede, o resultado nao depende de DNS.
+    - Por padrao a busca devolve um trecho; o teste pode trocar pedindo a fixture:
+      `base_de_teste.chunks = []` simula uma base sem estudos sobre o tema.
+    """
+    base = SupabaseFalso()
+    monkeypatch.setattr(retriever, "gerar_embedding_consulta", lambda _texto: [0.0] * 768)
+    monkeypatch.setattr(retriever, "obter_supabase", lambda: base)
+    retriever.limpar_cache_de_artigos()
+    yield base
+    retriever.limpar_cache_de_artigos()
+
+
 def limpar_estado() -> None:
     limpar_limites()
     obter_repositorio_de_feedback().limpar()
     obter_repositorio_de_perfil().limpar()
+    # O pipeline cria o client do Supabase ao buscar evidencias; sem limpar, o teste que
+    # confere que o import nao cria client passa a depender da ordem da suite.
+    obter_supabase.cache_clear()
 
 
 @pytest.fixture

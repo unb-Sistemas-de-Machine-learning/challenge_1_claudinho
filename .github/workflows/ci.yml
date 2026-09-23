@@ -35,8 +35,10 @@ jobs:
       - name: Lint (ruff)
         run: ruff check .
 
+      # -rxX lista no log do CI as lacunas conhecidas (xfail) de todo build, para elas
+      # ficarem visiveis e nao esquecidas (ex.: guardrails, issue #7).
       - name: Testes (pytest)
-        run: pytest -q
+        run: pytest -q -rxX
 
   imagem:
     name: Build da imagem Docker

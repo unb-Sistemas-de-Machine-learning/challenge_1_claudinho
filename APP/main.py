@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from APP.auth import verificar_configuracao
+from APP.auth import preparar_chaves_publicas, verificar_configuracao
 from APP.config import obter_settings
 from APP.errors import registrar_handlers
 from APP.middleware import LoggingDeInferencia
@@ -12,8 +12,8 @@ app = FastAPI(
     title="Claudinho — API de checagem de desinformacao nutricional",
     version="0.1.0",
     description=(
-        "Challenge 1. O endpoint /check-claim ainda responde com dados MOCKADOS: "
-        "o contrato esta congelado, o pipeline de RAG entra depois."
+        "Checagem de desinformação nutricional com RAG sobre literatura científica. "
+        "Cada resposta cita os estudos recuperados e não substitui profissional de saúde."
     ),
 )
 
@@ -21,6 +21,7 @@ settings = obter_settings()
 # Derruba a subida se o ambiente nao estiver pronto, em vez de deixar a API responder
 # com a autenticacao desligada ou com o CORS barrando o app inteiro.
 verificar_configuracao(settings)
+preparar_chaves_publicas(settings)
 
 configurar_logging()
 app.add_middleware(LoggingDeInferencia)

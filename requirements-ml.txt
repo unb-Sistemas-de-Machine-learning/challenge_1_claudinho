@@ -1,0 +1,9 @@
+# Modelo local de embeddings (desenvolvimento sem EMBEDDINGS_URL) e treino do
+# classificador (APP/model/train.py). NAO vai para o deploy da API.
+# Espelhado em [project.optional-dependencies].ml do pyproject.toml.
+#
+# No Linux, instale antes o torch so de CPU para nao baixar 3+ GB de bibliotecas NVIDIA:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+sentence-transformers==6.0.1
+scikit-learn==1.9.1
+joblib==1.6.0

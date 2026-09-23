@@ -10,7 +10,7 @@ import uuid
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
-from APP.auth import identidade_do_header
+from APP.auth import resolver_identidade
 from APP.observabilidade import (
     definir_contexto,
     emitir,
@@ -32,9 +32,7 @@ class LoggingDeInferencia(BaseHTTPMiddleware):
         registro = novo_registro(
             trace_id=str(uuid.uuid4()),
             endpoint=request.url.path,
-            user_id_hash=hash_de_usuario(
-                identidade_do_header(request.headers.get("authorization"))
-            ),
+            user_id_hash=hash_de_usuario(await resolver_identidade(request)),
         )
         token_do_contexto = definir_contexto(registro)
         inicio = time.perf_counter()

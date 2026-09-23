@@ -109,9 +109,11 @@ class TestTravaDeConfiguracao:
     def test_local_nao_exige_nada(self):
         verificar_configuracao(_settings(app_env="local", supabase_jwt_secret=None))
 
-    def test_producao_sem_segredo_do_jwt_nao_sobe(self):
-        with pytest.raises(RuntimeError, match="SUPABASE_JWT_SECRET"):
-            verificar_configuracao(_settings(supabase_jwt_secret=None))
+    def test_producao_sem_segredo_do_jwt_sobe(self):
+        """Projetos atuais do Supabase validam pelas chaves publicas, sem segredo.
+        A garantia de que ninguem entra sem token valido fora do local esta em
+        tests/test_auth_jwks.py::test_fora_do_local_token_qualquer_e_recusado."""
+        verificar_configuracao(_settings(supabase_jwt_secret=None))
 
     def test_producao_sem_origens_nao_sobe(self):
         with pytest.raises(RuntimeError, match="ORIGENS_PERMITIDAS"):

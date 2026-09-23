@@ -1,4 +1,10 @@
-# Runtime da API — versoes fixas para o ambiente ser identico em todo lugar
+# Runtime da API. Espelhado em [project].dependencies do pyproject.toml, que e o que a
+# Vercel le; tests/test_dependencias.py falha se as duas listas divergirem.
+#
+# SEM torch e sem sentence-transformers: o modelo de embeddings roda no servico remoto
+# (deploy/embeddings-space). Para rodar o modelo localmente ou treinar, instale tambem
+# o requirements-ml.txt.
+#
 # 0.115.x e a linha estavel; a 0.141 traz starlette 1.6, que pede httpx2 no TestClient.
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
@@ -6,7 +12,8 @@ pydantic==2.13.5
 pydantic-settings==2.7.0
 python-dotenv==1.0.1
 supabase==2.31.0
-# Rate limiting por identidade (Docs/Production/03, secao 2.2)
 limits==5.7.0
-# Validacao do JWT do Supabase Auth (chega junto do supabase, fixado por ser uso direto)
+httpx==0.28.1
 PyJWT==2.13.0
+# Validacao dos JWTs assinados com chave assimetrica (ES256/RS256), padrao do Supabase.
+cryptography==50.0.1

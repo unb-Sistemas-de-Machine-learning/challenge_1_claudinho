@@ -3,6 +3,29 @@ name = "claudinho-api"
 version = "0.1.0"
 description = "API de checagem de desinformacao nutricional - Challenge 1"
 requires-python = ">=3.12,<3.13"
+# A Vercel instala por este arquivo (e nao pelo requirements.txt) quando os dois existem:
+# sem esta lista, o build instalaria nada e a API quebraria no primeiro import.
+# Espelha o requirements.txt; tests/test_dependencias.py garante que nao divergem.
+dependencies = [
+    "fastapi==0.115.6",
+    "uvicorn[standard]==0.34.0",
+    "pydantic==2.13.5",
+    "pydantic-settings==2.7.0",
+    "python-dotenv==1.0.1",
+    "supabase==2.31.0",
+    "limits==5.7.0",
+    "httpx==0.28.1",
+    "PyJWT==2.13.0",
+    "cryptography==50.0.1",
+]
+
+[project.optional-dependencies]
+# Modelo local e treino (espelha o requirements-ml.txt).
+ml = [
+    "sentence-transformers==6.0.1",
+    "scikit-learn==1.9.1",
+    "joblib==1.6.0",
+]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

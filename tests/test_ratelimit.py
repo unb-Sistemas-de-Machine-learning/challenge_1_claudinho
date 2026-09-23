@@ -97,7 +97,11 @@ class TestRespostaDo429:
         porque nenhuma rota usa janela de hora hoje.
         """
         checar = limitar(parse("1/hour"))
-        pedido = SimpleNamespace(headers={}, client=SimpleNamespace(host="203.0.113.7"))
+        # `state` existe porque a identidade e resolvida uma vez por requisicao e
+        # guardada ali (APP/auth.py:resolver_identidade).
+        pedido = SimpleNamespace(
+            headers={}, client=SimpleNamespace(host="203.0.113.7"), state=SimpleNamespace()
+        )
 
         asyncio.run(checar(pedido))
         with pytest.raises(ApiError) as excecao:

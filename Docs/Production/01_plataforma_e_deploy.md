@@ -192,11 +192,18 @@ Expõe os campos definidos pela frente de Dados (sexo, altura, peso, doenças, i
 
 | Componente | Provedor Hospedado | Justificativa |
 |:-------------------------|:---------------------------------|:-----------------------------------------------------------|
-| **Backend API** | Render (ou Fly.io) — container Docker | Deploy direto do Dockerfile, HTTPS e domínio automáticos, camada gratuita suficiente para o volume do MVP, sem custo de configuração de infraestrutura |
+| **Backend API** | Vercel (função Python) — alternativa: Render com o Dockerfile | Sem o modelo de embeddings dentro dela, a API ocupa ~64 MB e cabe no limite de 500 MB por função da Vercel; tempo máximo de 300 s no plano gratuito cobre a espera do Ollama |
+| **LLM gerador** | Hugging Face Spaces (Ollama, `deploy/ollama-space`) com Gemini de reserva | Modelo próprio gratuito; dado sensível do perfil nunca sai para provedor externo |
+| **Embeddings** | Hugging Face Spaces (`deploy/embeddings-space`) | Tira o torch e o modelo de 1 GB da API; mesmo `e5-base` da indexação, então sem reindexar |
 | **Banco de Dados & RAG** | Supabase (PostgreSQL + pgvector) | Gerenciado, backup automático, excelente suporte a vetores |
 | **Frontend** | Expo (React Native) + Expo EAS | Build e distribuição para Android/iOS sem manter duas bases de código; `expo-dev-client` permite testes com a turma sem publicar nas lojas |
 | **Cache Semântico** | Upstash Redis (serverless) | Cobrança por requisição, camada gratuita, latência baixa |
 | **Observabilidade** | Langfuse Cloud + Sentry | Camadas gratuitas cobrem o volume do MVP |
+
+> **Por que a API não carrega o modelo.** Com o `sentence-transformers`, a API instalava 4,4 GB
+> de dependências (torch com CUDA) e precisava de mais de 1,5 GB de RAM: não cabia na Vercel
+> (500 MB por função) nem no Render gratuito (512 MB). O modelo foi para um serviço próprio, e a
+> API passou a fazer uma chamada HTTP por consulta. Passo a passo em [`deploy/README.md`](../../deploy/README.md).
 
 ### 3.1. Ambientes
 

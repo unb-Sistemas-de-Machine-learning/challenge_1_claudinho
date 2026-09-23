@@ -27,7 +27,7 @@ from limits import RateLimitItem, parse
 from limits.storage import MemoryStorage
 from limits.strategies import MovingWindowRateLimiter
 
-from APP.auth import identidade_do_header
+from APP.auth import resolver_identidade
 from APP.errors import ApiError
 from APP.observabilidade import hash_de_usuario
 
@@ -41,14 +41,14 @@ _armazenamento = MemoryStorage()
 _limitador = MovingWindowRateLimiter(_armazenamento)
 
 
-def _chave(request: Request) -> str:
+async def _chave(request: Request) -> str:
     """Identidade do usuario quando o token vale, IP quando nao vale.
 
     O IP e so a rede de seguranca para quem ainda nao autenticou. Note que todo mundo
     atras do mesmo NAT (o wi-fi da faculdade) divide esse balde, entao ele e proposital
     e deliberadamente mais generoso de usar apenas onde nao ha identidade.
     """
-    identidade = identidade_do_header(request.headers.get("authorization"))
+    identidade = await resolver_identidade(request)
     if identidade:
         return f"usuario:{hash_de_usuario(identidade)}"
     cliente = request.client.host if request.client else "desconhecido"
@@ -62,7 +62,7 @@ def limitar(limite: RateLimitItem):
     """
 
     async def checar_limite(request: Request) -> None:
-        chave = _chave(request)
+        chave = await _chave(request)
         if _limitador.hit(limite, chave):
             return
 

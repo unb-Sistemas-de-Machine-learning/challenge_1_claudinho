@@ -32,3 +32,13 @@ Este diretório concentra a modelagem de Machine Learning e Processamento de Lin
    - Extração de alegações factuais (*Claim Extraction*) a partir de posts informais.
    - Tratamento de sarcasmo, ironia, gírias nutricionais e jargões populares.
    - Exemplos de *Few-Shot Prompting* e normalização textual.
+
+4. [**04_treinamento_e_classificador_risco.md**](./04_treinamento_e_classificador_risco.md)
+   - Treinamento supervisionado com dados do Supabase.
+   - Vetorização com multilingual-e5-base e calibração por Platt Scaling.
+   - Resultados no benchmark offline com Recall e F2-Score.
+
+5. [**05_llm_proprio_ollama.md**](./05_llm_proprio_ollama.md)
+   - LLM aberto hospedado pelo time (Ollama + `qwen2.5:3b` no Hugging Face Spaces).
+   - Cliente único compatível com a API da OpenAI e cadeia de reservas (Gemini, OpenAI).
+   - Regra de privacidade para dado de saúde e limitações do plano gratuito.

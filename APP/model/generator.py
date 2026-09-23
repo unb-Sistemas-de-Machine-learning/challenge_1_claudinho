@@ -15,7 +15,10 @@ from typing import Literal
 
 from APP.config import Settings
 from APP.model import prompts
-from APP.model.classifier import calcular_risco_evidencia
+from APP.model.classifier import (
+    calcular_risco_evidencia,
+    classificar_padrao_semantico,
+)
 from APP.model.llm import GeracaoIndisponivel, gerar_json, provedores_configurados
 from APP.model.resposta_local import MODEL_VERSION as MODEL_VERSION_LOCAL
 from APP.model.resposta_local import montar_resposta_local
@@ -107,6 +110,18 @@ def gerar_resposta_grounded(
         # para fora, entao vale tambem quando `dados_sensiveis` e True.
         logger.warning("Geracao indisponivel, usando fallback local: %s", erro)
         return _responder_localmente(alegacao_canonica, fontes, raw_chunks, pergunta_exibicao)
+
+    padrao = classificar_padrao_semantico(alegacao_canonica) or classificar_padrao_semantico(
+        pergunta_exibicao
+    )
+    if padrao is not None:
+        score_padrao, categoria = padrao
+        if categoria == "desinformacao":
+            score = max(score, score_padrao)
+        elif categoria == "seguro":
+            score = min(score, score_padrao)
+        elif score < LIMIAR_SEGURO or score > LIMIAR_DESINFORMACAO:
+            score = score_padrao
 
     return answer, score, classificar_veredito(score), provedor.versao, prompt_version
 

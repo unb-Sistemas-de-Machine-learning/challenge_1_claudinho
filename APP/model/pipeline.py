@@ -11,6 +11,7 @@ from APP.model.claim_extractor import (
     normalizar_alegacao_heuristica,
     reformular_pergunta_amigavel,
 )
+from APP.model.classifier import classificar_padrao_semantico
 from APP.model.generator import (
     _definir_nivel_risco,
     gerar_resposta_grounded,
@@ -87,6 +88,15 @@ def executar_pipeline_de_checagem(
 
     # 2. Extracao de alegacao canonica para busca cientifica (Model/03)
     alegacao_canonica = normalizar_alegacao_heuristica(texto_entrada)
+
+    # 2.1. Sinal semantico previo para observabilidade (Docs/Model/03 e Model/04)
+    padrao_semantico = classificar_padrao_semantico(texto_entrada) or classificar_padrao_semantico(
+        alegacao_canonica
+    )
+    if padrao_semantico:
+        adicionar_ao_log(
+            classifier={"padrao": padrao_semantico[1], "score_prior": padrao_semantico[0]}
+        )
 
     # 3. Checagem de dados e comparacao na tabela alimentar TBCA do Supabase
     dados_tbca, fontes_tbca = detectar_e_comparar_tbca(texto_entrada)

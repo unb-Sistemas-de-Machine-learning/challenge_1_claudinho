@@ -28,6 +28,19 @@ export const handlers = [
     const pedido = (await request.json()) as PedidoDeChecagem;
     const texto = pedido.text ?? pedido.url ?? '';
 
+    // Espelha a recusa que a API passou a fazer no PR #15: sem OCR e sem leitura de
+    // página, print e link não têm como virar checagem correta.
+    if (!pedido.text && (pedido.url || pedido.image_base64)) {
+      return HttpResponse.json(
+        {
+          error: 'input_nao_suportado',
+          detail:
+            'Ainda não conseguimos ler prints nem links. Escreva a dúvida em texto que a gente verifica para você.',
+        },
+        { status: 422 },
+      );
+    }
+
     if (!pedido.text && !pedido.url && !pedido.image_base64) {
       return HttpResponse.json(
         { error: 'invalid_input', detail: 'preencha ao menos um entre text, url e image_base64' },

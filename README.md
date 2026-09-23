@@ -77,9 +77,9 @@ A partir do documento citado, foi criada a estrutura básica deste repositório,
 
 # 💻 Rodando o projeto
 
-O repositório tem duas partes: a API em `APP/` e o PWA em `web/`. Na `Dev`, o
-`/check-claim` ainda responde com dados **mockados**, porque o pipeline de RAG está nos
-PRs #13 e #15. O contrato, esse sim, é o definitivo.
+O repositório tem duas partes: a API em `APP/` e o PWA em `web/`. Desde o PR #15, o
+`/check-claim` responde com o pipeline de verdade: recuperação no `pgvector`, geração
+ancorada e guardrails, com fallback local quando nenhuma LLM responde.
 
 ## O jeito mais rápido: tudo no Docker
 

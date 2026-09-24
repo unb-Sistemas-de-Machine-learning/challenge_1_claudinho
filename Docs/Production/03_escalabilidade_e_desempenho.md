@@ -39,6 +39,52 @@ As metas de disponibilidade e concorrência são deliberadamente modestas: o MVP
 
 O gargalo dominante é a **geração**, o que direciona todas as otimizações: reduzir chamadas ao LLM (cache), reduzir tokens de entrada (chunks menores e melhor selecionados) e mascarar o tempo restante (streaming).
 
+### 1.3. Pior caso: cadeia de timeouts contra o teto da plataforma
+
+O orçamento acima é o caso típico (p95). O pior caso é outro: Space do Ollama dormindo, os dois
+provedores de reserva falhando em seguida, tudo **em série**. Os timeouts são independentes entre
+si, então o pior caso é a soma deles:
+
+| Etapa | Timeout | Onde |
+| :--- | ---: | :--- |
+| Embeddings (Space) | 20 s | `APP/config.py` — `embeddings_timeout_s` |
+| Ollama (modelo próprio) | 90 s | `APP/config.py` — `llm_timeout_s` |
+| Gemini (reserva 1) | 25 s | `APP/model/llm.py` — `TIMEOUT_EXTERNO_S` |
+| OpenAI (reserva 2) | 25 s | `APP/model/llm.py` — `TIMEOUT_EXTERNO_S` |
+| **Soma da cadeia** | **160 s** | |
+| Fallback local (classificador de regras) | ~0 s | `APP/model/generator.py` — sem rede |
+| **Teto da função (Hobby)** | **300 s** | `vercel.json` — `maxDuration` |
+| **Margem** | **140 s** | |
+
+A ordem importa: os 90 s do Ollama são gastos **antes** de a cadeia sequer tentar o Gemini, e o
+fallback local só roda depois que os três falharam. É por isso que a margem precisa sobrar
+inteira no fim — se a plataforma cortar antes, o cliente recebe um 504 da Vercel em vez do
+fallback que foi escrito exatamente para esse caso.
+
+O `maxDuration` era 180 s, contra os 160 s da cadeia: 20 s de margem, que o *cold start* do Ollama
+consome sozinho. Subiu para 300 s, o máximo do plano Hobby (ver
+[`01_plataforma_e_deploy.md`](01_plataforma_e_deploy.md), seção 3).
+
+> **Ao mexer em qualquer um desses quatro valores, refaça a soma.** Eles moram em três arquivos
+> diferentes e nada no código os liga entre si nem ao `maxDuration`.
+
+**Medição de *cold start*** — número medido, não estimado. Reproduzir com
+[`benchmarks/cold_start.py`](../../benchmarks/cold_start.py), com o Space comprovadamente frio:
+
+| Medição | Valor | Data |
+| :--- | ---: | :--- |
+| Cadeia LLM até o fallback local (`--so-cadeia`) | **140,2 s** | 23/09/2026 |
+| Primeira resposta do Ollama (Space frio) | *a medir* | — |
+| Resposta do Ollama já quente (referência) | *a medir* | — |
+
+Os 140,2 s são medidos, não somados: o `--so-cadeia` aponta os três provedores para um
+servidor local que aceita a conexão e nunca responde, e deixa cada timeout estourar de
+verdade. Confere com os 90 + 25 + 25 s esperados. Somando os 20 s de embeddings, o pior caso
+do pipeline fica em ~160 s, contra os 300 s do teto: **140 s de margem**.
+
+As duas linhas pendentes exigem o Space comprovadamente dormindo e não dá para forçar isso por
+código — precisa do sleep manual na aba *Settings* do Space, ou ~48 h sem tráfego.
+
 ---
 
 ## 2. Estratégias de Otimização de Custo e Velocidade

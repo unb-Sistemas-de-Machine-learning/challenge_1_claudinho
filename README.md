@@ -230,3 +230,6 @@ Quando ela existir, o único ponto a mudar é o retorno de `obter_repositorio_de
 - [ ] *Quality gate* de RAGAS no CI (depende do benchmark de 50 perguntas)
 - [ ] Instrumentar com o SDK do Langfuse e o Sentry
 - [ ] Rate limiting
+
+## 🌐 Documentação Online
+Acesse a documentação completa do projeto em: [GitHub Pages](https://unb-sistemas-de-machine-learning.github.io/challenge_1_claudinho/)

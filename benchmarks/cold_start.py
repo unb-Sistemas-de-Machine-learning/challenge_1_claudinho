@@ -1,4 +1,4 @@
-"""Mede o cold start do Space do Ollama e a cadeia de timeouts de Docs/Production/03.
+"""Mede o cold start do Space do Ollama e a cadeia de timeouts de docs/Production/03.
 
 O numero que a doc precisa e medido, nao estimado: quanto tempo o Space leva para
 responder a primeira vez depois de dormir, e quanto a cadeia inteira demora quando
@@ -180,11 +180,11 @@ async def principal(args) -> None:
     for medicao in medicoes:
         print(medicao.linha())
 
-    teto_s = 300  # vercel.json, maxDuration. Ver Docs/Production/01, secao 3.
+    teto_s = 300  # vercel.json, maxDuration. Ver docs/Production/01, secao 3.
     pior = max((m.segundos for m in medicoes), default=0.0)
     print(f"\nTeto da funcao na Vercel: {teto_s} s. Pior caso medido: {pior:.1f} s.")
     print(f"Margem: {teto_s - pior:.1f} s.")
-    print("\nRegistre os numeros em Docs/Production/03, secao 1.3, com a data de hoje.")
+    print("\nRegistre os numeros em docs/Production/03, secao 1.3, com a data de hoje.")
 
 
 if __name__ == "__main__":

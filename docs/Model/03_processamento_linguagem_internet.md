@@ -9,9 +9,10 @@
 ## 1. O Desafio da Linguagem Informal em Redes Sociais
 
 Muitas alegações sobre nutrição em redes sociais não vêm redigidas como afirmações científicas formais.
+
 * **Gírias e Jargões do Fitness/Dietas:** *"secar a barriga"*, *"chutar o balde"*, *"veneno branco"* (açúcar/sal), *"dieta do ovo"*, *"reset metabólico"*, *"água com gratidão"*, *"inflamar o corpo"*.
-* **Sarcasmo e Ironia:** *"Nossa, com certeza uma maçã à noite vai te engordar 5kg instantly 🙄"*.
-* **Alegações Implícitas em Vídeos/Links:** O post não tem texto explícito, apenas a legenda *"Segredo que os médicos escondem de você 🤫👇"*.
+* **Sarcasmo e Ironia:** *"Nossa, com certeza uma maçã à noite vai te engordar 5kg instantly."*.
+* **Alegações Implícitas em Vídeos/Links:** O post não tem texto explícito, apenas a legenda *"Segredo que os médicos escondem de você."*.
 
 ---
 
@@ -43,7 +44,7 @@ Abaixo está o conjunto de exemplos (*Few-Shot*) para instruir o modelo a conver
     "risk_level": "baixo"
   },
   {
-    "input_raw": "Claro, coma 1kg de bolo fit com açúcar mascavo que você não vai engordar nada kkkkk 🤡",
+    "input_raw": "Claro, coma 1kg de bolo fit com açúcar mascavo que você não vai engordar nada kkkkk",
     "sentiment": "sarcasmo",
     "is_sarcastic": true,
     "canonical_claim": "Alimentos considerados 'fit' ou com substitutos de açúcar (como açúcar mascavo) possuem valor calórico que contribui para o ganho de peso se consumidos em excesso?",
@@ -64,10 +65,10 @@ Abaixo está o conjunto de exemplos (*Few-Shot*) para instruir o modelo a conver
 ## 4. Tratamento de Formatos Especiais (Links e Imagens)
 
 1. **Links de Redes Sociais (Instagram/TikTok/YouTube):**
-   * Extrair a transcrição do áudio (via Whisper ou APIs públicas) ou o texto da legenda.
-   * Passar o texto consolidado pelo Extrator de Claims.
+    * Extrair a transcrição do áudio (via Whisper ou APIs públicas) ou o texto da legenda.
+    * Passar o texto consolidado pelo Extrator de Claims.
 2. **Prints de Conversas / Infográficos:**
-   * Utilizar OCR para converter texto visual em string antes da extração de alegações.
+    * Utilizar OCR para converter texto visual em string antes da extração de alegações.
 
 ---
 

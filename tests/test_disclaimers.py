@@ -16,7 +16,10 @@ ROTA = "/api/v1/check-claim"
 
 def _documento(nome: str) -> str:
     """Texto do doc sem a marcacao de Markdown (citacao, negrito, quebras de linha)."""
-    bruto = (RAIZ / "Docs" / "Ethics" / nome).read_text(encoding="utf-8")
+    caminho = RAIZ / "docs" / "Ethics" / nome
+    if not caminho.exists():
+        caminho = RAIZ / "Docs" / "Ethics" / nome
+    bruto = caminho.read_text(encoding="utf-8")
     sem_marcacao = re.sub(r"[>*]", " ", bruto)
     return " ".join(sem_marcacao.split())
 

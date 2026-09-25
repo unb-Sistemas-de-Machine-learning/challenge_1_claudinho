@@ -1,4 +1,4 @@
-# 🚀 Produção (Production)
+# Produção (Production)
 
 Este diretório concentra as diretrizes de arquitetura de software, deploy, monitoramento contínuo (MLOps), escalabilidade e gestão de custos da aplicação.
 
@@ -6,7 +6,7 @@ Este diretório concentra as diretrizes de arquitetura de software, deploy, moni
 
 ---
 
-## 📌 Guiding Questions do Tema
+## Guiding Questions do Tema
 
 | Pergunta | Prioridade | Status | Documento de Referência |
 | :--- | :--- | :--- | :--- |
@@ -16,7 +16,7 @@ Este diretório concentra as diretrizes de arquitetura de software, deploy, moni
 
 ---
 
-## 🧭 Decisões-Chave da Frente
+## Decisões-Chave da Frente
 
 | Decisão | Escolha | Documento |
 | :--- | :--- | :--- |
@@ -30,7 +30,7 @@ Este diretório concentra as diretrizes de arquitetura de software, deploy, moni
 
 ---
 
-## ⚙️ O que já está implementado na API
+## O que já está implementado na API
 
 O código vive em `APP/`. O `/check-claim` ainda responde **mockado**: o contrato está congelado e o pipeline de RAG entra depois.
 
@@ -56,27 +56,27 @@ O código vive em `APP/`. O `/check-claim` ainda responde **mockado**: o contrat
 
 ---
 
-## 📁 Estrutura de Documentos
+## Estrutura de Documentos
 
 1. [**01_plataforma_e_deploy.md**](./01_plataforma_e_deploy.md)
-   - Arquitetura em monólito modular e fluxo completo de uma requisição de checagem.
-   - Especificação dos endpoints REST da API (`/api/v1/check-claim`, `/api/v1/feedback`, `/api/v1/profile`, `/api/v1/health`), com payloads e códigos de erro.
-   - Ambientes, estratégia de CI/CD com *quality gate* de avaliação e gestão de segredos.
+    - Arquitetura em monólito modular e fluxo completo de uma requisição de checagem.
+    - Especificação dos endpoints REST da API (`/api/v1/check-claim`, `/api/v1/feedback`, `/api/v1/profile`, `/api/v1/health`), com payloads e códigos de erro.
+    - Ambientes, estratégia de CI/CD com *quality gate* de avaliação e gestão de segredos.
 
 2. [**02_monitoramento_e_mlops.md**](./02_monitoramento_e_mlops.md)
-   - Estrutura de logs de inferência, latência e custo por token.
-   - Detecção de *Data Drift*, *Concept Drift* e degradação silenciosa de qualidade.
-   - Feedback loop (avaliação de utilidade pelo usuário e re-anotação).
-   - Versionamento de código, prompt, base RAG e modelo; rotina operacional.
+    - Estrutura de logs de inferência, latência e custo por token.
+    - Detecção de *Data Drift*, *Concept Drift* e degradação silenciosa de qualidade.
+    - Feedback loop (avaliação de utilidade pelo usuário e re-anotação).
+    - Versionamento de código, prompt, base RAG e modelo; rotina operacional.
 
 3. [**03_escalabilidade_e_desempenho.md**](./03_escalabilidade_e_desempenho.md)
-   - SLAs de latência e orçamento de latência por etapa do pipeline.
-   - Cache semântico para mitigar chamadas repetidas ao LLM.
-   - Gestão de custos por requisição e limites de consumo (*Rate Limiting*).
+    - SLAs de latência e orçamento de latência por etapa do pipeline.
+    - Cache semântico para mitigar chamadas repetidas ao LLM.
+    - Gestão de custos por requisição e limites de consumo (*Rate Limiting*).
 
 ---
 
-## 🔗 Dependências entre Frentes
+## Dependências entre Frentes
 
 * **Modelo:** os limiares 0.35/0.65 e as métricas RAGAS alimentam, respectivamente, o campo `verdict` da API e o *quality gate* do CI.
 * **Dados:** o schema `sources` / `articles` / `chunks` define o que a camada de recuperação consulta; a tabela `feedback` precisa ser criada em conjunto.

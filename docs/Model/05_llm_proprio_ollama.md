@@ -79,10 +79,10 @@ Hoje o pipeline ainda não insere o perfil de saúde no prompt. Quando inserir, 
 Os arquivos ficam em `deploy/ollama-space/`:
 
 * **`Dockerfile`:** imagem oficial do Ollama com o modelo baixado durante o build, para o Space iniciar sem download. Configurações relevantes:
-  * `OLLAMA_CONTEXT_LENGTH=8192`: o padrão do Ollama corta prompts longos em silêncio, e o prompt do RAG (instruções + fragmentos) ultrapassa facilmente 2 mil tokens;
-  * `OLLAMA_KEEP_ALIVE=-1`: mantém o modelo na memória entre as perguntas;
-  * `OLLAMA_NUM_PARALLEL=1`: uma geração por vez, adequado às 2 vCPUs;
-  * execução com o uid 1000, exigido pelo Spaces.
+    * `OLLAMA_CONTEXT_LENGTH=8192`: o padrão do Ollama corta prompts longos em silêncio, e o prompt do RAG (instruções + fragmentos) ultrapassa facilmente 2 mil tokens;
+    * `OLLAMA_KEEP_ALIVE=-1`: mantém o modelo na memória entre as perguntas;
+    * `OLLAMA_NUM_PARALLEL=1`: uma geração por vez, adequado às 2 vCPUs;
+    * execução com o uid 1000, exigido pelo Spaces.
 * **`README.md`:** cabeçalho de configuração do Space e passo a passo de publicação.
 
 O Space deve ser **privado**, de preferência dentro de uma **organização do Hugging Face** do grupo. O Ollama não tem autenticação; no Space privado, o próprio Hugging Face exige um token no header `Authorization: Bearer`, o mesmo header que o cliente já envia. Com o Space na organização, o token de leitura de qualquer membro funciona.

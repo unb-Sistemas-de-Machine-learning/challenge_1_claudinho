@@ -19,9 +19,9 @@ O modelo foi construído utilizando diretamente os dados do banco de dados (Supa
 Conforme definido na arquitetura de dados (Docs/Data/02), o banco de dados no Supabase armazena o corpus de evidências científicas que serve de base tanto para a recuperação semântica quanto para o aprendizado supervisionado:
 
 * **Tabela `articles`:** artigos científicos revisados por pares em língua portuguesa, divididos em três grupos temáticos principais:
-  1. **Desinformação e Mitos:** Estudos sobre terrorismo nutricional em mídias sociais, análise de dietas divulgadas na internet, influenciadores digitais e infodemia.
-  2. **Dietas Restritivas e Riscos:** Pesquisas sobre dietas low-carb, práticas de restrição calórica e desenvolvimento de compulsão alimentar e transtornos alimentares.
-  3. **Consenso Seguro e Proteção:** Artigos sobre reeducação alimentar, comensalidade, dieta flexível e hábitos de proteção à saúde mental.
+    1. **Desinformação e Mitos:** Estudos sobre terrorismo nutricional em mídias sociais, análise de dietas divulgadas na internet, influenciadores digitais e infodemia.
+    2. **Dietas Restritivas e Riscos:** Pesquisas sobre dietas low-carb, práticas de restrição calórica e desenvolvimento de compulsão alimentar e transtornos alimentares.
+    3. **Consenso Seguro e Proteção:** Artigos sobre reeducação alimentar, comensalidade, dieta flexível e hábitos de proteção à saúde mental.
 * **Tabela `chunks`:** fragmentos de texto associados a vetores de 768 dimensões gerados pelo modelo `intfloat/multilingual-e5-base`.
 
 ---
@@ -31,8 +31,8 @@ Conforme definido na arquitetura de dados (Docs/Data/02), o banco de dados no Su
 O problema foi formulado como uma tarefa de classificação supervisionada probabilística sensível ao custo (*Cost-Sensitive Learning*):
 
 * **Variável Alvo ($y$):**
-  * Classe 0 (Seguro / Consenso): Práticas com respaldo científico favorável e sem risco à saúde.
-  * Classe 1 (Risco / Desinformação / Cautela): Alegações com potencial prejudicial, sem evidência científica ou que exigem restrição e cautela individual.
+    * Classe 0 (Seguro / Consenso): Práticas com respaldo científico favorável e sem risco à saúde.
+    * Classe 1 (Risco / Desinformação / Cautela): Alegações com potencial prejudicial, sem evidência científica ou que exigem restrição e cautela individual.
 * **Função de Custo Assimétrica:**
   Deixar passar uma prática perigosa (Falso Negativo) acarreta risco físico à saúde do usuário, enquanto um alerta cautelar sobre um estudo inconclusivo (Falso Positivo) acarreta apenas custo de checagem adicional. Portanto, a penalização de Falsos Negativos é calibrada com peso superior.
 

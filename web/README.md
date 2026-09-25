@@ -1,7 +1,7 @@
 # Claudinho web
 
 PWA de checagem de desinformação nutricional. Consome a API em `APP/`, e segue o design
-system em [`Docs/Design/design-system.md`](../Docs/Design/design-system.md).
+system em [`../docs/Design/design-system.md`](../docs/Design/design-system.md).
 
 ## Rodando
 

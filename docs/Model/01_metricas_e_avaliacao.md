@@ -9,6 +9,7 @@
 ## 1. Trade-off: Falso Positivo vs. Falso Negativo em Saúde Nutricional
 
 No contexto de detecção de desinformação nutricional, a definição do que constitui **Positivo** e **Negativo** deve ser clara:
+
 * **Classe Positiva (1):** Conteúdo com **Desinformação / Fake News / Risco à Saúde**.
 * **Classe Negativa (0):** Conteúdo **Verdadeiro / Baseado em Evidências / Seguro**.
 
@@ -29,11 +30,11 @@ quadrantChart
 
 ### Análise dos Erros:
 1. **Falso Negativo (FN) — RISCO CRÍTICO À SAÚDE:**
-   * O sistema classifica como "Verdadeiro/Seguro" um post que promove uma prática perigosa (ex: ingestão de substâncias hepatotóxicas como "queimadores de gordura", jejum hídrico de 7 dias, exclusão total de grupos alimentares para crianças).
-   * **Consequência:** Danos físicos reais ao usuário, problemas renais/hepáticos, piora de transtornos alimentares.
+    * O sistema classifica como "Verdadeiro/Seguro" um post que promove uma prática perigosa (ex: ingestão de substâncias hepatotóxicas como "queimadores de gordura", jejum hídrico de 7 dias, exclusão total de grupos alimentares para crianças).
+    * **Consequência:** Danos físicos reais ao usuário, problemas renais/hepáticos, piora de transtornos alimentares.
 2. **Falso Positivo (FP) — RISCO DE CREDIBILIDADE E ANSIEDADE:**
-   * O sistema classifica como "Fake News/Perigoso" uma informação nutricional legítima e segura (ex: dizer falsamente que o Guia Alimentar está errado ou que arroz e feijão fazem mal).
-   * **Consequência:** Perda de confiança na IA, reforço do terrorismo nutricional e restrição indevida de alimentos saudáveis.
+    * O sistema classifica como "Fake News/Perigoso" uma informação nutricional legítima e segura (ex: dizer falsamente que o Guia Alimentar está errado ou que arroz e feijão fazem mal).
+    * **Consequência:** Perda de confiança na IA, reforço do terrorismo nutricional e restrição indevida de alimentos saudáveis.
 
 ---
 

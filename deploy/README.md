@@ -84,7 +84,7 @@ A Vercel roda a API em instâncias que sobem e somem conforme a demanda. Três e
   existir na seguinte. **Precisam das tabelas antes de serem usados de verdade.**
 - **Rate limit por instância.** O contador fica na memória de cada instância, então o limite
   de 10/min vale por instância, não por usuário no total. Aceitável para o MVP; para valer de
-  verdade, o contador vai para o Redis (Upstash), como previsto no `Docs/Production/03`.
+  verdade, o contador vai para o Redis (Upstash), como previsto no `../docs/Production/03`.
 - **Primeira chamada lenta.** Instância nova (cold start) e Space do Ollama dormindo somam
   atraso na primeira checagem depois de um tempo parado. Se os embeddings não responderem
   (ou a cota do mês acabar), a API devolve **503**, e não uma falsa resposta de

@@ -8,7 +8,7 @@ description: Cores, tipografia, componentes, tom de voz e regras de produto do P
 Referência visual e de escrita do PWA que checa desinformação nutricional. O protótipo navegável usa exatamente estes valores, e o arquivo [`prototipo/claudinho.css`](./prototipo/claudinho.css) é a fonte da verdade: o que está escrito aqui foi tirado dele, não o contrário.
 
 **Atualizado em:** 23 de setembro de 2026
-**Arquivos:** [`Docs/Design/prototipo/`](./prototipo/) traz o protótipo (`prototipo.html`), esta documentação em versão navegável (`design-system.html`) e o CSS compartilhado (`claudinho.css`). Basta abrir os HTML no navegador.
+**Arquivos:** [`../Design/prototipo/`](./prototipo/) traz o protótipo (`prototipo.html`), esta documentação em versão navegável (`design-system.html`) e o CSS compartilhado (`claudinho.css`). Basta abrir os HTML no navegador.
 
 **No código:** o app em [`web/`](../../web/) usa este design system. Os tokens e os
 componentes estão em `web/src/estilos/claudinho.css`, que é cópia do arquivo acima:
@@ -271,14 +271,14 @@ Um aviso de leitura: o PR #15 entrou na `Dev`, então o pipeline de RAG, os guar
 
 ### 10.2. Abertas
 
-1. **O canal ainda está descrito como app nativo.** `Docs/User/02_acesso_e_canais.md` justifica React Native com Expo e trata PWA como plano B, e a `Docs/Production/01_plataforma_e_deploy.md` mantém Expo na tabela de deploy e no diagrama, mesmo com o backend já na Vercel e o PWA no repositório. Os dois documentos precisam ser atualizados, incluindo a limitação de compartilhamento no iPhone.
-2. **A tabela de status da `Docs/Production/README.md` está vencida.** Ela ainda diz que o `/check-claim` é mockado e que o pipeline não existe, o que deixou de ser verdade com o merge do #15.
+1. **O canal ainda está descrito como app nativo.** `../User/02_acesso_e_canais.md` justifica React Native com Expo e trata PWA como plano B, e a `../Production/01_plataforma_e_deploy.md` mantém Expo na tabela de deploy e no diagrama, mesmo com o backend já na Vercel e o PWA no repositório. Os dois documentos precisam ser atualizados, incluindo a limitação de compartilhamento no iPhone.
+2. **A tabela de status da `../Production/README.md` está vencida.** Ela ainda diz que o `/check-claim` é mockado e que o pipeline não existe, o que deixou de ser verdade com o merge do #15.
 3. **Uso sem conta ainda não existe no backend.** Depende de ligar o *anonymous sign-in* no Supabase, com CAPTCHA, limite por IP além do limite por identidade, e uma rotina de limpeza das contas antigas. Enquanto isso, o app manda um token de desenvolvimento, e desde o PR #15 o `APP_ENV` tem padrão `production`, então qualquer ambiente fora do local recusa esse token.
 4. **Conflito de dados na conversão.** Falta definir o que acontece quando a pessoa entra numa conta que já tem histórico diferente do que está no aparelho.
 5. **Perfil sem campo próprio para gestação e amamentação.** Hoje entram como texto livre em `conditions`, e quem detecta de verdade é o guardrail.
 6. **Print e link ainda não viram checagem.** A API agora recusa os dois com `422 input_nao_suportado`, que é o comportamento honesto enquanto OCR e leitura de página não existem. Implementar essas duas leituras continua aberto, e é o que destrava o compartilhamento do Android.
-7. **A alegação extraída não aparece durante o carregamento.** O protótipo mostra "Entendi assim:" antes da resposta chegar, como pede a `Docs/User/02`, seção 2.4. Depende de a API devolver esse campo em separado.
-8. **O erro `input_nao_suportado` não está no contrato escrito.** A API devolve `422` com esse código desde o PR #15, e a `Docs/Production/01`, seção 2.1, não lista nem ele nem o status. Quem for implementar outro cliente não tem como saber.
+7. **A alegação extraída não aparece durante o carregamento.** O protótipo mostra "Entendi assim:" antes da resposta chegar, como pede a `../User/02`, seção 2.4. Depende de a API devolver esse campo em separado.
+8. **O erro `input_nao_suportado` não está no contrato escrito.** A API devolve `422` com esse código desde o PR #15, e a `../Production/01`, seção 2.1, não lista nem ele nem o status. Quem for implementar outro cliente não tem como saber.
 
 9. **O nome é provisório.** Claudinho é o nome do repositório e da API.
 

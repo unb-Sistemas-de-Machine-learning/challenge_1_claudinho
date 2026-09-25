@@ -5,7 +5,7 @@ site_url: https://unb-sistemas-de-machine-learning.github.io/challenge_1_claudin
 repo_url: https://github.com/unb-Sistemas-de-Machine-learning/challenge_1_claudinho
 repo_name: unb-Sistemas-de-Machine-learning/challenge_1_claudinho
 
-docs_dir: Docs
+docs_dir: docs
 site_dir: site
 
 theme:

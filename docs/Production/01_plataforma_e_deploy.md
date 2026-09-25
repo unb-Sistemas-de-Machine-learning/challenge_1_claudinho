@@ -192,7 +192,7 @@ Expõe os campos definidos pela frente de Dados (sexo, altura, peso, doenças, i
 
 | Componente | Provedor Hospedado | Justificativa |
 |:-------------------------|:---------------------------------|:-----------------------------------------------------------|
-| **Backend API** | Vercel (função Python) — alternativa: Render com o Dockerfile | Sem o modelo de embeddings dentro dela, a API ocupa ~64 MB e cabe no limite de 500 MB por função da Vercel; tempo máximo de 300 s no plano gratuito cobre a espera do Ollama |
+| **Backend API** | Vercel (função Python) — alternativa: Render com o Dockerfile | Sem o modelo de embeddings dentro dela, a API ocupa ~64 MB e cabe no limite de 500 MB por função da Vercel; o plano Hobby permite 300 s por invocação (padrão e máximo, com *fluid compute* ligado por padrão), teto que o `vercel.json` adota para cobrir o *cold start* do Ollama |
 | **LLM gerador** | Hugging Face Spaces (Ollama, `deploy/ollama-space`) com Gemini de reserva | Modelo próprio gratuito; dado sensível do perfil nunca sai para provedor externo |
 | **Embeddings** | Hugging Face Spaces (`deploy/embeddings-space`) | Tira o torch e o modelo de 1 GB da API; mesmo `e5-base` da indexação, então sem reindexar |
 | **Banco de Dados & RAG** | Supabase (PostgreSQL + pgvector) | Gerenciado, backup automático, excelente suporte a vetores |
@@ -204,6 +204,15 @@ Expõe os campos definidos pela frente de Dados (sexo, altura, peso, doenças, i
 > de dependências (torch com CUDA) e precisava de mais de 1,5 GB de RAM: não cabia na Vercel
 > (500 MB por função) nem no Render gratuito (512 MB). O modelo foi para um serviço próprio, e a
 > API passou a fazer uma chamada HTTP por consulta. Passo a passo em [`deploy/README.md`](../../deploy/README.md).
+
+> **Teto de duração da função.** O plano **Hobby** dá 300 s por invocação — é ao mesmo tempo o
+> padrão e o máximo, com *fluid compute* ligado por padrão; só Pro e Enterprise sobem disso
+> ([Vercel, *Functions Limits*](https://vercel.com/docs/functions/limitations), consultado em
+> 23/09/2026). O `vercel.json` declara `maxDuration: 300` na chave `api/index.py`, que é o
+> entrypoint real da função Python — se essa chave deixar de bater com o arquivo, o valor para de
+> ser aplicado e a função volta ao padrão. A cadeia de timeouts do código soma bem menos que o
+> teto; a conta está em [`03_escalabilidade_e_desempenho.md`](03_escalabilidade_e_desempenho.md),
+> seção 1.3.
 
 ### 3.1. Ambientes
 

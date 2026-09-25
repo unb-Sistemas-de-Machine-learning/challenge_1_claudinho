@@ -71,13 +71,19 @@ def executar_pipeline_de_checagem(
     acionou_recusa, mensagem_recusa = checar_recusa_segura(texto_entrada, pergunta_amigavel)
     adicionar_ao_log(guardrails={"safe_refusal": acionou_recusa})
     if acionou_recusa:
+        partes = mensagem_recusa.split("\n\n", 1)
+        answer_limpo = (
+            partes[1]
+            if len(partes) > 1 and partes[0].startswith("Resposta de cuidado")
+            else mensagem_recusa
+        )
         return CheckClaimResponse(
             trace_id=trace_id,
             canonical_claim=pergunta_amigavel,
             verdict="recusa_segura",
             risk_score=1.0,
             risk_level="alto",
-            answer=mensagem_recusa,
+            answer=answer_limpo,
             sources=[],
             disclaimer=disclaimers.montar_disclaimer("recusa_segura", texto_entrada),
             cached=False,

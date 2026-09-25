@@ -1,6 +1,6 @@
 import { ChevronRight, Moon, Pencil, Smartphone, Sun } from 'lucide-react';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Aviso } from '../componentes/Aviso';
 import { Botao } from '../componentes/Botao';
@@ -25,8 +25,20 @@ const TEMAS: { valor: Tema; rotulo: string; Icone: typeof Sun }[] = [
  */
 export function Perfil() {
   const navegar = useNavigate();
+  const { state } = useLocation();
+  const avisoInicial = (state as { aviso?: string } | null)?.aviso;
+  const [aviso, setAviso] = useState<string | null>(avisoInicial ?? null);
   const perfil = ler('perfil');
   const [tema, setTema] = useState<Tema>(ler('tema'));
+
+  useEffect(() => {
+    if (!avisoInicial) return;
+    const temporizador = setTimeout(() => {
+      setAviso(null);
+      window.history.replaceState({}, '');
+    }, 3000);
+    return () => clearTimeout(temporizador);
+  }, [avisoInicial]);
 
   function trocarTema(novo: Tema) {
     definirTema(novo);
@@ -160,6 +172,11 @@ export function Perfil() {
           </section>
         </div>
       </main>
+      {aviso && (
+        <div className="toast is-on" role="status" aria-live="polite">
+          <span>{aviso}</span>
+        </div>
+      )}
     </div>
   );
 }

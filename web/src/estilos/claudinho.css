@@ -499,6 +499,75 @@ a {
   outline-offset: 2px;
 }
 
+/* ---------- Perfil e formulários ---------- */
+.form-section {
+  display: grid;
+  gap: var(--s-4);
+  padding-block: var(--s-2);
+}
+.form-section + .form-section {
+  border-top: 1px solid var(--c-line);
+  padding-top: var(--s-6);
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3);
+}
+.routine {
+  display: grid;
+  gap: var(--s-2);
+}
+.routine .chip {
+  justify-content: flex-start;
+  border-radius: var(--r-md);
+  min-height: 56px;
+  padding-block: var(--s-2);
+  width: 100%;
+}
+.routine .chip span {
+  display: grid;
+}
+.routine .chip small {
+  font-weight: 400;
+  color: var(--c-ink-2);
+  font-size: var(--t-caption);
+}
+.more {
+  border-radius: var(--r-md);
+  background: var(--c-sunken);
+  padding-inline: var(--s-4);
+}
+.more summary {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  cursor: pointer;
+  font-weight: 700;
+  list-style: none;
+}
+.more summary::-webkit-details-marker {
+  display: none;
+}
+.more summary .chev {
+  margin-left: auto;
+  transition: transform var(--dur) var(--ease-out);
+}
+.more[open] summary .chev {
+  transform: rotate(180deg);
+}
+.more-body {
+  display: grid;
+  gap: var(--s-4);
+  padding-bottom: var(--s-4);
+}
+.grupo-opcoes {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
 /* Interruptor */
 .switch-row {
   display: flex;

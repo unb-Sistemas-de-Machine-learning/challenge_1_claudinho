@@ -7,6 +7,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   ajuda?: string;
   /** Mensagem de erro. Diz o que houve e como corrigir, nunca so "invalido". */
   erro?: string;
+  ref?: React.Ref<HTMLInputElement>;
 }
 
 /** Campo com rotulo sempre visivel e erro logo abaixo, como manda o design system. */

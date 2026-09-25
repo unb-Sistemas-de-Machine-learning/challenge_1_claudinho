@@ -8,15 +8,13 @@
 
 ## 1. Elevator Pitch
 
-A resposta da [GQ-User 3](../GQ.md) para *por que o usuário buscaria a nossa aplicação* é **recomendação médica somada à necessidade de buscar fontes confiáveis**. O pitch parte daí: o diferencial que se comunica primeiro é a evidência na tela, não a promessa de saúde.
+### 1.1. Versão em 30 segundos
 
-### 1.1. Versão de 30 segundos
+> *"Sabe quando você vê um post no Instagram dizendo que café inflama o corpo, outro dizendo que prolonga a vida, e você não sabe em quem acreditar? O Claudinho é um aplicativo onde você cola o link ou envia o print e recebe, em segundos, um veredito baseado em artigos científicos brasileiros, com a fonte na tela e sem julgamento. Para você cuidar da sua alimentação com base em ciência, sem cair no terrorismo nutricional."*
 
-> Todo dia você vê alguém na internet dizendo que um alimento comum faz mal. A gente responde essa dúvida em segundos, em linguagem simples, mostrando o artigo científico brasileiro em que a resposta se apoia. Sem achismo, sem influenciador, com a fonte na tela.
+### 1.2. Versão em uma frase
 
-### 1.2. Versão de uma frase
-
-> Checagem de desinformação nutricional em segundos, com o artigo científico na tela.
+> *"Checagem instantânea de alegações nutricionais com base em evidências científicas brasileiras, direto do link ou do print."*
 
 ### 1.3. Por que este ângulo
 

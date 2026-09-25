@@ -29,3 +29,7 @@ web/.vite/
 # Saidas dos benchmarks (geradas a cada execucao)
 bench*.json
 benchmark_*.json
+
+# Documentação (MkDocs)
+site/
+

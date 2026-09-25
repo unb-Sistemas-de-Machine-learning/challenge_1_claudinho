@@ -10,24 +10,24 @@
 ### 1.1. Dados para o Perfil do Usuário
 * **Formato:** Tabular, armazenados no Supabase.
 * **Campos/Variáveis:**
-  * Sexo
-  * Altura
-  * Peso
-  * Doenças
-  * Idade
-  * Restrições Alimentares
-  * Rotina
+    * Sexo
+    * Altura
+    * Peso
+    * Doenças
+    * Idade
+    * Restrições Alimentares
+    * Rotina
 
 ---
 
 ### 1.2. Dados para Treinamento
 * **Formato e Armazenamento:** Extração dos metadados e do conteúdo de cada artigo/post, por meio de OCR e/ou web scraping, armazenados no Supabase.
 * **Classificação e Atributos Extraídos:**
-  * Tipo do conteúdo (`article`, `post`, `video_transcript`)
-  * Fonte (referência à origem)
-  * Data (publicação e coleta)
-  * Veracidade (`true`, `fake`, `misleading`, `unlabeled`)
-  * Conteúdo (texto completo)
+    * Tipo do conteúdo (`article`, `post`, `video_transcript`)
+    * Fonte (referência à origem)
+    * Data (publicação e coleta)
+    * Veracidade (`true`, `fake`, `misleading`, `unlabeled`)
+    * Conteúdo (texto completo)
 
 ---
 

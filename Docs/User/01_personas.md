@@ -56,22 +56,22 @@ Pessoas com condição clínica crônica, gestantes, lactantes e pessoas em recu
 ```
 
 * **Perfil Demográfico:**
-  * **Idade:** 22 anos
-  * **Ocupação:** Estudante de graduação e estagiário em regime híbrido.
-  * **Localização:** Brasília - DF.
-  * **Renda:** 1 a 2 salários mínimos.
+    * **Idade:** 22 anos
+    * **Ocupação:** Estudante de graduação e estagiário em regime híbrido.
+    * **Localização:** Brasília - DF.
+    * **Renda:** 1 a 2 salários mínimos.
 * **Comportamento & Rotina:**
-  * Passa entre 2h e 4h diárias em redes sociais.
-  * Tem rotina corrida, pouco tempo para cozinhar e orçamento limitado para alimentação.
-  * Costuma pesquisar rapidamente no Google ou nas redes sociais sobre o que "pode" ou "não pode" comer.
+    * Passa entre 2h e 4h diárias em redes sociais.
+    * Tem rotina corrida, pouco tempo para cozinhar e orçamento limitado para alimentação.
+    * Costuma pesquisar rapidamente no Google ou nas redes sociais sobre o que "pode" ou "não pode" comer.
 * **Dores & Frustrações:**
-  * Excesso de informações contraditórias nas redes (um influenciador diz que café prolonga a vida, outro diz que é tóxico).
-  * Sensação de culpa ao comer alimentos normais e acessíveis (arroz, feijão, pão).
-  * Dificuldade de pagar consultas frequentes com nutricionistas.
+    * Excesso de informações contraditórias nas redes (um influenciador diz que café prolonga a vida, outro diz que é tóxico).
+    * Sensação de culpa ao comer alimentos normais e acessíveis (arroz, feijão, pão).
+    * Dificuldade de pagar consultas frequentes com nutricionistas.
 * **Necessidades & Objetivos:**
-  * Uma ferramenta rápida e acessível para checar se uma informação vista na internet é verdade ou mito.
-  * Explicações simples, mas respaldadas em fontes confiáveis.
-  * Segurança de que não está caindo em ciladas prejudiciais à saúde.
+    * Uma ferramenta rápida e acessível para checar se uma informação vista na internet é verdade ou mito.
+    * Explicações simples, mas respaldadas em fontes confiáveis.
+    * Segurança de que não está caindo em ciladas prejudiciais à saúde.
 
 ### 2.1. Hábitos digitais
 
@@ -113,15 +113,15 @@ As quatro personas abaixo não são o alvo de aquisição do MVP, mas são **per
 * **Perfil:** professora da rede pública, 54 anos, Goiânia - GO. Diagnóstico de diabetes tipo 2 há seis anos, em uso contínuo de medicação.
 * **Relação com a informação:** recebe conteúdo principalmente por grupos de WhatsApp de família e igreja, onde a desinformação chega com credibilidade emprestada de quem enviou.
 * **Dores:**
-  * Recebe "receitas naturais" que prometem substituir a medicação.
-  * Consulta com endocrinologista a cada seis meses, tempo demais para tirar dúvidas do dia a dia.
-  * Tem medo de perguntar e parecer que está duvidando do médico.
+    * Recebe "receitas naturais" que prometem substituir a medicação.
+    * Consulta com endocrinologista a cada seis meses, tempo demais para tirar dúvidas do dia a dia.
+    * Tem medo de perguntar e parecer que está duvidando do médico.
 * **O que ela precisa do produto:** uma checagem que leve a condição dela em conta, e que **nunca** dê a entender que algum alimento substitui tratamento.
 * **Comportamento esperado do sistema:** com `conditions: ["diabetes_tipo_2"]` no perfil ([Production/01](../Production/01_plataforma_e_deploy.md), seção 2.3), a resposta passa pelo filtro de condição crônica e é acompanhada do encaminhamento a profissional. Alegações do tipo "substitua o remédio por X" caem em `recusa_segura`.
 
 ### 3.2. Fichas compactas
 
-**🤰 *Juliana, 29 anos, gestante de 22 semanas***
+**Juliana, 29 anos, gestante de 22 semanas**
 > *"Cortei café, atum e queijo branco porque li num blog. Agora li que precisava do atum. Eu já não sei o que posso comer."*
 
 * **Contexto:** primeira gestação, alto engajamento com conteúdo de maternidade nas redes.
@@ -136,7 +136,7 @@ As quatro personas abaixo não são o alvo de aquisição do MVP, mas são **per
 * **Comportamento esperado do sistema:** é a persona que o produto atende **recusando**. Consultas com padrão de restrição ou contagem obsessiva acionam a recusa segura de [Ethics/01](../Ethics/01_seguranca_e_anti_alucinacao.md), com acolhimento e canal de ajuda no lugar do dado numérico.
 * **Ponto em aberto:** a detecção depende de sinal textual, não de diagnóstico declarado. O perfil de saúde é opcional e uma pessoa nessa situação tende a não preenchê-lo. A frente de Ética precisa definir o gatilho por conteúdo da consulta.
 
-**👨‍👦 *Marcos, 41 anos, cuidador do pai hipertenso***
+**Marcos, 41 anos, cuidador do pai hipertenso**
 > *"Meu pai tem 78 anos e pressão alta. Ele acredita em tudo que chega no WhatsApp e eu é que tenho que desmentir."*
 
 * **Contexto:** pesquisa em nome de outra pessoa, com perfil de saúde que não é o dele.

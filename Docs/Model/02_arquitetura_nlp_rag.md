@@ -53,17 +53,17 @@ Alternativas consideradas:
 ## 3. Estratégias Rigorosas Anti-Alucinação
 
 1. **Restrição de Conhecimento Externo (*Strict Grounding*):**
-   * O System Prompt instrui o modelo a responder **unicamente** com base no contexto fornecido no bloco `<contexto_cientifico>`.
-   * Se o contexto recuperado não contiver informações suficientes, o modelo é forçado a responder:  
-     *"Com base nos estudos científicos consultados na nossa base até o momento, não há evidências conclusivas para sustentar ou refutar essa alegação."*
+    * O System Prompt instrui o modelo a responder **unicamente** com base no contexto fornecido no bloco `<contexto_cientifico>`.
+    * Se o contexto recuperado não contiver informações suficientes, o modelo é forçado a responder:  
+      *"Com base nos estudos científicos consultados na nossa base até o momento, não há evidências conclusivas para sustentar ou refutar essa alegação."*
 2. **Citação Obrigatória de Fontes com ID:**
-   * Toda frase que afirma um fato biológico/nutricional deve conter a marcação da fonte recuperada `[Ref: ID_CHUNK]`.
+    * Toda frase que afirma um fato biológico/nutricional deve conter a marcação da fonte recuperada `[Ref: ID_CHUNK]`.
 3. **Chain-of-Thought Oculto (Raciocínio Passo a Passo):**
-   * O modelo gera internamente uma verificação antes de redigir o texto final:
-     - *Passo 1: Qual é a alegação central?*
-     - *Passo 2: O que diz o chunk 1? E o chunk 2?*
-     - *Passo 3: Há contradição? Há evidência conclusiva ou apenas teste em animais/in vitro?*
-     - *Passo 4: Formular a resposta amigável e desmistificadora.*
+    * O modelo gera internamente uma verificação antes de redigir o texto final:
+        - *Passo 1: Qual é a alegação central?*
+        - *Passo 2: O que diz o chunk 1? E o chunk 2?*
+        - *Passo 3: Há contradição? Há evidência conclusiva ou apenas teste em animais/in vitro?*
+        - *Passo 4: Formular a resposta amigável e desmistificadora.*
 
 ---
 

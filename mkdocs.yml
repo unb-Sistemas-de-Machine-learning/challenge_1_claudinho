@@ -1,0 +1,98 @@
+site_name: Claudinho · Documentação
+site_description: Checagem de desinformação nutricional com IA e RAG
+site_author: Equipe Challenge 1 - UnB
+site_url: https://unb-sistemas-de-machine-learning.github.io/challenge_1_claudinho/
+repo_url: https://github.com/unb-Sistemas-de-Machine-learning/challenge_1_claudinho
+repo_name: unb-Sistemas-de-Machine-learning/challenge_1_claudinho
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  language: pt-BR
+  palette:
+    # Modo Claro
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: deep orange
+      toggle:
+        icon: material/weather-night
+        name: Alternar para modo escuro
+    # Modo Escuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: deep orange
+      toggle:
+        icon: material/weather-sunny
+        name: Alternar para modo claro
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Visão Geral:
+      - Apresentação: index.md
+      - Guiding Questions (GQ): GQ.md
+  - IA & Modelo:
+      - Início: Model/README.md
+      - Guia da IA & Arquitetura: GUIA_DA_IA.md
+      - Métricas e Avaliação: Model/01_metricas_e_avaliacao.md
+      - Arquitetura NLP & RAG: Model/02_arquitetura_nlp_rag.md
+      - Linguagem da Internet: Model/03_processamento_linguagem_internet.md
+      - Treinamento e Classificador: Model/04_treinamento_e_classificador_risco.md
+      - LLM Próprio (Ollama): Model/05_llm_proprio_ollama.md
+  - Ética & Segurança:
+      - Início: Ethics/README.md
+      - Segurança e Anti-alucinação: Ethics/01_seguranca_e_anti_alucinacao.md
+      - Grupos de Risco e Filtros: Ethics/02_grupos_de_risco_e_filtros.md
+      - Transparência e Disclaimers: Ethics/03_transparencia_e_disclaimers.md
+  - Produção & MLOps:
+      - Início: Production/README.md
+      - Plataforma e Deploy: Production/01_plataforma_e_deploy.md
+      - Monitoramento e MLOps: Production/02_monitoramento_e_mlops.md
+      - Escalabilidade e Desempenho: Production/03_escalabilidade_e_desempenho.md
+  - Dados:
+      - Início: Data/README.md
+      - Tipos e Fontes de Dados: Data/01_tipos_e_fontes_de_dados.md
+      - Armazenamento e Estrutura: Data/02_armazenamento_e_estrutura.md
+  - Usuário & Negócio:
+      - Início: User/README.md
+      - Personas do MVP: User/01_personas.md
+      - Acesso e Canais: User/02_acesso_e_canais.md
+      - Proposta de Valor e Pitch: User/03_proposta_de_valor_pitch.md
+  - Design:
+      - Design System: Design/design-system.md

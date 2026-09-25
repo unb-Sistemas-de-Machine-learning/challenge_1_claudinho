@@ -25,6 +25,7 @@ A aplicação de inteligência artificial no domínio da nutrição e saúde exi
 > Bem-vindo! Este aplicativo foi desenvolvido para ajudar você a identificar informações falsas, boatos e vieses em conteúdos nutricionais que circulam na internet.
 > 
 > **Importante saber antes de usar:**
+> 
 > 1. **Não fazemos prescrições:** O aplicativo não elabora dietas, planos alimentares ou recomendações de suplementação individualizadas.
 > 2. **Não substitui profissionais de saúde:** Nenhuma resposta substitui consultas com nutricionistas ou médicos.
 > 3. **Públicos com necessidades especiais:** Se você possui condições clínicas (como diabetes, hipertensão ou doença celíaca), gestação ou histórico de transtornos alimentares, consulte sempre seu profissional de referência.
@@ -44,17 +45,17 @@ Para garantir a máxima transparência, cada card de checagem no aplicativo deve
 ```markdown
 ### Fontes Consultadas:
 1. **Título:** [Título do artigo ou diretriz científica]
-   * **Periódico:** [Nome da revista/journal]
-   * **Autores:** [Lista de autores]
-   * **DOI:** [Link direto do DOI]
-   * **Trecho relevante utilizado:** "[Citação direta extraída do estudo que fundamenta a checagem]"
+    * **Periódico:** [Nome da revista/journal]
+    * **Autores:** [Lista de autores]
+    * **DOI:** [Link direto do DOI]
+    * **Trecho relevante utilizado:** "[Citação direta extraída do estudo que fundamenta a checagem]"
 ```
 
 ---
 ## 4. Resolução de Pendências Éticas
 
 1. **Detecção da Persona Camila (Contexto Implícito / TCA):**
-   * A camada de segurança do sistema utilizará análise semântica direta no *prompt* de entrada para identificar padrões de vulnerabilidade e histórico de transtorno alimentar, não dependendo exclusivamente dos dados cadastrais do perfil.
+    * A camada de segurança do sistema utilizará análise semântica direta no *prompt* de entrada para identificar padrões de vulnerabilidade e histórico de transtorno alimentar, não dependendo exclusivamente dos dados cadastrais do perfil.
 
 2. **Disclaimer de Onboarding:**
-   * O texto padrão de primeiro acesso foi devidamente homologado na Seção 2.2 deste documento, explicitando a proibição para menores de 18 anos (LGPD Art. 14) e os limites operacionais da IA.
+    * O texto padrão de primeiro acesso foi devidamente homologado na Seção 2.2 deste documento, explicitando a proibição para menores de 18 anos (LGPD Art. 14) e os limites operacionais da IA.

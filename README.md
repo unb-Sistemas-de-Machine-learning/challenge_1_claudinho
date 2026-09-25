@@ -1,9 +1,9 @@
 # Challenge 1
 
-## 📍 Objetivo
+## Objetivo
 O primeiro *challenge* visa desenvolver um sistema de *Machine Learning* capaz de identificar Fake News. O desafio é dividido em **Engage**, **Investigate** e **Act**. Cada parte do desafio é dividido pelas aulas ministradas segundas e quartas, do dia **12/08** até **07/10**.
 
-## 🦾 Devs
+## Devs
 
 | Nome                              | Matrícula | Github           |
 |-----------------------------------|-----------|------------------|
@@ -13,7 +13,7 @@ O primeiro *challenge* visa desenvolver um sistema de *Machine Learning* capaz d
 | Matheus Moreira Lopes Perillo     | 190093421 | matheusperillo03 |
 | Maria Clara de Freitas Pina       | 232021900 | mariapinaclara   |
    
-## 🗓️ Agenda
+## Agenda
 
 - **12/08:** Big Idea and Essential Questions
 - **17/08:** Challenge Statement
@@ -37,45 +37,49 @@ O primeiro *challenge* visa desenvolver um sistema de *Machine Learning* capaz d
 
 # Desenvolvimento
 
-## 📌 Guiding Questions
+## Guiding Questions
 
-Em primeiro momento, foram levantadas as *Guiding Questions* (Questões-Guia) para determinar os objetivos e os meios que utilizaremos para alcançá-los. As questões podem ser conferidas no documento [GQ.md](./Docs/GQ.md) e contam com classificação e responsável.
+Em primeiro momento, foram levantadas as *Guiding Questions* (Questões-Guia) para determinar os objetivos e os meios que utilizaremos para alcançá-los. As questões podem ser conferidas no documento [GQ.md](docs/GQ.md) e contam com classificação e responsável.
 
-A partir do documento citado, foi criada a estrutura básica deste repositório, visando responder a cada tema de forma organizada. As respostas para cada tipo de pergunta estão organizadas conforme se segue.
+A partir do documento citado, foi criada a estrutura básica deste repositório, visando responder a cada tema de forma organizada. As respostas para cada tipo de pergunta estão organizadas por tema conforme se segue.
 
-### 🗄️ [Dados](./Docs/Data/README.md)
+### [Dados](docs/Data/README.md)
 * **Responsável:** Beatriz Brandão Fidelis Batista
-* [01 - Tipos de Dados](./Docs/Data/01_tipos_e_fontes_de_dados.md): Mapeamento de dados tabulares de usuários.
-* [02 - Armazenamento e Modelagem](./Docs/Data/02_armazenamento_e_estrutura.md): Schema relacional e vetorial no PostgreSQL/Supabase com extensão `pgvector`.
-* [03 - Fontes de Dados](./Docs/Data/01_tipos_e_fontes_de_dados.md): Mapeamento de bases científicas (SciELO, Web of Science, MS) e claims de desinformação.
+* [01 - Tipos e Fontes de Dados](docs/Data/01_tipos_e_fontes_de_dados.md): Mapeamento de dados tabulares de usuários e bases científicas/redes sociais.
+* [02 - Armazenamento e Modelagem](docs/Data/02_armazenamento_e_estrutura.md): Schema relacional e vetorial no PostgreSQL/Supabase com extensão `pgvector`.
 
-### 👤 [Usuário](./Docs/User/README.md)
-* **Responsável:** Beatriz Brandão Fidelis Batista
-* [01 - Personas do MVP](./Docs/User/01_personas.md): Personas principais e secundárias, dores com terrorismo nutricional e mapa de empatia.
-* [02 - Acesso e Canais](./Docs/User/02_acesso_e_canais.md): Plataforma de acesso e modos de entrada de dúvidas/links.
-* [03 - Proposta de Valor e Pitch](./Docs/User/03_proposta_de_valor_pitch.md): Elevator pitch em 30 segundos, comparativo de diferenciais e *Value Proposition Canvas*.
+### [Usuário](docs/User/README.md)
+* **Responsável:** Matheus Moreira Lopes Perillo
+* [01 - Personas do MVP](docs/User/01_personas.md): Personas principais e secundárias, dores com terrorismo nutricional e mapa de empatia.
+* [02 - Acesso e Canais](docs/User/02_acesso_e_canais.md): Plataforma de acesso e modos de entrada de dúvidas/links.
+* [03 - Proposta de Valor e Pitch](docs/User/03_proposta_de_valor_pitch.md): Elevator pitch em 30 segundos, comparativo de diferenciais e *Value Proposition Canvas*.
 
-### 🤖 [Modelo](./Docs/Model/README.md)
+### [Modelo](docs/Model/README.md)
 * **Responsável:** Ana Luiza Hoffmann Ferreira
-* [01 - Métricas de Avaliação e Riscos (FP vs FN)](./Docs/Model/01_metricas_e_avaliacao.md): Trade-off entre Falso Positivo e Falso Negativo, métricas prioritárias ($F_2$-Score, Recall) e métricas RAG (Ragas).
-* [02 - Arquitetura de NLP e RAG](./Docs/Model/02_arquitetura_nlp_rag.md): Pipeline RAG, embeddings semânticos, grounded generation e prevenção de alucinações.
-* [03 - Processamento de Linguagem da Internet](./Docs/Model/03_processamento_linguagem_internet.md): Extração de claims, tratamento de gírias nutricionais, sarcasmo e *Few-Shot Prompting*.
+* [01 - Métricas de Avaliação e Riscos (FP vs FN)](docs/Model/01_metricas_e_avaliacao.md): Trade-off entre Falso Positivo e Falso Negativo, métricas prioritárias ($F_2$-Score, Recall) e métricas RAG (Ragas).
+* [02 - Arquitetura de NLP e RAG](docs/Model/02_arquitetura_nlp_rag.md): Pipeline RAG, embeddings semânticos, grounded generation e prevenção de alucinações.
+* [03 - Processamento de Linguagem da Internet](docs/Model/03_processamento_linguagem_internet.md): Extração de claims, tratamento de gírias nutricionais, sarcasmo e *Few-Shot Prompting*.
+* [04 - Treinamento e Classificador de Risco](docs/Model/04_treinamento_e_classificador_risco.md): Treinamento supervisionado com dados do Supabase, calibração Platt Scaling e avaliação offline.
+* [05 - LLM Próprio (Ollama)](docs/Model/05_llm_proprio_ollama.md): LLM aberto hospedado pelo time (Ollama + qwen2.5:3b) com clientes de reserva.
 
-### 🚀 [Produção](./Docs/Production/README.md)
+### [Produção](docs/Production/README.md)
 * **Responsável:** João Pedro Araújo de Freitas Lyra
-* [01 - Plataforma e Estratégia de Deploy](./Docs/Production/01_plataforma_e_deploy.md): Arquitetura e especificação de endpoints REST (`/check-claim`, `/feedback`, `/profile`).
-* [02 - Monitoramento e MLOps](./Docs/Production/02_monitoramento_e_mlops.md): Logs estruturados de inferência, detecção de *Data/Concept Drift* e feedback loop.
-* [03 - Escalabilidade e Desempenho](./Docs/Production/03_escalabilidade_e_desempenho.md): SLAs de latência, *Semantic Caching* e estimativa de custos operacionais.
+* [01 - Plataforma e Estratégia de Deploy](docs/Production/01_plataforma_e_deploy.md): Arquitetura e especificação de endpoints REST (`/check-claim`, `/feedback`, `/profile`).
+* [02 - Monitoramento e MLOps](docs/Production/02_monitoramento_e_mlops.md): Logs estruturados de inferência, detecção de *Data/Concept Drift* e feedback loop.
+* [03 - Escalabilidade e Desempenho](docs/Production/03_escalabilidade_e_desempenho.md): SLAs de latência, *Semantic Caching* e estimativa de custos operacionais.
 
-### ⚖️ [Ética](./Docs/Ethics/README.md)
+### [Ética](docs/Ethics/README.md)
 * **Responsável:** Maria Clara de Freitas Pina
-* [01 - Segurança e Protocolo Anti-Desinformação](./Docs/Ethics/01_seguranca_e_anti_alucinacao.md): Suíte de testes de estresse (*Red Teaming*) e política de recusa segura (*Safe Refusal*).
-* [02 - Proteção de Grupos Vulneráveis e Filtros](./Docs/Ethics/02_grupos_de_risco_e_filtros.md): Guardrails para transtornos alimentares (TCA), gestantes e condições clínicas crônicas.
-* [03 - Transparência e Disclaimers](./Docs/Ethics/03_transparencia_e_disclaimers.md): Textos padrão de disclaimers legais/médicos e rastreabilidade de fontes com DOI.
+* [01 - Segurança e Protocolo Anti-Desinformação](docs/Ethics/01_seguranca_e_anti_alucinacao.md): Suíte de testes de estresse (*Red Teaming*) e política de recusa segura (*Safe Refusal*).
+* [02 - Proteção de Grupos Vulneráveis e Filtros](docs/Ethics/02_grupos_de_risco_e_filtros.md): Guardrails para transtornos alimentares (TCA), gestantes e condições clínicas crônicas.
+* [03 - Transparência e Disclaimers](docs/Ethics/03_transparencia_e_disclaimers.md): Textos padrão de disclaimers legais/médicos e rastreabilidade de fontes com DOI.
+
+### [Design](docs/Design/design-system.md)
+* [01 - Design System](docs/Design/design-system.md): Tokens, tipografia, paleta semântica e regras de produto do PWA.
 
 ---
 
-# 💻 Rodando o projeto
+# Rodando o projeto
 
 O repositório tem duas partes: a API em `APP/` e o PWA em `web/`. Desde o PR #15, o
 `/check-claim` responde com o pipeline de verdade: recuperação no `pgvector`, geração
@@ -112,7 +116,7 @@ O mock responde o contrato inteiro, inclusive os erros. Detalhes em
 
 ---
 
-# 💻 Rodando a API sozinha
+# Rodando a API sozinha
 
 ## Pré-requisitos
 
@@ -178,7 +182,7 @@ black --check .    # formatação
 | Caminho | O que é |
 | :--- | :--- |
 | `APP/main.py` | Monta a aplicação FastAPI e registra as rotas |
-| `APP/schemas.py` | Modelos Pydantic do contrato ([Produção 01](./Docs/Production/01_plataforma_e_deploy.md), seção 2) |
+| `APP/schemas.py` | Modelos Pydantic do contrato ([Produção 01](docs/Production/01_plataforma_e_deploy.md), seção 2) |
 | `APP/routers/health.py` | `GET /health`, o *liveness probe* |
 | `APP/routers/check_claim.py` | `POST /api/v1/check-claim`, ainda **mockado** |
 | `APP/routers/feedback.py` | `POST /api/v1/feedback`, registra 👍 / 👎 sobre uma resposta |
@@ -191,11 +195,11 @@ black --check .    # formatação
 | `APP/model/database.py` | Client do Supabase, criado sob demanda |
 | `tests/` | Suíte do pytest |
 | `web/` | PWA em React e TypeScript, com o design system aplicado ([README](./web/README.md)) |
-| `Docs/Design/` | Design system e protótipo navegável |
+| `docs/Design/` | Design system e protótipo navegável |
 
 ## Logs de inferência
 
-Cada requisição gera **uma linha JSON** no stdout, no formato da seção 3 do [Produção 02](./Docs/Production/02_monitoramento_e_mlops.md). O `trace_id` é a chave que liga o log, a resposta da API e o feedback do usuário.
+Cada requisição gera **uma linha JSON** no stdout, no formato da seção 3 do [Produção 02](docs/Production/02_monitoramento_e_mlops.md). O `trace_id` é a chave que liga o log, a resposta da API e o feedback do usuário.
 
 ```json
 {"trace_id":"80d16b32-...","endpoint":"/api/v1/check-claim","user_id_hash":"sha256:1cf0...",
@@ -230,3 +234,6 @@ Quando ela existir, o único ponto a mudar é o retorno de `obter_repositorio_de
 - [ ] *Quality gate* de RAGAS no CI (depende do benchmark de 50 perguntas)
 - [ ] Instrumentar com o SDK do Langfuse e o Sentry
 - [ ] Rate limiting
+
+## Documentação Online
+Acesse a documentação completa do projeto em: [GitHub Pages](https://unb-sistemas-de-machine-learning.github.io/challenge_1_claudinho/)

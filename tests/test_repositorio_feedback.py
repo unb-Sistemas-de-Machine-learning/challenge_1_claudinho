@@ -1,8 +1,7 @@
 """Contrato do repositorio de feedback."""
 
 import uuid
-
-import pytest
+from types import SimpleNamespace
 
 from APP.repositorios.feedback import Feedback, RepositorioEmMemoria, RepositorioSupabase
 
@@ -32,10 +31,31 @@ def test_em_memoria_avisa_que_nao_persiste():
     assert RepositorioEmMemoria.efemero is True
 
 
-def test_supabase_avisa_claramente_que_falta_a_tabela():
-    """Enquanto a tabela nao existir, falhar com uma mensagem util e melhor do
-    que devolver 201 mentindo que guardou."""
-    with pytest.raises(NotImplementedError) as erro:
-        RepositorioSupabase().salvar(UM_FEEDBACK)
+class _SupabaseFalso:
+    """Registra o que seria inserido, sem banco."""
 
-    assert "feedback" in str(erro.value).lower()
+    def __init__(self):
+        self.inserido = None
+
+    def table(self, _nome):
+        return self
+
+    def insert(self, linha):
+        self.inserido = linha
+        return self
+
+    def execute(self):
+        return SimpleNamespace(data=[{"id": "feedback-1"}])
+
+
+def test_supabase_insere_o_feedback_com_o_id_do_usuario(monkeypatch):
+    """A tabela usa o user_id (sub do JWT) na FK; o hash serve so para o log."""
+    falso = _SupabaseFalso()
+    monkeypatch.setattr("APP.repositorios.feedback.obter_supabase", lambda: falso)
+
+    identificador = RepositorioSupabase().salvar(UM_FEEDBACK)
+
+    assert identificador == "feedback-1"
+    assert falso.inserido["trace_id"] == UM_FEEDBACK.trace_id
+    assert falso.inserido["rating"] == UM_FEEDBACK.rating
+    assert "usuario_hash" not in falso.inserido

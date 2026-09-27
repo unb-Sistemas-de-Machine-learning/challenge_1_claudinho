@@ -18,7 +18,8 @@ from APP.errors import ApiError
 from APP.model.pipeline import executar_pipeline_de_checagem
 from APP.observabilidade import adicionar_ao_log, trace_id_atual
 from APP.ratelimit import LIMITE_CHECK_CLAIM, limitar
-from APP.schemas import CheckClaimRequest, CheckClaimResponse
+from APP.repositorios.perfil import RepositorioDePerfil, obter_repositorio_de_perfil
+from APP.schemas import CheckClaimRequest, CheckClaimResponse, Profile
 
 router = APIRouter(prefix="/api/v1", tags=["checagem"])
 
@@ -47,15 +48,17 @@ def _validar_tamanho_da_imagem(image_base64: str | None, settings: Settings) -> 
 )
 def check_claim(
     requisicao: CheckClaimRequest,
-    _usuario: str = Depends(exigir_autenticacao),
+    usuario: str = Depends(exigir_autenticacao),
     settings: Settings = Depends(obter_settings),
+    repositorio: RepositorioDePerfil = Depends(obter_repositorio_de_perfil),
 ) -> CheckClaimResponse:
     inicio = time.perf_counter()
     adicionar_ao_log(input=_descrever_entrada(requisicao))
 
     _validar_tamanho_da_imagem(requisicao.image_base64, settings)
     trace_id = trace_id_atual() or str(uuid.uuid4())
-    resposta = executar_pipeline_de_checagem(requisicao, settings, 0, trace_id)
+    perfil = _perfil_do_usuario(requisicao, usuario, repositorio)
+    resposta = executar_pipeline_de_checagem(requisicao, settings, 0, trace_id, perfil)
     # Medido depois do pipeline: e o tempo do LLM que se quer comparar entre provedores.
     resposta.latency_ms = int((time.perf_counter() - inicio) * 1000)
 
@@ -74,6 +77,32 @@ def check_claim(
         performance={"cache_hit": resposta.cached},
     )
     return resposta
+
+
+def _perfil_do_usuario(
+    requisicao: CheckClaimRequest, usuario: str, repositorio: RepositorioDePerfil
+) -> Profile | None:
+    """Perfil de saude usado na checagem, quando o usuario pediu (use_profile).
+
+    Falha do repositorio nao derruba a checagem: sem perfil a resposta sai generica, que
+    e melhor do que nao responder. O log registra que o perfil entrou, sem dizer o que
+    ha nele (Docs/Production/02, secao 3.1).
+    """
+    if not requisicao.use_profile:
+        return None
+    try:
+        perfil = repositorio.buscar(usuario)
+    except Exception as erro:  # noqa: BLE001
+        adicionar_ao_log(profile={"erro": type(erro).__name__})
+        return None
+
+    adicionar_ao_log(
+        profile={
+            "usado": perfil is not None,
+            "has_conditions": bool(perfil and perfil.conditions),
+        }
+    )
+    return perfil
 
 
 def _descrever_entrada(requisicao: CheckClaimRequest) -> dict[str, object]:

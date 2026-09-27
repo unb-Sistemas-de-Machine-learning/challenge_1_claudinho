@@ -34,6 +34,11 @@ class Settings(BaseSettings):
     # Token do Hugging Face quando o Space e privado.
     llm_api_key: str | None = None
     # Modelo de 3B em CPU gratuita leva de 20 a 60 s por resposta.
+    # Orcamento de tempo da requisicao (issue #40). A soma dos timeouts em serie nao pode
+    # passar do maxDuration do vercel.json (300 s), senao a Vercel corta com 504 ANTES de o
+    # fallback local rodar, e o usuario recebe erro em vez da resposta simplificada:
+    #   embeddings (10) + LLM propria (90) + Gemini (90) + OpenAI (90) = 280 s.
+    # Quem quiser resposta mais rapida deve baixar este valor, nao subir o maxDuration.
     llm_timeout_s: float = 90.0
 
     # Provedores externos de reserva, na ordem em que sao tentados.
@@ -51,7 +56,12 @@ class Settings(BaseSettings):
     # Token do Hugging Face. Para "hf-inference", precisa da permissao
     # "Make calls to Inference Providers".
     embeddings_token: str | None = None
-    embeddings_timeout_s: float = 20.0
+    embeddings_timeout_s: float = 10.0
+
+    # Onde perfil e feedback sao guardados. "memoria" so serve para desenvolvimento e
+    # testes: em plataforma serverless, cada requisicao pode cair numa instancia nova e o
+    # dado some. Use "supabase" depois de rodar deploy/sql/001_profiles_e_feedback.sql.
+    repositorios: Literal["memoria", "supabase"] = "memoria"
 
 
 @lru_cache

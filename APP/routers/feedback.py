@@ -38,6 +38,7 @@ def registrar_feedback(
         # Quem avaliou, em hash: a triagem semanal precisa saber se 30 avaliacoes
         # negativas vieram de 30 pessoas ou de uma so (Docs/Production/02, secao 4).
         usuario_hash=hash_de_usuario(usuario),
+        usuario=usuario,
         rating=requisicao.rating,
         reason=requisicao.reason,
         comment=requisicao.comment,

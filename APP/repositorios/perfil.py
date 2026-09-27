@@ -13,6 +13,8 @@ uma so, e a copia daqui nunca teria como ser exercitada por teste.
 
 from typing import Protocol
 
+from APP.config import obter_settings
+from APP.model.database import obter_supabase
 from APP.schemas import Profile
 
 
@@ -52,60 +54,32 @@ class RepositorioEmMemoria:
 
 
 class RepositorioSupabase:
-    """Implementacao definitiva, falta a tabela.
+    """Perfil na tabela `profiles` (deploy/sql/001_profiles_e_feedback.sql).
 
-    ------------------------------------------------------------------
-    O QUE FAZER PARA LIGAR ISSO (na ordem):
-    ------------------------------------------------------------------
-
-    1) Combinar o schema com a frente de Dados (Beatriz), que e a dona do
-       Docs/Data/02_armazenamento_e_estrutura.md. Ponto de partida, derivado do contrato
-       da secao 2.3 do Production/01:
-
-           create table profiles (
-             user_id             uuid primary key references auth.users(id) on delete cascade,
-             sex                 text check (sex in ('F','M','outro','nao_informado')),
-             birth_date          date,
-             height_cm           int,
-             weight_kg           numeric,
-             conditions          text[] not null default '{}',
-             dietary_restrictions text[] not null default '{}',
-             routine             text check (routine in ('sedentaria','leve','moderada','intensa')),
-             consent_health_data boolean not null default false,
-             updated_at          timestamptz not null default now()
-           );
-
-       Dois pontos para decidir com a Maria Clara antes de rodar:
-
-       - `conditions` e dado sensivel de saude. Vale definir prazo de expurgo e como
-         atender o `DELETE /profile` previsto para depois do MVP.
-       - Gestacao e amamentacao entram em `conditions` ou ganham coluna propria? O
-         Docs/User/01 deixou isso em aberto, e os filtros do Ethics/02 dependem da
-         resposta.
-
-    2) Habilitar RLS: cada usuario le e escreve apenas a propria linha. Sem isso, um
-       usuario autenticado le a condicao clinica dos outros.
-
-    3) Implementar `salvar` e `buscar` com o client sincrono do Supabase, indexando por
-       `user_id` (o `sub` do JWT), e nao pelo hash: o hash serve para o log, a tabela usa
-       a FK de verdade.
-
-    4) Trocar a implementacao em `obter_repositorio_de_perfil` e apagar este aviso.
+    Indexado pelo `user_id` (o `sub` do JWT), e nao pelo hash: o hash serve para o log,
+    a tabela usa a chave de verdade, com RLS e FK para auth.users.
     """
 
-    def salvar(self, usuario_hash: str, perfil: Profile) -> Profile:
-        raise NotImplementedError(
-            "A tabela `profiles` ainda nao existe no Supabase. "
-            "Veja o passo a passo no docstring de RepositorioSupabase "
-            "(APP/repositorios/perfil.py)."
-        )
+    TABELA = "profiles"
 
-    def buscar(self, usuario_hash: str) -> Profile | None:
-        raise NotImplementedError(
-            "A tabela `profiles` ainda nao existe no Supabase. "
-            "Veja o passo a passo no docstring de RepositorioSupabase "
-            "(APP/repositorios/perfil.py)."
+    def salvar(self, usuario: str, perfil: Profile) -> Profile:
+        linha = perfil.model_dump(mode="json") | {"user_id": usuario}
+        obter_supabase().table(self.TABELA).upsert(linha, on_conflict="user_id").execute()
+        return perfil
+
+    def buscar(self, usuario: str) -> Profile | None:
+        resposta = (
+            obter_supabase()
+            .table(self.TABELA)
+            .select("*")
+            .eq("user_id", usuario)
+            .limit(1)
+            .execute()
         )
+        if not resposta.data:
+            return None
+        linha = {c: v for c, v in resposta.data[0].items() if c in Profile.model_fields}
+        return Profile(**linha)
 
 
 # Instancia unica: sem isso cada requisicao criaria um dicionario novo e o perfil
@@ -113,9 +87,16 @@ class RepositorioSupabase:
 _repositorio_em_memoria = RepositorioEmMemoria()
 
 
+_repositorio_supabase = RepositorioSupabase()
+
+
 def obter_repositorio_de_perfil() -> RepositorioDePerfil:
     """Dependencia do FastAPI que entrega o repositorio em uso.
 
-    QUANDO A TABELA EXISTIR: troque o retorno por `RepositorioSupabase()`.
+    Escolhido por configuracao (REPOSITORIOS): "supabase" em producao, depois de rodar
+    deploy/sql/001_profiles_e_feedback.sql; "memoria" no desenvolvimento e nos testes.
+    Em memoria o perfil nao sobrevive a troca de instancia da Vercel.
     """
+    if obter_settings().repositorios == "supabase":
+        return _repositorio_supabase
     return _repositorio_em_memoria

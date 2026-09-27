@@ -12,7 +12,7 @@ from fastapi import APIRouter, Depends, status
 from APP.auth import exigir_autenticacao
 from APP.errors import ApiError
 from APP.model import disclaimers
-from APP.observabilidade import adicionar_ao_log, hash_de_usuario
+from APP.observabilidade import adicionar_ao_log
 from APP.ratelimit import LIMITE_ESCRITA, limitar
 from APP.repositorios.perfil import RepositorioDePerfil, obter_repositorio_de_perfil
 from APP.schemas import Profile
@@ -29,7 +29,7 @@ def obter_perfil(
     usuario: str = Depends(exigir_autenticacao),
     repositorio: RepositorioDePerfil = Depends(obter_repositorio_de_perfil),
 ) -> Profile:
-    perfil = repositorio.buscar(hash_de_usuario(usuario))
+    perfil = repositorio.buscar(usuario)
     if perfil is None:
         # 404 e nao 200 com corpo vazio: "ainda nao preencheu" e diferente de
         # "preencheu e esta tudo em branco", e o app trata os dois casos de formas
@@ -59,7 +59,7 @@ def atualizar_perfil(
     if perfil.birth_date and _idade(perfil.birth_date) < disclaimers.IDADE_MINIMA:
         raise ApiError("age_restricted", 403, disclaimers.MENOR_DE_IDADE)
 
-    salvo = repositorio.salvar(hash_de_usuario(usuario), perfil)
+    salvo = repositorio.salvar(usuario, perfil)
 
     # Docs/Production/02, secao 3.1: so os booleanos, nunca a condicao clinica em si.
     adicionar_ao_log(

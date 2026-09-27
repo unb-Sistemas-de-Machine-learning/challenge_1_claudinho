@@ -56,6 +56,7 @@ Siga `deploy/ollama-space/README.md` (já no ar pela Beatriz).
 | `LLM_API_KEY` | token de leitura do Hugging Face | Se o Space for privado |
 | `GEMINI_API_KEY` | chave do Gemini | Reserva do Ollama |
 | `ORIGENS_PERMITIDAS` | `["https://seu-projeto.vercel.app"]`, com colchetes e aspas duplas | **Sim**: sem ela, a API se recusa a subir fora do modo local |
+| `REPOSITORIOS` | `supabase` depois de rodar `deploy/sql/001_profiles_e_feedback.sql`; `memoria` só em desenvolvimento | Sim: em memória, perfil e feedback somem entre instâncias da Vercel |
 
 ### Conferindo
 

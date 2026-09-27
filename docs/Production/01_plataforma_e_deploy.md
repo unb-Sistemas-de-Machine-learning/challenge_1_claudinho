@@ -141,6 +141,7 @@ Aceita três modos de entrada mutuamente complementares: texto puro, URL de post
 | `400` | Payload inválido ou nenhum campo de entrada preenchido | `{"error": "invalid_input", "detail": "..."}` |
 | `401` | Token ausente ou expirado | `{"error": "unauthorized"}` |
 | `413` | Imagem acima de 5 MB | `{"error": "payload_too_large"}` |
+| `422` | Print ou link enviado sem texto: a API ainda não faz OCR nem lê páginas, e responder assim daria um veredito confiante sobre outro assunto | `{"error": "input_nao_suportado", "detail": "Ainda não conseguimos ler prints nem links..."}` |
 | `429` | Limite de requisições excedido | `{"error": "rate_limited", "retry_after": 42}` |
 | `503` | Provedor de LLM indisponível | `{"error": "upstream_unavailable"}` |
 

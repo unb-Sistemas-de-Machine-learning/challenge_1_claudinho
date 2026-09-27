@@ -36,6 +36,10 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
+    # Sem expose_headers, o navegador ENTREGA a resposta mas ESCONDE estes cabecalhos do
+    # JavaScript. Retry-After e o que a tela usa para dizer quanto falta quando o limite
+    # estoura (issue #20), e X-Trace-Id e o que o usuario informa ao reportar uma resposta.
+    expose_headers=["Retry-After", "X-Trace-Id"],
 )
 registrar_handlers(app)
 app.include_router(health.router)

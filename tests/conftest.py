@@ -81,11 +81,18 @@ def base_de_teste(monkeypatch):
 
 def limpar_estado() -> None:
     limpar_limites()
-    obter_repositorio_de_feedback().limpar()
-    obter_repositorio_de_perfil().limpar()
+    # Só os repositorios em memoria tem o que limpar: o do Supabase nao guarda estado no
+    # processo, e chamar .limpar() nele quebraria a limpeza de quem testa a configuracao.
+    for repositorio in (obter_repositorio_de_feedback(), obter_repositorio_de_perfil()):
+        limpar = getattr(repositorio, "limpar", None)
+        if limpar is not None:
+            limpar()
     # O pipeline cria o client do Supabase ao buscar evidencias; sem limpar, o teste que
     # confere que o import nao cria client passa a depender da ordem da suite.
     obter_supabase.cache_clear()
+    # Settings tambem e cacheado: sem limpar, um teste que sobe a API como producao deixa
+    # essa configuracao para o proximo, e a suite passa a depender da ordem dos arquivos.
+    obter_settings.cache_clear()
 
 
 @pytest.fixture

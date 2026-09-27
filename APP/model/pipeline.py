@@ -22,7 +22,7 @@ from APP.model.retriever import (
     detectar_e_comparar_tbca,
 )
 from APP.observabilidade import adicionar_ao_log
-from APP.schemas import CheckClaimRequest, CheckClaimResponse
+from APP.schemas import CheckClaimRequest, CheckClaimResponse, Profile
 
 
 def executar_pipeline_de_checagem(
@@ -30,6 +30,7 @@ def executar_pipeline_de_checagem(
     settings: Settings,
     latency_ms: int,
     trace_id: str,
+    perfil: Profile | None = None,
 ) -> CheckClaimResponse:
     """Executa o fluxo completo do pipeline RAG anti-alucinacao."""
     # OCR de print e leitura de pagina ainda nao existem. Antes, imagem virava a frase fixa
@@ -46,6 +47,15 @@ def executar_pipeline_de_checagem(
         )
 
     texto_entrada = requisicao.text
+
+    # Os avisos de Etica (gestante, condicao cronica) valem tanto quando a pessoa escreve
+    # "estou gravida" na pergunta quanto quando isso esta no perfil dela.
+    contexto_dos_avisos = " ".join(
+        [texto_entrada, *(perfil.conditions if perfil and perfil.conditions else [])]
+    )
+    # Perfil de saude no prompt e dado sensivel: nao pode ir para provedor externo
+    # (Docs/Ethics/02). O generator usa isto para escolher o provedor.
+    dados_sensiveis = bool(perfil and perfil.conditions)
     pergunta_amigavel = reformular_pergunta_amigavel(texto_entrada)
 
     # 0. Menor de 18 anos: recusa de servico (Docs/Ethics/02, LGPD Art. 14). Vem antes de
@@ -79,7 +89,7 @@ def executar_pipeline_de_checagem(
             risk_level="alto",
             answer=mensagem_recusa,
             sources=[],
-            disclaimer=disclaimers.montar_disclaimer("recusa_segura", texto_entrada),
+            disclaimer=disclaimers.montar_disclaimer("recusa_segura", contexto_dos_avisos),
             cached=False,
             latency_ms=latency_ms,
             model_version="guardrail@ethics-v1",
@@ -115,6 +125,7 @@ def executar_pipeline_de_checagem(
             raw_chunks=raw_chunks_tbca,
             settings=settings,
             pergunta_amigavel=pergunta_amigavel,
+            dados_sensiveis=dados_sensiveis,
         )
         return CheckClaimResponse(
             trace_id=trace_id,
@@ -124,7 +135,7 @@ def executar_pipeline_de_checagem(
             risk_level=_definir_nivel_risco(risk_score),
             answer=answer,
             sources=fontes_tbca,
-            disclaimer=disclaimers.montar_disclaimer(verdict, texto_entrada),
+            disclaimer=disclaimers.montar_disclaimer(verdict, contexto_dos_avisos),
             cached=False,
             latency_ms=latency_ms,
             model_version=model_ver,
@@ -149,6 +160,7 @@ def executar_pipeline_de_checagem(
         raw_chunks=raw_chunks,
         settings=settings,
         pergunta_amigavel=pergunta_amigavel,
+        dados_sensiveis=dados_sensiveis,
     )
 
     return CheckClaimResponse(
@@ -159,7 +171,7 @@ def executar_pipeline_de_checagem(
         risk_level=_definir_nivel_risco(risk_score),
         answer=answer,
         sources=fontes,
-        disclaimer=disclaimers.montar_disclaimer(verdict, texto_entrada),
+        disclaimer=disclaimers.montar_disclaimer(verdict, contexto_dos_avisos),
         cached=False,
         latency_ms=latency_ms,
         model_version=model_ver,

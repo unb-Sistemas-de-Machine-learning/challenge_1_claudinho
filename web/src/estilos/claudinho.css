@@ -1044,3 +1044,11 @@ button.row:active {
     border-right-color: var(--c-brand);
   }
 }
+
+/* A alegacao como a API entendeu, mostrada durante a checagem (issue #26). */
+.entendi-assim {
+  margin: 0 0 12px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--texto-suave, #6b7280);
+}

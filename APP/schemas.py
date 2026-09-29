@@ -45,6 +45,17 @@ class CheckClaimRequest(BaseModel):
         return self
 
 
+class ExtractClaimRequest(BaseModel):
+    """Entrada da extracao rapida (issue #26). So texto: print e link ainda nao sao lidos."""
+
+    text: str = Field(min_length=1, max_length=2000)
+
+
+class ExtractClaimResponse(BaseModel):
+    canonical_claim: str
+    safe_refusal: bool
+
+
 class Fonte(BaseModel):
     chunk_id: str
     title: str

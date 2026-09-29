@@ -13,9 +13,11 @@ import type {
   CodigoDeErro,
   CorpoDeErro,
   PedidoDeChecagem,
+  PedidoDeExtracao,
   PedidoDeFeedback,
   Perfil,
   RespostaDeChecagem,
+  RespostaDeExtracao,
   RespostaDeFeedback,
 } from './tipos';
 
@@ -121,6 +123,24 @@ export function checarAlegacao(
   return requisitar<RespostaDeChecagem>('/check-claim', {
     method: 'POST',
     body: JSON.stringify({ use_profile: true, ...pedido }),
+    signal: sinal,
+  });
+}
+
+/**
+ * Alegação como a API entendeu, em milissegundos: só regras, sem LLM nem banco.
+ *
+ * Serve para a tela de carregamento dizer "entendi assim" enquanto a checagem roda. O
+ * `canonical_claim` da checagem não serve para isso: ele chega junto da resposta, quando
+ * a espera já acabou.
+ */
+export function extrairAlegacao(
+  pedido: PedidoDeExtracao,
+  sinal?: AbortSignal,
+): Promise<RespostaDeExtracao> {
+  return requisitar<RespostaDeExtracao>('/extract-claim', {
+    method: 'POST',
+    body: JSON.stringify(pedido),
     signal: sinal,
   });
 }

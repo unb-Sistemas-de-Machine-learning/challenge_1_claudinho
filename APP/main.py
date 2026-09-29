@@ -6,7 +6,7 @@ from APP.config import obter_settings
 from APP.errors import registrar_handlers
 from APP.middleware import LoggingDeInferencia
 from APP.observabilidade import configurar_logging
-from APP.routers import check_claim, feedback, health, profile
+from APP.routers import check_claim, extract_claim, feedback, health, profile
 
 app = FastAPI(
     title="Claudinho — API de checagem de desinformacao nutricional",
@@ -44,5 +44,6 @@ app.add_middleware(
 registrar_handlers(app)
 app.include_router(health.router)
 app.include_router(check_claim.router)
+app.include_router(extract_claim.router)
 app.include_router(feedback.router)
 app.include_router(profile.router)

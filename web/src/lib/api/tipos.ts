@@ -22,6 +22,17 @@ export interface PedidoDeChecagem {
   use_profile?: boolean;
 }
 
+export interface PedidoDeExtracao {
+  text: string;
+}
+
+/** Extracao rapida, so com regras, para a tela de carregamento (issue #26). */
+export interface RespostaDeExtracao {
+  canonical_claim: string;
+  /** Verdadeiro quando a checagem vai terminar numa resposta de cuidado. */
+  safe_refusal: boolean;
+}
+
 export interface Fonte {
   chunk_id: string;
   title: string;

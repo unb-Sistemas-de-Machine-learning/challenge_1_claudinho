@@ -72,6 +72,25 @@ def atualizar_perfil(
     return salvo
 
 
+@router.delete(
+    "/profile",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(limitar(LIMITE_ESCRITA))],
+)
+def apagar_perfil(
+    usuario: str = Depends(exigir_autenticacao),
+    repositorio: RepositorioDePerfil = Depends(obter_repositorio_de_perfil),
+) -> None:
+    """Exclusao imediata do perfil, a pedido da pessoa (docs/Ethics/02, secao 4).
+
+    Devolve 204 mesmo quando nao havia perfil: para quem pediu para apagar, "nao existia"
+    e "foi apagado" terminam no mesmo lugar, e distinguir os dois revelaria a existencia
+    do dado a quem tiver o token. O log registra se havia algo, nunca o que era.
+    """
+    havia = repositorio.apagar(usuario)
+    adicionar_ao_log(profile={"apagado": havia})
+
+
 def _idade(nascimento: date, hoje: date | None = None) -> int:
     hoje = hoje or date.today()
     fez_aniversario = (hoje.month, hoje.day) >= (nascimento.month, nascimento.day)

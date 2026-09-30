@@ -9,6 +9,7 @@ import { Botao } from '../componentes/Botao';
 import { CardDeVeredito } from '../componentes/CardDeVeredito';
 import { ItemDeFonte } from '../componentes/ItemDeFonte';
 import { ler } from '../lib/armazenamento';
+import { extrairParagrafosDoCorpo } from '../lib/resposta';
 import { VEREDITOS } from '../lib/vereditos';
 
 /**
@@ -114,14 +115,11 @@ export function Resultado() {
           </div>
 
           <div className="answer">
-            {resposta.answer
-              .split('\n')
-              .filter((paragrafo) => paragrafo.trim())
-              .map((paragrafo, indice) => (
-                // O índice serve de chave aqui porque a ordem dos parágrafos não muda:
-                // a resposta é imutável depois de gravada no histórico.
-                <p key={indice}>{comReferencias(paragrafo)}</p>
-              ))}
+            {extrairParagrafosDoCorpo(resposta.answer, aberturaDaFrase).map((paragrafo, indice) => (
+              // O índice serve de chave aqui porque a ordem dos parágrafos não muda:
+              // a resposta é imutável depois de gravada no histórico.
+              <p key={indice}>{comReferencias(paragrafo)}</p>
+            ))}
           </div>
 
           {resposta.verdict === 'cautela' && (

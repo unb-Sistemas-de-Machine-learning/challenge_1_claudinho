@@ -35,6 +35,9 @@ class _SupabaseFalso:
     def select(self, _colunas):
         return self
 
+    def delete(self):
+        return self
+
     def eq(self, coluna, valor):
         self.filtro = (coluna, valor)
         return self
@@ -97,3 +100,15 @@ def test_configuracao_escolhe_onde_guardar(monkeypatch, configurado, esperado):
     assert isinstance(obter_repositorio_de_perfil(), esperado)
 
     obter_settings.cache_clear()
+
+
+def test_apagar_remove_a_linha_do_usuario(monkeypatch):
+    """Exclusao a pedido (docs/Ethics/02, secao 4). A policy de delete no SQL e o que
+    impede alguem de apagar o perfil de outra pessoa."""
+    falso = _SupabaseFalso(linhas=[{"user_id": USUARIO}])
+    monkeypatch.setattr("APP.repositorios.perfil.obter_supabase", lambda: falso)
+
+    apagou = RepositorioSupabase().apagar(USUARIO)
+
+    assert apagou is True
+    assert falso.filtro == ("user_id", USUARIO)

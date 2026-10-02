@@ -27,6 +27,14 @@ class RepositorioDePerfil(Protocol):
         """Devolve o perfil do usuario, ou None se ele ainda nao preencheu."""
         ...
 
+    def apagar(self, usuario_hash: str) -> bool:
+        """Apaga o perfil. Devolve False quando nao havia nada para apagar.
+
+        Exigido por docs/Ethics/02, secao 4: a pessoa pode pedir a exclusao imediata dos
+        dados de saude a qualquer momento.
+        """
+        ...
+
 
 class RepositorioEmMemoria:
     """Implementacao atual: um dicionario dentro do processo.
@@ -47,6 +55,9 @@ class RepositorioEmMemoria:
 
     def buscar(self, usuario_hash: str) -> Profile | None:
         return self.perfis.get(usuario_hash)
+
+    def apagar(self, usuario_hash: str) -> bool:
+        return self.perfis.pop(usuario_hash, None) is not None
 
     def limpar(self) -> None:
         """Usado pelos testes para isolar um caso do outro."""
@@ -80,6 +91,13 @@ class RepositorioSupabase:
             return None
         linha = {c: v for c, v in resposta.data[0].items() if c in Profile.model_fields}
         return Profile(**linha)
+<<<<<<< HEAD
+=======
+
+    def apagar(self, usuario: str) -> bool:
+        resposta = obter_supabase().table(self.TABELA).delete().eq("user_id", usuario).execute()
+        return bool(resposta.data)
+>>>>>>> 7b7f04102db713aa0caa89ac646f186adb9631ca
 
 
 # Instancia unica: sem isso cada requisicao criaria um dicionario novo e o perfil

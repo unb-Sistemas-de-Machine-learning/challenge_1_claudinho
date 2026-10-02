@@ -55,3 +55,11 @@ Os filtros atuam na camada de entrada e processamento do prompt, aplicando regra
 | **População Geral (Alegações Populares sem Risco Imediato)** | Perguntas sobre mitos comuns (ex: "Água com limão em jejum emagrece?"). | **Fluxo Padrão de Checagem** | Avaliação científica normal + Citação de fontes com DOI + Disclaimer curto no rodapé. |
 
 ---
+
+## 4. Prazo de Retenção e Expurgo de Dados Sensíveis (LGPD)
+
+Os dados de saúde coletados no perfil do usuário (condições crônicas, gestação, etc.) são considerados dados sensíveis pela LGPD e serão mantidos apenas pelo tempo necessário para a finalidade do aplicativo. Fica definido o seguinte fluxo de expurgo:
+
+* **Enquanto a conta estiver ativa:** Os dados de saúde são mantidos para personalizar as respostas do sistema.
+* **Após 6 (seis) meses de inatividade:** Caso o usuário não acesse a plataforma por 6 meses consecutivos, os dados de saúde serão automaticamente anonimizados ou excluídos do banco de dados.
+* **A pedido do usuário:** O usuário pode solicitar a exclusão imediata dos seus dados de saúde a qualquer momento, através das configurações do aplicativo.

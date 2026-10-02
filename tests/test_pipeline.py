@@ -57,6 +57,8 @@ def test_guardrail_responde_sem_buscar_na_base_e_sem_chamar_a_llm(base_de_teste,
     assert resposta.verdict == "recusa_segura"
     assert resposta.risk_score == 1.0
     assert resposta.sources == []
+    assert "Entendi assim" not in resposta.answer
+    assert "Resposta de cuidado" not in resposta.answer
     assert base_de_teste.chamadas_rpc == 0
     assert llm_falsa.chamadas == 0
 

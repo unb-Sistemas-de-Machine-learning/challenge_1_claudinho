@@ -158,7 +158,18 @@ export function Carregando() {
           ) : (
             <>
               <div className="reply reply-pendente" aria-live="polite">
-                {alegacao && <p className="entendi-assim">Entendi assim: {alegacao}</p>}
+                {/*
+                  Sempre no DOM, mesmo vazio: a extracao chega depois da tela montar, e
+                  inserir o paragrafo so quando ela chega empurra a lista de passos para
+                  baixo no meio da leitura. O espaco fica reservado desde o inicio.
+                */}
+                <p className="entendi-assim" aria-live="polite">
+                  {alegacao && (
+                    <>
+                      Entendi assim: <strong>{alegacao}</strong>
+                    </>
+                  )}
+                </p>
                 <ol className="steps">
                   {passos.map((rotulo, indice) => {
                     const estado = indice < passo ? 'done' : indice === passo ? 'active' : 'todo';

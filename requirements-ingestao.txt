@@ -1,0 +1,17 @@
+# Dependencias APENAS da ingestao local de PDFs (ingerir_pdf.py).
+# NAO fazem parte da API — nao adicionar ao requirements.txt do projeto.
+#
+# Instalar em um ambiente separado, para nao carregar o torch (~2 GB) no
+# .venv que roda a API:
+#     uv venv .venv-ingestao
+#     uv pip install --python .venv-ingestao/bin/python -r requirements-ingestao.txt
+
+PyMuPDF>=1.24.0             # extracao de texto do PDF
+sentence-transformers>=3.0.0  # embeddings locais (baixa torch + o modelo e5)
+supabase>=2.31.0            # cliente do banco
+python-dotenv>=1.0.0        # leitura do APP/.env
+
+# Opcional — so para PDFs digitalizados (flag --ocr).
+# Exige tambem o binario do tesseract:  sudo pacman -S tesseract tesseract-data-por
+# pytesseract>=0.3.10
+# pillow>=10.0.0

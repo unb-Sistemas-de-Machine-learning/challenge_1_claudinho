@@ -14,6 +14,9 @@ body,
    (botao principal, barra de abas) ficar parado enquanto o conteudo rola por tras. Com
    min-height a casca cresce junto com o conteudo e o rodape desce para fora da tela. */
 .app {
+  /* Ancora o .toast, que e position: absolute. Sem isso ele se prende a janela e, em
+     tela larga, escapa da coluna de 480px. No prototipo quem faz isso e a .phone. */
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100dvh;

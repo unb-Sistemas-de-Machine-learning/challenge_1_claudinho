@@ -12,7 +12,7 @@ O primeiro *challenge* visa desenvolver um sistema de *Machine Learning* capaz d
 | João Pedro Araújo de Freitas Lyra | 232003661 | jadequilin       |
 | Matheus Moreira Lopes Perillo     | 190093421 | matheusperillo03 |
 | Maria Clara de Freitas Pina       | 232021900 | mariapinaclara   |
-   
+
 ## Agenda
 
 - **12/08:** Big Idea and Essential Questions

@@ -411,6 +411,16 @@ a {
     border-color var(--dur-fast) var(--ease-out),
     box-shadow var(--dur-fast) var(--ease-out);
 }
+/* No iOS o controle nativo de data impoe a propria largura e ignora o width: 100%,
+   estourando a coluna. Tirar a aparencia nativa devolve o tamanho para o CSS.
+   O -webkit-min-logical-width e o que realmente segura: e ele que o WebKit usa como
+   piso de largura do campo de data, e o min-width comum nao alcanca. */
+.input[type='date'] {
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-min-logical-width: 100%;
+  max-width: 100%;
+}
 .input:focus {
   outline: none;
   border-color: var(--c-brand);
@@ -497,6 +507,75 @@ a {
 .chip:has(input:focus-visible) {
   outline: 3px solid var(--c-focus);
   outline-offset: 2px;
+}
+
+/* ---------- Perfil e formulários ---------- */
+.form-section {
+  display: grid;
+  gap: var(--s-4);
+  padding-block: var(--s-2);
+}
+.form-section + .form-section {
+  border-top: 1px solid var(--c-line);
+  padding-top: var(--s-6);
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3);
+}
+.routine {
+  display: grid;
+  gap: var(--s-2);
+}
+.routine .chip {
+  justify-content: flex-start;
+  border-radius: var(--r-md);
+  min-height: 56px;
+  padding-block: var(--s-2);
+  width: 100%;
+}
+.routine .chip span {
+  display: grid;
+}
+.routine .chip small {
+  font-weight: 400;
+  color: var(--c-ink-2);
+  font-size: var(--t-caption);
+}
+.more {
+  border-radius: var(--r-md);
+  background: var(--c-sunken);
+  padding-inline: var(--s-4);
+}
+.more summary {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  cursor: pointer;
+  font-weight: 700;
+  list-style: none;
+}
+.more summary::-webkit-details-marker {
+  display: none;
+}
+.more summary .chev {
+  margin-left: auto;
+  transition: transform var(--dur) var(--ease-out);
+}
+.more[open] summary .chev {
+  transform: rotate(180deg);
+}
+.more-body {
+  display: grid;
+  gap: var(--s-4);
+  padding-bottom: var(--s-4);
+}
+.grupo-opcoes {
+  border: 0;
+  padding: 0;
+  margin: 0;
 }
 
 /* Interruptor */
@@ -1051,4 +1130,71 @@ button.row:active {
   font-size: 0.875rem;
   line-height: 1.4;
   color: var(--texto-suave, #6b7280);
+}
+
+/* ---------- Historico (issue #18) ---------- */
+.historico {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.historico-item {
+  display: flex;
+  align-items: stretch;
+  gap: var(--s-2);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+}
+
+.historico-abrir {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--s-3);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.historico-entrada {
+  font-weight: 600;
+  /* Duas linhas no maximo: a entrada e texto livre e pode ser longa. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.historico-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--c-ink-soft);
+}
+
+.historico-meta svg {
+  width: 16px;
+  height: 16px;
+}
+
+.historico-apagar {
+  display: grid;
+  place-items: center;
+  /* 44 px: alvo minimo de toque do design system. */
+  min-width: 44px;
+  border: 0;
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  background: none;
+  color: var(--c-ink-soft);
+  cursor: pointer;
+}
+
+.historico-apagar:hover {
+  color: var(--c-danger, var(--c-ink));
 }

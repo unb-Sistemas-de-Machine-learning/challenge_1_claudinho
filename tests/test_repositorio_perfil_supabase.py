@@ -101,6 +101,7 @@ def test_configuracao_escolhe_onde_guardar(monkeypatch, configurado, esperado):
 
     obter_settings.cache_clear()
 
+
 def test_apagar_remove_a_linha_do_usuario(monkeypatch):
     """Exclusao a pedido (docs/Ethics/02, secao 4). A policy de delete no SQL e o que
     impede alguem de apagar o perfil de outra pessoa."""

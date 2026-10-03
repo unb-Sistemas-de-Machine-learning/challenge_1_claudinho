@@ -178,7 +178,7 @@ def formatar_contexto_cientifico(chunks: list[dict[str, object]]) -> str:
         cid = c.get("chunk_id", f"chunk_{i}")
         titulo = c.get("titulo", "")
         conteudo = (c.get("conteudo") or "").strip()
-        bloco = f"[ID_CHUNK: {cid}]\n" f"Artigo: {titulo}\n" f"Conteudo: {conteudo}\n"
+        bloco = f"[ID_CHUNK: {cid}]\nArtigo: {titulo}\nConteudo: {conteudo}\n"
         blocos.append(bloco)
 
     return "\n---\n".join(blocos)

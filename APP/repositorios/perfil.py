@@ -96,6 +96,7 @@ class RepositorioSupabase:
         resposta = obter_supabase().table(self.TABELA).delete().eq("user_id", usuario).execute()
         return bool(resposta.data)
 
+
 # Instancia unica: sem isso cada requisicao criaria um dicionario novo e o perfil
 # salvo sumiria dentro do mesmo processo.
 _repositorio_em_memoria = RepositorioEmMemoria()

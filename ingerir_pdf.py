@@ -233,13 +233,15 @@ def _data_do_pdf(bruta: str | None) -> str | None:
 # O campo `title` do PDF costuma vir preenchido pelo programa de diagramacao
 # com o nome do arquivo de trabalho ("Microsoft Word - tese_final.docx",
 # "Latino marco (2).indd"). Isso passaria por titulo e sujaria a base.
-_LIXO_TITULO = re.compile(r"""(?ix)
+_LIXO_TITULO = re.compile(
+    r"""(?ix)
     ^untitled | \.(pdf|indd|docx?|qxd|qxp|pmd|cdr|ai|tex)\s*$   # extensao de arquivo
     | ^microsoft\s+word | ^documento\d* | ^sem\s*t[ií]tulo
     | ^\d+[-_]texto\s+do\s+artigo                              # padrao de OJS
     | ^\d{3,}[-_]                                               # comeca com id numerico
     | ^(layout|arte|prova|miolo|revista|artigo)\s*\d*\s*$
-    """)
+    """
+)
 
 
 def _titulo_lixo(titulo: str) -> bool:

@@ -80,6 +80,11 @@ export function Carregando() {
       .catch((falha: unknown) => {
         // Aborto é saída pela porta da frente: a tela já foi embora, não há o que mostrar.
         if (cancelado || (falha instanceof DOMException && falha.name === 'AbortError')) return;
+        // Se for 429 (rate limit), volta para a tela de checar com o tempo de espera
+        if (falha instanceof ErroDaApi && falha.status === 429 && falha.tentarEm) {
+          navegar('/', { state: { tentarEm: falha.tentarEm } });
+          return;
+        }
         setErro(
           falha instanceof ErroDaApi ? falha : new ErroDaApi('desconhecido', 0, String(falha)),
         );

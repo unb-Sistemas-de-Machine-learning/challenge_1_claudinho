@@ -91,14 +91,10 @@ class RepositorioSupabase:
             return None
         linha = {c: v for c, v in resposta.data[0].items() if c in Profile.model_fields}
         return Profile(**linha)
-<<<<<<< HEAD
-=======
 
     def apagar(self, usuario: str) -> bool:
         resposta = obter_supabase().table(self.TABELA).delete().eq("user_id", usuario).execute()
         return bool(resposta.data)
->>>>>>> 7b7f04102db713aa0caa89ac646f186adb9631ca
-
 
 # Instancia unica: sem isso cada requisicao criaria um dicionario novo e o perfil
 # salvo sumiria dentro do mesmo processo.

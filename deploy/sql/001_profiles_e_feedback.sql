@@ -34,8 +34,6 @@ create table if not exists public.feedback (
 create index if not exists feedback_recentes on public.feedback (created_at desc);
 create index if not exists feedback_por_motivo on public.feedback (rating, reason);
 
-<<<<<<< HEAD
-=======
 -- Expurgo automatico (docs/Ethics/02, secao 4): dado de saude de quem nao acessa ha 6
 -- meses e apagado. `updated_at` e tocado a cada gravacao do perfil, entao ele marca o
 -- ultimo acesso que mexeu no dado.
@@ -63,7 +61,6 @@ $$;
 -- create extension if not exists pg_cron;
 -- select cron.schedule('expurgo-perfis', '0 5 * * *', 'select public.expurgar_perfis_inativos()');
 
->>>>>>> 7b7f04102db713aa0caa89ac646f186adb9631ca
 -- RLS: sem isto, qualquer usuario autenticado le a condicao clinica dos outros.
 alter table public.profiles enable row level security;
 alter table public.feedback enable row level security;
@@ -76,11 +73,8 @@ create policy "cada um atualiza o proprio perfil"
   on public.profiles for update using (auth.uid() = user_id);
 create policy "cada um apaga o proprio perfil"
   on public.profiles for delete using (auth.uid() = user_id);
-<<<<<<< HEAD
-=======
 -- Esta policy e o que sustenta o DELETE /api/v1/profile: a exclusao a pedido da pessoa,
 -- prevista na mesma secao 4 do docs/Ethics/02.
->>>>>>> 7b7f04102db713aa0caa89ac646f186adb9631ca
 
 -- Feedback: qualquer usuario logado registra o seu; a leitura fica para o time, pelo
 -- painel do Supabase (service_role ignora RLS).

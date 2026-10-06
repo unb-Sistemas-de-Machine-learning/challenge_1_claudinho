@@ -18,7 +18,24 @@ export default defineConfig(() => {
           display: 'standalone',
           background_color: '#FCFAF6',
           theme_color: '#226FB3',
-          icons: [],
+          icons: [
+            {
+              src: 'pwa-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+            },
+            {
+              src: 'pwa-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+            },
+            {
+              src: 'pwa-512x512-maskable.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable',
+            },
+          ],
           // O `share_target` entra junto com o handler de POST no service worker, que ainda
           // não existe: declarado sem handler, o compartilhamento do Android cai num POST
           // que ninguém atende. Ver a issue "Receber print e link pelo compartilhar".

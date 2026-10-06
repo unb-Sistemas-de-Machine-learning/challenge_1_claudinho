@@ -80,6 +80,11 @@ export function Carregando() {
       .catch((falha: unknown) => {
         // Aborto é saída pela porta da frente: a tela já foi embora, não há o que mostrar.
         if (cancelado || (falha instanceof DOMException && falha.name === 'AbortError')) return;
+        // Se for 429 (rate limit), volta para a tela de checar com o tempo de espera
+        if (falha instanceof ErroDaApi && falha.status === 429 && falha.tentarEm) {
+          navegar('/', { state: { tentarEm: falha.tentarEm } });
+          return;
+        }
         setErro(
           falha instanceof ErroDaApi ? falha : new ErroDaApi('desconhecido', 0, String(falha)),
         );
@@ -158,7 +163,22 @@ export function Carregando() {
           ) : (
             <>
               <div className="reply reply-pendente" aria-live="polite">
+<<<<<<< HEAD
                 {alegacao && <p className="entendi-assim">Entendi assim: {alegacao}</p>}
+=======
+                {/*
+                  Sempre no DOM, mesmo vazio: a extracao chega depois da tela montar, e
+                  inserir o paragrafo so quando ela chega empurra a lista de passos para
+                  baixo no meio da leitura. O espaco fica reservado desde o inicio.
+                */}
+                <p className="entendi-assim" aria-live="polite">
+                  {alegacao && (
+                    <>
+                      Entendi assim: <strong>{alegacao}</strong>
+                    </>
+                  )}
+                </p>
+>>>>>>> 1f67b5f9c619536f61e68cff1499e8b563c6d8ae
                 <ol className="steps">
                   {passos.map((rotulo, indice) => {
                     const estado = indice < passo ? 'done' : indice === passo ? 'active' : 'todo';

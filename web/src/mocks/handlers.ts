@@ -68,6 +68,18 @@ export const handlers = [
     return HttpResponse.json(respostaPara(texto));
   }),
 
+  http.post(`${BASE}/extract-claim`, async ({ request }) => {
+    const { text } = (await request.json()) as { text: string };
+
+    // Rápido de propósito, como no backend: lá a extração é só regra, sem LLM nem banco,
+    // e é isso que permite mostrar "Entendi assim" enquanto a checagem ainda roda.
+    await delay(200);
+    return HttpResponse.json({
+      canonical_claim: respostaPara(text).canonical_claim || text,
+      safe_refusal: respostaPara(text).verdict === 'recusa_segura',
+    });
+  }),
+
   http.post(`${BASE}/feedback`, async ({ request }) => {
     const pedido = (await request.json()) as PedidoDeFeedback;
 

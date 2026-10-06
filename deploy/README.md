@@ -29,7 +29,17 @@ https://huggingface.co/settings/billing. Se a cota não bastar, as saídas são 
 (US$ 9/mês, com excedente pago) ou o Space próprio de `deploy/embeddings-space`, que também
 exige PRO para ser criado.
 
-## 2. Space do Ollama
+## 2. LLM própria (opcional)
+
+Duas formas, e nenhuma está ligada hoje: o Gemini é o provedor em uso.
+
+- **VM na Azure** (`deploy/ollama-azure/README.md`): no ar, com HTTPS e token. Responde em
+  17 a 24 s, contra 2 a 3 s do Gemini, então ligá-la deixaria toda checagem lenta — o
+  README explica as duas saídas.
+- **Space do Hugging Face** (`deploy/ollama-space/README.md`): exige plano pago para criar
+  Spaces Docker.
+
+## 2b. Space do Ollama
 
 Siga `deploy/ollama-space/README.md` (já no ar pela Beatriz).
 

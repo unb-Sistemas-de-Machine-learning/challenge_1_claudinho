@@ -8,6 +8,7 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+.venv-scraper
 .pytest_cache/
 .ruff_cache/
 *.egg-info/

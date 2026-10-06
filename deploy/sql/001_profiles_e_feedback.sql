@@ -34,6 +34,36 @@ create table if not exists public.feedback (
 create index if not exists feedback_recentes on public.feedback (created_at desc);
 create index if not exists feedback_por_motivo on public.feedback (rating, reason);
 
+<<<<<<< HEAD
+=======
+-- Expurgo automatico (docs/Ethics/02, secao 4): dado de saude de quem nao acessa ha 6
+-- meses e apagado. `updated_at` e tocado a cada gravacao do perfil, entao ele marca o
+-- ultimo acesso que mexeu no dado.
+--
+-- Apaga a LINHA inteira, e nao so as condicoes: sexo, altura, peso e data de nascimento,
+-- juntos, tambem identificam uma pessoa. Anonimizar pela metade nao cumpriria a politica.
+create or replace function public.expurgar_perfis_inativos()
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  apagados integer;
+begin
+  delete from public.profiles where updated_at < now() - interval '6 months';
+  get diagnostics apagados = row_count;
+  return apagados;
+end;
+$$;
+
+-- Agendamento diario. Requer a extensao pg_cron (Supabase: Database > Extensions).
+-- Se ela nao estiver disponivel no plano, rode a funcao pela interface uma vez por mes:
+--   select public.expurgar_perfis_inativos();
+-- create extension if not exists pg_cron;
+-- select cron.schedule('expurgo-perfis', '0 5 * * *', 'select public.expurgar_perfis_inativos()');
+
+>>>>>>> 1f67b5f9c619536f61e68cff1499e8b563c6d8ae
 -- RLS: sem isto, qualquer usuario autenticado le a condicao clinica dos outros.
 alter table public.profiles enable row level security;
 alter table public.feedback enable row level security;
@@ -46,6 +76,11 @@ create policy "cada um atualiza o proprio perfil"
   on public.profiles for update using (auth.uid() = user_id);
 create policy "cada um apaga o proprio perfil"
   on public.profiles for delete using (auth.uid() = user_id);
+<<<<<<< HEAD
+=======
+-- Esta policy e o que sustenta o DELETE /api/v1/profile: a exclusao a pedido da pessoa,
+-- prevista na mesma secao 4 do docs/Ethics/02.
+>>>>>>> 1f67b5f9c619536f61e68cff1499e8b563c6d8ae
 
 -- Feedback: qualquer usuario logado registra o seu; a leitura fica para o time, pelo
 -- painel do Supabase (service_role ignora RLS).

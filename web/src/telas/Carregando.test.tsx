@@ -45,9 +45,19 @@ describe('Carregando', () => {
 
     montar();
 
+<<<<<<< HEAD
     expect(
       await screen.findByText('Entendi assim: Água com limão em jejum emagrece?'),
     ).toBeInTheDocument();
+=======
+    // A alegacao vai em negrito e o rotulo em texto normal, entao o texto fica em dois
+    // elementos: a busca e pelo trecho em negrito.
+    const alegacao = await screen.findByText('Água com limão em jejum emagrece?');
+    expect(alegacao.tagName).toBe('STRONG');
+    expect(alegacao.parentElement?.textContent).toBe(
+      'Entendi assim: Água com limão em jejum emagrece?',
+    );
+>>>>>>> 1f67b5f9c619536f61e68cff1499e8b563c6d8ae
   });
 
   it('segue funcionando quando a extração falha', async () => {
@@ -57,7 +67,13 @@ describe('Carregando', () => {
     montar();
 
     await waitFor(() => expect(screen.getByText('Procurando nos estudos')).toBeInTheDocument());
+<<<<<<< HEAD
     expect(screen.queryByText(/Entendi assim/)).not.toBeInTheDocument();
+=======
+    // O paragrafo existe desde o inicio, com o espaco reservado, mas fica vazio: e isso
+    // que evita a lista de passos pular quando a extracao chega (ou nao chega).
+    expect(document.querySelector('.entendi-assim')?.textContent).toBe('');
+>>>>>>> 1f67b5f9c619536f61e68cff1499e8b563c6d8ae
   });
 
   it('não pede extração para print, que a API ainda não lê', () => {

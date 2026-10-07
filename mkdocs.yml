@@ -96,3 +96,29 @@ nav:
       - Proposta de Valor e Pitch: User/03_proposta_de_valor_pitch.md
   - Design:
       - Design System: Design/design-system.md
+  - Specs e Planos:
+      - Início: Specs/README.md
+      - 01 Checagem com RAG:
+          - Spec: Specs/01-checagem-rag/spec.md
+          - Plano: Specs/01-checagem-rag/plano.md
+      - 02 Guardrails e avisos:
+          - Spec: Specs/02-guardrails-etica/spec.md
+          - Plano: Specs/02-guardrails-etica/plano.md
+      - 03 Sessão e autenticação:
+          - Spec: Specs/03-sessao-autenticacao/spec.md
+          - Plano: Specs/03-sessao-autenticacao/plano.md
+      - 04 Perfil de saúde e LGPD:
+          - Spec: Specs/04-perfil-saude-lgpd/spec.md
+          - Plano: Specs/04-perfil-saude-lgpd/plano.md
+      - 05 App PWA:
+          - Spec: Specs/05-app-pwa/spec.md
+          - Plano: Specs/05-app-pwa/plano.md
+      - 06 Observabilidade e feedback:
+          - Spec: Specs/06-observabilidade-feedback/spec.md
+          - Plano: Specs/06-observabilidade-feedback/plano.md
+      - 07 Dados e ingestão:
+          - Spec: Specs/07-dados-ingestao/spec.md
+          - Plano: Specs/07-dados-ingestao/plano.md
+      - 08 Deploy e CI:
+          - Spec: Specs/08-deploy-ci/spec.md
+          - Plano: Specs/08-deploy-ci/plano.md

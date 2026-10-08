@@ -8,6 +8,7 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+.venv-scraper
 .pytest_cache/
 .ruff_cache/
 *.egg-info/
@@ -18,3 +19,18 @@ venv/
 
 # SO
 .DS_Store
+
+uv.lock
+# Front-end
+node_modules/
+web/dist/
+web/coverage/
+web/.vite/
+
+# Saidas dos benchmarks (geradas a cada execucao)
+bench*.json
+benchmark_*.json
+
+# Documentação (MkDocs)
+site/
+

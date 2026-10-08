@@ -1,9 +1,8 @@
 """Endpoint principal de checagem.
 
-ATENCAO: a resposta ainda e MOCKADA. O objetivo deste modulo hoje e congelar o
-contrato para o app mobile. O pipeline real (cache semantico -> extracao de claim ->
-recuperacao no pgvector -> geracao ancorada -> guardrails) descrito em
-Docs/Production/01, secao 1.1, substitui o corpo de `montar_resposta_mockada`.
+Executa o pipeline RAG completo:
+extracao de claim -> guardrails eticos -> recuperacao no pgvector -> geracao ancorada.
+Documentado em Docs/Production/01_plataforma_e_deploy.md, secao 1.1.
 """
 
 import base64
@@ -16,20 +15,13 @@ from fastapi import APIRouter, Depends
 from APP.auth import exigir_autenticacao
 from APP.config import Settings, obter_settings
 from APP.errors import ApiError
-from APP.schemas import CheckClaimRequest, CheckClaimResponse, Fonte
-from APP.verdict import classificar_veredito
+from APP.model.pipeline import executar_pipeline_de_checagem
+from APP.observabilidade import adicionar_ao_log, trace_id_atual
+from APP.ratelimit import LIMITE_CHECK_CLAIM, limitar
+from APP.repositorios.perfil import RepositorioDePerfil, obter_repositorio_de_perfil
+from APP.schemas import CheckClaimRequest, CheckClaimResponse, Profile
 
 router = APIRouter(prefix="/api/v1", tags=["checagem"])
-
-MODEL_VERSION_MOCK = "mock@0.1.0"
-PROMPT_VERSION_MOCK = "mock-v0"
-RISK_SCORE_MOCK = 0.78
-
-DISCLAIMER = (
-    "Esta informacao nao substitui a consulta com um nutricionista ou medico. "
-    "Texto provisorio: a redacao final sera definida pela frente de Etica "
-    "(Docs/Ethics/03_transparencia_e_disclaimers.md)."
-)
 
 
 def _validar_tamanho_da_imagem(image_base64: str | None, settings: Settings) -> None:
@@ -44,47 +36,87 @@ def _validar_tamanho_da_imagem(image_base64: str | None, settings: Settings) -> 
         raise ApiError("payload_too_large", 413)
 
 
-def montar_resposta_mockada(requisicao: CheckClaimRequest, latency_ms: int) -> CheckClaimResponse:
-    return CheckClaimResponse(
-        trace_id=str(uuid.uuid4()),
-        canonical_claim=(
-            "O consumo de agua com limao em jejum possui efeito termogenico ou de "
-            "reducao de retencao hidrica?"
-        ),
-        verdict=classificar_veredito(RISK_SCORE_MOCK),
-        risk_score=RISK_SCORE_MOCK,
-        risk_level="baixo",
-        answer=(
-            "Nao ha evidencia de que agua com limao acelere a queima de gordura. O efeito "
-            "de 'desinchar' relatado costuma vir da hidratacao em si [Ref: chunk_a1f2]. "
-            "(RESPOSTA MOCKADA — o pipeline de RAG ainda nao esta ligado.)"
-        ),
-        sources=[
-            Fonte(
-                chunk_id="chunk_a1f2",
-                title="Efeitos metabolicos de compostos citricos: revisao sistematica",
-                authors="Silva, R.; Almeida, C.",
-                journal="Revista de Nutricao",
-                published_at="2021-06-01",
-                doi="10.1590/xxxx-xxxx",
-                excerpt="Nao foram observadas diferencas significativas no gasto energetico...",
-            )
-        ],
-        disclaimer=DISCLAIMER,
-        cached=False,
-        latency_ms=latency_ms,
-        model_version=MODEL_VERSION_MOCK,
-        prompt_version=PROMPT_VERSION_MOCK,
-    )
-
-
-@router.post("/check-claim", response_model=CheckClaimResponse)
-async def check_claim(
+# Rota sincrona (def, nao async def) de proposito: embeddings e LLM bloqueiam por
+# segundos, e o FastAPI roda funcao sincrona em um threadpool. Como async, a espera
+# pelo Ollama travaria o event loop e a API inteira, /health incluido.
+@router.post(
+    "/check-claim",
+    response_model=CheckClaimResponse,
+    # Na lista da rota, e nao como decorador: assim o limite roda antes da autenticacao
+    # e da validacao do corpo (ver o docstring de APP/ratelimit.py).
+    dependencies=[Depends(limitar(LIMITE_CHECK_CLAIM))],
+)
+def check_claim(
     requisicao: CheckClaimRequest,
-    _token: str = Depends(exigir_autenticacao),
+    usuario: str = Depends(exigir_autenticacao),
     settings: Settings = Depends(obter_settings),
+    repositorio: RepositorioDePerfil = Depends(obter_repositorio_de_perfil),
 ) -> CheckClaimResponse:
     inicio = time.perf_counter()
+    adicionar_ao_log(input=_descrever_entrada(requisicao))
+
     _validar_tamanho_da_imagem(requisicao.image_base64, settings)
-    decorrido_ms = int((time.perf_counter() - inicio) * 1000)
-    return montar_resposta_mockada(requisicao, decorrido_ms)
+    trace_id = trace_id_atual() or str(uuid.uuid4())
+    perfil = _perfil_do_usuario(requisicao, usuario, repositorio)
+    resposta = executar_pipeline_de_checagem(requisicao, settings, 0, trace_id, perfil)
+    # Medido depois do pipeline: e o tempo do LLM que se quer comparar entre provedores.
+    resposta.latency_ms = int((time.perf_counter() - inicio) * 1000)
+
+    adicionar_ao_log(
+        output={
+            "verdict": resposta.verdict,
+            "risk_score": resposta.risk_score,
+            "sources_count": len(resposta.sources),
+        },
+        # Sem as versoes no registro nao da para atribuir uma queda de qualidade
+        # a mudanca que a causou (Docs/Production/02, secoes 2.3 e 3.1).
+        generation={
+            "model_version": resposta.model_version,
+            "prompt_version": resposta.prompt_version,
+        },
+        performance={"cache_hit": resposta.cached},
+    )
+    return resposta
+
+
+def _perfil_do_usuario(
+    requisicao: CheckClaimRequest, usuario: str, repositorio: RepositorioDePerfil
+) -> Profile | None:
+    """Perfil de saude usado na checagem, quando o usuario pediu (use_profile).
+
+    Falha do repositorio nao derruba a checagem: sem perfil a resposta sai generica, que
+    e melhor do que nao responder. O log registra que o perfil entrou, sem dizer o que
+    ha nele (Docs/Production/02, secao 3.1).
+    """
+    if not requisicao.use_profile:
+        return None
+    try:
+        perfil = repositorio.buscar(usuario)
+    except Exception as erro:  # noqa: BLE001
+        adicionar_ao_log(profile={"erro": type(erro).__name__})
+        return None
+
+    adicionar_ao_log(
+        profile={
+            "usado": perfil is not None,
+            "has_conditions": bool(perfil and perfil.conditions),
+        }
+    )
+    return perfil
+
+
+def _descrever_entrada(requisicao: CheckClaimRequest) -> dict[str, object]:
+    """Descreve a entrada sem copiar o texto do usuario para o log.
+
+    Docs/Production/02, secao 3.1: o log guarda o formato e o tamanho, nao o
+    conteudo. O texto original fica so na resposta e, quando o pipeline existir,
+    na alegacao canonica do bloco `nlp`.
+    """
+    bruto = requisicao.text or requisicao.url or requisicao.image_base64 or ""
+    return {
+        "input_type": requisicao.input_type,
+        "raw_length": len(bruto),
+        # Fixo por enquanto: o MVP e pt-BR. Vira deteccao quando houver
+        # necessidade de outro idioma.
+        "language": "pt-BR",
+    }

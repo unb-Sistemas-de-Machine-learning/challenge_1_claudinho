@@ -13,3 +13,7 @@ Docs
 tests
 README.md
 .DS_Store
+
+# Front-end: a imagem serve so a API, e o node_modules levaria centenas de MB
+# para o contexto de build sem necessidade.
+web

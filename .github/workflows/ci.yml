@@ -7,7 +7,7 @@ on:
 
 jobs:
   qualidade:
-    name: Lint e testes
+    name: Lint e testes (API)
     runs-on: ubuntu-latest
 
     env:
@@ -35,8 +35,10 @@ jobs:
       - name: Lint (ruff)
         run: ruff check .
 
+      # -rxX lista no log do CI as lacunas conhecidas (xfail) de todo build, para elas
+      # ficarem visiveis e nao esquecidas (ex.: guardrails, issue #7).
       - name: Testes (pytest)
-        run: pytest -q
+        run: pytest -q -rxX
 
   imagem:
     name: Build da imagem Docker
@@ -52,3 +54,34 @@ jobs:
 # TODO: o quality gate de RAGAS (faithfulness >= 0.90, recall >= 0.95) descrito em
 # Docs/Production/01, secao 3.2, entra como um job aqui depois que o benchmark de
 # 50 perguntas existir.
+
+  front:
+    name: Lint e testes (web)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Lint (oxlint)
+        run: npm run lint
+
+      - name: Formatacao (prettier)
+        run: npm run format:check
+
+      - name: Testes (vitest)
+        run: npm test
+
+      - name: Build
+        run: npm run build

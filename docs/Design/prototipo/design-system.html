@@ -1,0 +1,547 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claudinho Design System</title>
+<script>document.documentElement.lang = "pt-BR";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="claudinho.css">
+<style>
+  body { padding-inline: 20px; padding-block: 0 64px; }
+  .page { max-width: 1040px; margin-inline: auto; display: grid; gap: 72px; }
+  .masthead { display: grid; gap: var(--s-4); padding-top: 48px; }
+  .masthead h1 { font-family: var(--font-display); font-size: clamp(2.25rem, 7vw, 3.5rem); line-height: 1; font-weight: 750; letter-spacing: -0.035em; max-width: 14ch; text-wrap: balance; }
+  .masthead p { max-width: 60ch; }
+  .jump { display: flex; gap: var(--s-2); overflow-x: auto; padding-block: var(--s-2); scrollbar-width: none; }
+  .jump a { flex: none; display: inline-flex; align-items: center; min-height: 40px; padding-inline: 14px; border-radius: var(--r-pill); background: var(--c-sunken); color: var(--c-ink); text-decoration: none; font-size: var(--t-small); font-weight: 700; }
+  .jump a:hover { background: var(--c-brand-tint); color: var(--c-brand); }
+
+  section.block { display: grid; gap: var(--s-6); scroll-margin-top: 24px; }
+  .block-head { display: grid; gap: var(--s-2); max-width: 64ch; }
+  .block-head h2 { font-family: var(--font-display); font-size: 2rem; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
+  .sub { font-size: var(--t-read); font-weight: 700; margin-bottom: var(--s-3); }
+
+  /* Princípios */
+  .principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--s-6) var(--s-8); counter-reset: none; }
+  .principle { display: grid; gap: var(--s-2); align-content: start; }
+  .principle .lucide { color: var(--c-brand); width: 26px; height: 26px; }
+  .principle h3 { font-family: var(--font-display); font-size: 1.25rem; line-height: 1.2; font-weight: 700; text-wrap: balance; }
+  .principle p { color: var(--c-ink-2); font-size: var(--t-small); }
+
+  /* Cores */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s-5) var(--s-4); }
+  .swatch { display: grid; gap: var(--s-2); }
+  .chip-color { height: 72px; border-radius: var(--r-md); border: 1px solid var(--c-line); }
+  .swatch b { font-size: var(--t-small); }
+  .swatch code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.78rem; color: var(--c-ink-2); }
+  .swatch .caption { line-height: 1.35; }
+  .brand-strip { display: grid; grid-template-columns: 2fr 1fr 1fr; min-height: 132px; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--c-line); }
+  .brand-strip > div { padding: var(--s-4); display: flex; flex-direction: column; justify-content: space-between; gap: var(--s-2); font-size: var(--t-small); }
+  .brand-strip .big { font-family: var(--font-display); font-size: 1.5rem; font-weight: 750; letter-spacing: -0.02em; }
+  @media (max-width: 560px) { .brand-strip { grid-template-columns: 1fr 1fr; } .brand-strip > div:first-child { grid-column: 1 / -1; min-height: 110px; } }
+
+  .verdict-pairs { display: grid; gap: var(--s-2); }
+  .pair { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: var(--s-4); align-items: center; padding: var(--s-3); border-radius: var(--r-md); background: var(--c-surface); border: 1px solid var(--c-line); }
+  .pair-sample { display: grid; place-items: center; width: 64px; height: 52px; border-radius: var(--r-sm); background: var(--v-bg); color: var(--v-ink); font-family: var(--font-display); font-weight: 750; font-size: 1.4rem; }
+  .pair-name { display: grid; gap: 2px; min-width: 0; }
+  .pair-name b { font-size: var(--t-body); }
+  .ratio { text-align: right; font-size: var(--t-small); font-variant-numeric: tabular-nums; }
+  .ratio span { display: block; }
+
+  /* Tipografia */
+  .type-rows { display: grid; }
+  .type-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(160px, 220px); gap: var(--s-3) var(--s-6); align-items: baseline; padding-block: var(--s-5); border-bottom: 1px solid var(--c-line); }
+  .type-row:first-child { padding-top: 0; }
+  .type-meta { display: grid; gap: 2px; font-size: var(--t-small); color: var(--c-ink-2); }
+  .type-meta b { color: var(--c-ink); }
+  .type-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s-6); }
+  .face { display: grid; gap: var(--s-2); padding: var(--s-6); border-radius: var(--r-lg); background: var(--c-surface); border: 1px solid var(--c-line); }
+  .face .glyphs { font-size: 3.5rem; line-height: 1; letter-spacing: -0.02em; }
+  .face p { color: var(--c-ink-2); font-size: var(--t-small); }
+
+  /* Espaço e forma */
+  .space-scale { display: grid; gap: var(--s-2); }
+  .space-row { display: grid; grid-template-columns: 72px 1fr; gap: var(--s-4); align-items: center; font-size: var(--t-small); font-variant-numeric: tabular-nums; }
+  .space-bar { height: 14px; border-radius: 4px; background: var(--c-brand); }
+  .shapes { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: var(--s-6); align-items: start; }
+  .shape { display: grid; gap: var(--s-3); }
+  .shape-demo { height: 96px; display: flex; align-items: center; }
+  .shape p { font-size: var(--t-small); color: var(--c-ink-2); }
+
+  /* Componentes */
+  .specimens { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--s-5); align-items: start; }
+  .specimen { display: grid; gap: var(--s-4); padding: var(--s-5); border-radius: var(--r-lg); background: var(--c-ground); border: 1px solid var(--c-line); }
+  .specimen-wide { grid-column: 1 / -1; }
+  .specimen > h3 { font-size: var(--t-body); font-weight: 700; }
+  .specimen .note { font-size: var(--t-small); color: var(--c-ink-2); }
+  .row-demo { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+  .convo-demo { display: flex; flex-direction: column; gap: var(--s-4); }
+  .tabbar-demo { border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--c-line); }
+  .tabbar-demo .tabbar { border-top: 0; }
+
+  .verdict-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--s-4); }
+  .verdict-grid .reply { align-content: start; }
+  .verdict-grid .verdict-headline { font-size: 1.5rem; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--c-line); border-radius: var(--r-md); }
+  table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: var(--t-small); }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--c-line); vertical-align: top; }
+  th { font-weight: 700; background: var(--c-sunken); }
+  tr:last-child td { border-bottom: 0; }
+  td code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.8rem; }
+
+  /* Tom de voz */
+  .voice { display: grid; gap: var(--s-3); }
+  .voice-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+  .say, .avoid { display: grid; grid-template-columns: 22px 1fr; gap: var(--s-3); padding: var(--s-4); border-radius: var(--r-md); font-size: var(--t-body); line-height: 1.45; }
+  .say { background: var(--c-seguro-bg); }
+  .say .lucide { color: var(--c-seguro-ink); }
+  .avoid { background: var(--c-sunken); color: var(--c-ink-2); }
+  .avoid .lucide { color: var(--c-mito-ink); }
+  .say small, .avoid small { display: block; margin-top: var(--s-1); font-size: var(--t-caption); color: var(--c-ink-2); }
+  @media (max-width: 640px) { .voice-row { grid-template-columns: 1fr; } .type-row { grid-template-columns: 1fr; } }
+
+  .rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--s-5) var(--s-8); }
+  .rule { display: grid; grid-template-columns: 24px 1fr; gap: var(--s-3); font-size: var(--t-small); color: var(--c-ink-2); }
+  .rule .lucide { color: var(--c-brand); }
+  .rule b { display: block; color: var(--c-ink); font-size: var(--t-body); margin-bottom: 2px; }
+  pre { margin: 0; overflow-x: auto; padding: var(--s-4); border-radius: var(--r-md); background: var(--c-sunken); font-size: 0.82rem; line-height: 1.55; }
+  pre code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+
+  .tema { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+  .tema-btn { min-height: 40px; padding-inline: 14px; border-radius: var(--r-pill); border: 1.5px solid var(--c-line-strong); background: var(--c-surface); font-size: var(--t-small); font-weight: 700; }
+  .tema-btn[aria-pressed="true"] { background: var(--c-brand-tint); border-color: var(--c-brand); color: var(--c-brand); }
+
+  .fluxo { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--s-4); }
+  .etapa { display: grid; gap: var(--s-2); padding: var(--s-5); border-radius: var(--r-lg); background: var(--c-surface); border: 1px solid var(--c-line); align-content: start; }
+  .etapa b { font-size: var(--t-body); }
+  .etapa p { font-size: var(--t-small); color: var(--c-ink-2); }
+  .etapa .quando { font-size: var(--t-caption); font-weight: 700; color: var(--c-brand); }
+
+  .pending { display: grid; gap: var(--s-3); max-width: 70ch; }
+  .pending li { display: grid; grid-template-columns: 22px 1fr; gap: var(--s-3); font-size: var(--t-body); }
+  .pending .lucide { color: var(--c-cautela-ink); }
+</style>
+
+<div class="page">
+  <header class="masthead">
+    <span class="wordmark">claudinho</span>
+    <h1>Design system do Claudinho</h1>
+    <p class="lede">Cores, tipografia, componentes e tom de voz do PWA que checa desinformação nutricional. O <a href="https://claude.ai/artifact/UF6fRGYf4Yh1coCJGMXgu9" target="_blank" rel="noopener">protótipo navegável</a> usa exatamente este CSS, então o que está aqui é o que roda nas telas.</p>
+    <nav class="jump" aria-label="Seções">
+      <a href="#principios">Princípios</a><a href="#cores">Cores</a><a href="#tipografia">Tipografia</a><a href="#forma">Espaço e forma</a><a href="#componentes">Componentes</a><a href="#vereditos">Vereditos</a><a href="#voz">Tom de voz</a><a href="#conta">Conta e histórico</a><a href="#mobile">Mobile e PWA</a>
+    </nav>
+    <div class="tema" role="group" aria-label="Tema desta página">
+      <span class="small muted">Ver esta página em</span>
+      <button class="tema-btn" data-tema="auto" aria-pressed="true">Automático</button>
+      <button class="tema-btn" data-tema="light" aria-pressed="false">Claro</button>
+      <button class="tema-btn" data-tema="dark" aria-pressed="false">Escuro</button>
+    </div>
+  </header>
+
+  <section class="block" id="principios" aria-labelledby="h-principios">
+    <div class="block-head">
+      <h2 id="h-principios">Princípios</h2>
+      <p class="lede">Saem das personas e da frente de Ética. Quando duas decisões de tela brigarem, estes desempatam.</p>
+    </div>
+    <div class="principles">
+      <div class="principle"><i data-lucide="message-circle-reply" aria-hidden="true"></i><h3>O veredito vem antes da explicação</h3><p>O Lucas decide em segundos se vai ler o resto. A frase do veredito cabe na primeira dobra, sem rolar.</p></div>
+      <div class="principle"><i data-lucide="book-open" aria-hidden="true"></i><h3>A fonte fica à mão, sem obrigar a abrir</h3><p>DOI e trecho usado estão sempre a um toque, numa seção que expande. Fonte visível é condição de confiança.</p></div>
+      <div class="principle"><i data-lucide="heart" aria-hidden="true"></i><h3>Ninguém sai culpado por comer</h3><p>Nenhuma frase sugere que a pessoa errou. Mito vira alívio, não bronca. Peso nunca é comentado.</p></div>
+      <div class="principle"><i data-lucide="heart-handshake" aria-hidden="true"></i><h3>Recusar também é cuidar</h3><p>Na recusa segura, a tela acolhe e oferece canal de ajuda no lugar do número pedido. É a tela da Camila.</p></div>
+    </div>
+  </section>
+
+  <section class="block" id="cores" aria-labelledby="h-cores">
+    <div class="block-head">
+      <h2 id="h-cores">Cores</h2>
+      <p class="lede">A estratégia é contida: neutros claros em quase toda a tela, azul só nas ações e a cor forte guardada para o veredito. O fundo é um branco levemente quente em vez de <code class="mono">#FFFFFF</code>, que cansa menos a vista na tela do celular.</p>
+      <p class="small muted" style="max-width:66ch">A escolha do azul veio de olhar a categoria. Os apps que <b>dão um veredito</b> usam marca neutra ou azul e deixam a escala semântica carregar o significado: Yuka em <code class="mono">#003388</code>, MyFitnessPal em <code class="mono">#0066EE</code>. Os que <b>contam calorias</b> podem ter verde de marca sem confundir ninguém: Lifesum em <code class="mono">#21BA3A</code>, Yazio em <code class="mono">#00AD85</code>, Nutrium em <code class="mono">#62CDC0</code>. O Claudinho é do primeiro grupo, então verde, âmbar e vermelho ficam reservados ao veredito. O calor vem do pêssego, do mesmo jeito que o Yazio usa <code class="mono">#F5AC70</code> e a Zoe usa tons terrosos.</p>
+    </div>
+
+    <div class="brand-strip">
+      <div style="background:var(--c-brand);color:var(--c-on-brand)"><span class="big">Jabuticaba</span><span class="mono" style="color:inherit">--c-brand</span></div>
+      <div style="background:var(--c-brand-tint);color:var(--c-brand)"><b>Jabuticaba clara</b><span class="mono" style="color:inherit">--c-brand-tint</span></div>
+      <div style="background:var(--c-ground);color:var(--c-ink)"><b>Papel</b><span class="mono">--c-ground</span></div>
+    </div>
+
+    <div>
+      <p class="sub">Neutros e marca</p>
+      <div class="swatches">
+        <div class="swatch"><div class="chip-color" style="background:var(--c-ground)"></div><b>Papel</b><code>--c-ground</code><span class="caption">#FCFAF6 claro, #18181C escuro. Fundo das telas.</span></div>
+        <div class="swatch"><div class="chip-color" style="background:var(--c-surface)"></div><b>Superfície</b><code>--c-surface</code><span class="caption">#FFFFFD claro, #222228 escuro. Campos e botões secundários.</span></div>
+        <div class="swatch"><div class="chip-color" style="background:var(--c-sunken)"></div><b>Rebaixado</b><code>--c-sunken</code><span class="caption">#F4F0E7 claro, #0F0F13 escuro. Bolha do usuário e trechos citados.</span></div>
+        <div class="swatch"><div class="chip-color" style="background:var(--c-ink)"></div><b>Tinta</b><code>--c-ink</code><span class="caption">#373741 claro, #F1F1F5 escuro. 11,3:1 e 15,8:1 sobre o papel.</span></div>
+        <div class="swatch"><div class="chip-color" style="background:var(--c-ink-2)"></div><b>Tinta 2</b><code>--c-ink-2</code><span class="caption">#62626F claro, #C3C3CA escuro. 5,8:1 e 10,1:1.</span></div>
+        <div class="swatch"><div class="chip-color" style="background:var(--c-ink-3)"></div><b>Tinta 3</b><code>--c-ink-3</code><span class="caption">#686872 claro, #A4A4AB escuro. 5,3:1 e 7,1:1. Legendas.</span></div>
+        <div class="swatch"><div class="chip-color" style="background:var(--c-line-strong)"></div><b>Borda de campo</b><code>--c-line-strong</code><span class="caption">#8B8B95 claro, #797983 escuro. 3,4:1 e 3,7:1, acima do mínimo de 3:1 para contorno.</span></div>
+        <div class="swatch"><div class="chip-color" style="background:var(--c-brand)"></div><b>Azul de checagem</b><code>--c-brand</code><span class="caption">#226FB3 claro, #7ABDFF escuro. Ação principal e seleção. 5,1:1 com texto branco.</span></div>
+        <div class="swatch"><div class="chip-color" style="background:var(--c-accent-bg)"></div><b>Pêssego</b><code>--c-accent-bg</code><span class="caption">#FFE5CE claro, #482F1A escuro. Boas-vindas e resposta de cuidado. Nunca em ação principal.</span></div>
+      </div>
+    </div>
+
+    <div>
+      <p class="sub">Vereditos: fundo e tinta de cada selo</p>
+      <div class="verdict-pairs">
+        <div class="pair" data-verdict="seguro"><span class="pair-sample" aria-hidden="true">Aa</span><span class="pair-name"><b>Couve</b><span class="mono">--c-seguro-bg #D2F6DD, --c-seguro-ink #17653C</span></span><span class="ratio"><span>6,1:1</span><span class="caption">escuro 8,6:1</span></span></div>
+        <div class="pair" data-verdict="cautela"><span class="pair-sample" aria-hidden="true">Aa</span><span class="pair-name"><b>Maracujá</b><span class="mono">--c-cautela-bg #FFECB9, --c-cautela-ink #875814</span></span><span class="ratio"><span>5,2:1</span><span class="caption">escuro 8,7:1</span></span></div>
+        <div class="pair" data-verdict="desinformacao"><span class="pair-sample" aria-hidden="true">Aa</span><span class="pair-name"><b>Pitanga</b><span class="mono">--c-mito-bg #FFE0DC, --c-mito-ink #B33736</span></span><span class="ratio"><span>4,8:1</span><span class="caption">escuro 8,0:1</span></span></div>
+        <div class="pair" data-verdict="sem_evidencia"><span class="pair-sample" aria-hidden="true">Aa</span><span class="pair-name"><b>Cinza neutro</b><span class="mono">--c-sem-bg #EFECE7, --c-sem-ink #5E5A53</span></span><span class="ratio"><span>5,8:1</span><span class="caption">escuro 8,6:1</span></span></div>
+        <div class="pair" data-verdict="recusa_segura"><span class="pair-sample" aria-hidden="true">Aa</span><span class="pair-name"><b>Pêssego</b><span class="mono">--c-accent-bg #FFE5CE, --c-accent-ink #7F4413</span></span><span class="ratio"><span>6,4:1</span><span class="caption">escuro 8,5:1</span></span></div>
+      </div>
+    </div>
+    <p class="small muted" style="max-width:64ch">Cor nunca é o único sinal: todo veredito leva ícone e rótulo escrito. Os valores são definidos em OKLCH no CSS, os hexadecimais acima são aproximações para ferramentas de design.</p>
+  </section>
+
+  <section class="block" id="tipografia" aria-labelledby="h-tipo">
+    <div class="block-head">
+      <h2 id="h-tipo">Tipografia</h2>
+      <p class="lede">Duas famílias com papéis que não se misturam: uma fala o veredito, a outra carrega todo o resto.</p>
+    </div>
+    <div class="type-pair">
+      <div class="face"><span class="glyphs display" style="font-weight:750">Aa Gg</span><b>Bricolage Grotesque</b><p>Frases de veredito, títulos de tela e a marca. Calorosa e um pouco informal, como alguém explicando em voz alta. Nunca em botões, rótulos ou campos.</p></div>
+      <div class="face"><span class="glyphs" style="font-weight:700">Aa Il1</span><b>Atkinson Hyperlegible Next</b><p>Texto corrido, interface e dados. Criada para baixa visão: letras que não se confundem ajudam com brilho baixo no ônibus e com a leitura da Renata, de 54 anos.</p></div>
+    </div>
+    <div class="type-rows">
+      <div class="type-row"><span class="verdict-headline">Pode respirar: pão francês não inflama o corpo.</span><span class="type-meta"><b>Veredito</b>Bricolage 700, 30/32 px<br><code class="mono">.verdict-headline</code></span></div>
+      <div class="type-row"><span class="h1">O que você viu por aí?</span><span class="type-meta"><b>Título de tela</b>Bricolage 700, 28/31 px<br><code class="mono">.h1</code></span></div>
+      <div class="type-row"><span class="h2">Importante saber antes de usar</span><span class="type-meta"><b>Título de seção</b>Bricolage 650, 22/26 px<br><code class="mono">.h2</code></span></div>
+      <div class="type-row"><span style="font-size:var(--t-read);line-height:1.6">Os estudos da base não mostram que o pão francês, dentro de uma alimentação variada, cause inflamação em adultos saudáveis.</span><span class="type-meta"><b>Leitura</b>Atkinson 400, 17/27 px<br><code class="mono">.answer</code></span></div>
+      <div class="type-row"><span>Cole um link ou escreva a dúvida com suas palavras.</span><span class="type-meta"><b>Interface</b>Atkinson 400 e 700, 16/24 px<br>Campos usam 17 px ou mais para o iPhone não dar zoom.</span></div>
+      <div class="type-row"><span class="small">Revista de Nutrição, 2022</span><span class="type-meta"><b>Apoio</b>Atkinson 400, 15/22 px<br><code class="mono">.small</code></span></div>
+      <div class="type-row"><span class="caption">Hoje, 7:42</span><span class="type-meta"><b>Legenda</b>Atkinson 400, 13/18 px. Menor tamanho permitido.<br><code class="mono">.caption</code></span></div>
+    </div>
+  </section>
+
+  <section class="block" id="forma" aria-labelledby="h-forma">
+    <div class="block-head">
+      <h2 id="h-forma">Espaço e forma</h2>
+      <p class="lede">Espaçamento em múltiplos de 4. O arredondamento tem significado: o canto quase reto aponta quem está falando, como numa conversa.</p>
+    </div>
+    <div class="shapes">
+      <div class="space-scale" aria-label="Escala de espaçamento">
+        <div class="space-row"><span>4 px</span><span class="space-bar" style="width:4px"></span></div>
+        <div class="space-row"><span>8 px</span><span class="space-bar" style="width:8px"></span></div>
+        <div class="space-row"><span>12 px</span><span class="space-bar" style="width:12px"></span></div>
+        <div class="space-row"><span>16 px</span><span class="space-bar" style="width:16px"></span></div>
+        <div class="space-row"><span>20 px</span><span class="space-bar" style="width:20px"></span></div>
+        <div class="space-row"><span>24 px</span><span class="space-bar" style="width:24px"></span></div>
+        <div class="space-row"><span>32 px</span><span class="space-bar" style="width:32px"></span></div>
+        <div class="space-row"><span>48 px</span><span class="space-bar" style="width:48px"></span></div>
+        <p class="caption" style="margin-top:8px">Margem lateral das telas: 20 px.</p>
+      </div>
+      <div class="shape"><div class="shape-demo" style="justify-content:flex-end"><div class="bubble">café faz mal pro coração?</div></div><b>Bolha do usuário</b><p>22 px, com o canto inferior direito em 6 px. Quem pergunta fala da direita.</p></div>
+      <div class="shape"><div class="shape-demo"><div class="reply" data-verdict="cautela" style="width:100%;min-height:80px"><span class="verdict-label"><i data-lucide="scale" aria-hidden="true"></i>Depende</span></div></div><b>Resposta</b><p>28 px, com o canto superior esquerdo em 6 px. O Claudinho responde da esquerda.</p></div>
+      <div class="shape"><div class="shape-demo" style="gap:12px"><span class="btn btn-primary btn-sm">Pílula</span><span style="width:72px;height:52px;border-radius:var(--r-md);border:1.5px solid var(--c-line-strong);background:var(--c-surface)"></span></div><b>Ações e campos</b><p>Botões e chips em pílula. Campos em 16 px, avisos em 16 px, trechos citados em 12 px.</p></div>
+    </div>
+  </section>
+
+  <section class="block" id="componentes" aria-labelledby="h-comp">
+    <div class="block-head">
+      <h2 id="h-comp">Componentes</h2>
+      <p class="lede">Todo alvo de toque tem pelo menos 48 px de altura, com exceção dos chips (44 px) e das referências numeradas, que ganham área invisível extra.</p>
+    </div>
+    <div class="specimens">
+      <div class="specimen">
+        <h3>Botões</h3>
+        <button class="btn btn-primary btn-block">Checar</button>
+        <button class="btn btn-secondary btn-block">Agora não</button>
+        <div class="row-demo">
+          <button class="btn btn-secondary btn-sm"><i data-lucide="clipboard-paste" aria-hidden="true"></i>Colar</button>
+          <button class="btn btn-ghost btn-sm"><i data-lucide="share-2" aria-hidden="true"></i>Compartilhar</button>
+        </div>
+        <button class="btn btn-primary btn-block" disabled>Aguarde para checar</button>
+        <p class="note">Um botão principal por tela, sempre no rodapé, ao alcance do polegar. O texto diz a ação: Checar, Salvar perfil, Enviar avaliação.</p>
+      </div>
+
+      <div class="specimen">
+        <h3>Campos</h3>
+        <div class="field"><label class="field-label" for="ds-email">E-mail</label><input class="input" id="ds-email" type="email" value="lucas@email.com"></div>
+        <div class="field"><label class="field-label" for="ds-pw">Senha</label><input class="input" id="ds-pw" type="password" value="1234" aria-invalid="true" aria-describedby="ds-pw-err"><p class="field-error" id="ds-pw-err"><i data-lucide="circle-alert" aria-hidden="true"></i>A senha precisa ter pelo menos 8 caracteres.</p></div>
+        <p class="note">Rótulo sempre visível acima do campo. O erro aparece embaixo dele, explicando como corrigir.</p>
+      </div>
+
+      <div class="specimen">
+        <h3>Chips e interruptor</h3>
+        <div class="chips" role="group" aria-label="Condições de exemplo">
+          <label class="chip"><input type="checkbox" checked><i data-lucide="check" aria-hidden="true"></i>Diabetes tipo 2</label>
+          <label class="chip"><input type="checkbox"><i data-lucide="check" aria-hidden="true"></i>Hipertensão</label>
+          <label class="chip"><input type="checkbox"><i data-lucide="check" aria-hidden="true"></i>Gestação</label>
+        </div>
+        <div class="switch-row"><label for="ds-switch" class="small"><strong>Considerar meu perfil de saúde</strong><span class="caption" style="display:block">Diabetes tipo 2</span></label><input type="checkbox" role="switch" class="switch" id="ds-switch" checked></div>
+        <p class="note">O selecionado ganha tinta de jabuticaba e um visto, para não depender só da cor.</p>
+      </div>
+
+      <div class="specimen">
+        <h3>Selos de veredito</h3>
+        <div class="row-demo">
+          <span data-verdict="desinformacao"><span class="verdict-chip"><i data-lucide="circle-x" aria-hidden="true"></i>É mito</span></span>
+          <span data-verdict="seguro"><span class="verdict-chip"><i data-lucide="circle-check" aria-hidden="true"></i>Tem base científica</span></span>
+          <span data-verdict="cautela"><span class="verdict-chip"><i data-lucide="scale" aria-hidden="true"></i>Depende</span></span>
+          <span data-verdict="sem_evidencia"><span class="verdict-chip"><i data-lucide="search-x" aria-hidden="true"></i>Faltam estudos</span></span>
+          <span data-verdict="recusa_segura"><span class="verdict-chip"><i data-lucide="heart-handshake" aria-hidden="true"></i>Resposta de cuidado</span></span>
+        </div>
+        <p class="note">Versão compacta para o histórico. Na tela de resultado o veredito vira a resposta inteira.</p>
+      </div>
+
+      <div class="specimen specimen-wide">
+        <h3>Conversa: dúvida e resposta</h3>
+        <div class="convo-demo" style="max-width:390px">
+          <div class="bubble"><div class="bubble-meta"><i data-lucide="link" aria-hidden="true"></i>instagram.com/reel/C9x2pao</div>Pão francês inflama o corpo. Corta hoje e sente a diferença em 7 dias.</div>
+          <div class="reply" data-verdict="desinformacao">
+            <span class="verdict-label"><i data-lucide="circle-x" aria-hidden="true"></i>É mito</span>
+            <p class="verdict-headline">Pode respirar: pão francês não inflama o corpo.</p>
+            <p class="understood">Entendi assim: <strong>O consumo diário de pão francês causa inflamação no organismo de adultos saudáveis?</strong></p>
+          </div>
+        </div>
+        <p class="note">O momento principal do produto. A frase do veredito é escrita como fala, e a alegação canônica confirma que o sistema entendeu a pergunta certa.</p>
+      </div>
+
+      <div class="specimen">
+        <h3>Fonte consultada</h3>
+        <div class="source">
+          <span class="source-n" aria-hidden="true">1</span>
+          <div class="source-body">
+            <p class="source-title">Consumo de pães e marcadores inflamatórios em adultos: revisão sistemática</p>
+            <p class="source-meta">Revista de Nutrição, 2022<br>Oliveira, M. S.; Costa, L. R.</p>
+            <blockquote class="source-quote"><span class="caption">Trecho usado na resposta</span>“Não foi observada associação consistente entre o consumo habitual de pão branco e a elevação de proteína C-reativa.”</blockquote>
+            <span class="doi" style="color:var(--c-brand)"><i data-lucide="external-link" aria-hidden="true"></i>doi.org/10.1590/exemplo.2022.0141</span>
+          </div>
+        </div>
+        <p class="note">Campos exigidos pela Ethics/03: título, periódico, autores, DOI e o trecho exato. Referência de exemplo.</p>
+      </div>
+
+      <div class="specimen">
+        <h3>Avaliação</h3>
+        <div class="feedback">
+          <p class="h3">Essa resposta ajudou?</p>
+          <div class="feedback-row">
+            <button class="btn btn-secondary btn-sm" aria-pressed="false"><i data-lucide="thumbs-up" aria-hidden="true"></i>Ajudou</button>
+            <button class="btn btn-secondary btn-sm" aria-pressed="true"><i data-lucide="thumbs-down" aria-hidden="true"></i>Não ajudou</button>
+          </div>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="ds-r"><i data-lucide="check" aria-hidden="true"></i>A fonte não tem a ver</label>
+            <label class="chip"><input type="radio" name="ds-r"><i data-lucide="check" aria-hidden="true"></i>Ficou confuso</label>
+            <label class="chip"><input type="radio" name="ds-r" checked><i data-lucide="check" aria-hidden="true"></i>Me senti julgado</label>
+          </div>
+        </div>
+        <p class="note">Os seis motivos do contrato de <code class="mono">/feedback</code>. Motivo é obrigatório quando a avaliação é negativa.</p>
+      </div>
+
+      <div class="specimen">
+        <h3>Avisos</h3>
+        <div class="notice notice-care"><i data-lucide="stethoscope" aria-hidden="true"></i><div class="notice-body"><strong>Considerei seu perfil de saúde</strong><span>Antes de mudar a alimentação ou o remédio, fale com quem acompanha seu tratamento.</span></div></div>
+        <div class="notice notice-warn"><i data-lucide="timer" aria-hidden="true"></i><div class="notice-body"><strong>Muitas checagens seguidas</strong><span>Você pode checar de novo em 42 segundos.</span></div></div>
+        <div class="notice notice-error"><i data-lucide="server-off" aria-hidden="true"></i><div class="notice-body"><strong>Não consegui terminar a checagem</strong><span>O serviço está fora do ar. Sua dúvida continua aqui.</span></div></div>
+        <div class="notice notice-info"><i data-lucide="wifi-off" aria-hidden="true"></i><div class="notice-body"><strong>Você está sem internet</strong><span>Eu checo assim que a conexão voltar.</span></div></div>
+        <p class="note">Aparecem no lugar do problema, nunca em pop-up. Cada um diz o que houve e o que fazer.</p>
+      </div>
+
+      <div class="specimen">
+        <h3>Progresso da checagem</h3>
+        <div class="reply" style="background:var(--c-surface);border:1px solid var(--c-line)">
+          <ol class="steps">
+            <li class="step" data-state="done"><span class="step-mark"><i data-lucide="check" aria-hidden="true"></i></span>Abrindo o post</li>
+            <li class="step" data-state="active"><span class="step-mark"><span class="spinner"></span></span>Procurando nos estudos</li>
+            <li class="step" data-state="todo"><span class="step-mark"><span class="dot"></span></span>Escrevendo a resposta</li>
+          </ol>
+          <p class="understood">Entendi assim: <strong>O consumo diário de pão francês causa inflamação no organismo de adultos saudáveis?</strong></p>
+        </div>
+        <p class="note">A alegação extraída aparece antes da resposta, como pede a User/02. Se o sistema entendeu errado, a pessoa já sabe.</p>
+      </div>
+
+      <div class="specimen">
+        <h3>Barra de abas</h3>
+        <div class="tabbar-demo">
+          <nav class="tabbar" aria-label="Exemplo de navegação">
+            <span class="tab" aria-current="page"><span class="tab-icon"><i data-lucide="scan-search" aria-hidden="true"></i></span>Checar</span>
+            <span class="tab"><span class="tab-icon"><i data-lucide="history" aria-hidden="true"></i></span>Histórico</span>
+            <span class="tab"><span class="tab-icon"><i data-lucide="user-round" aria-hidden="true"></i></span>Perfil</span>
+          </nav>
+        </div>
+        <p class="note">Três destinos só. Some nas telas de checagem e resultado para a atenção ficar na resposta.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="vereditos" aria-labelledby="h-ver">
+    <div class="block-head">
+      <h2 id="h-ver">Vereditos</h2>
+      <p class="lede">Cada valor de <code class="mono">verdict</code> da API tem rótulo, ícone, cor e um jeito próprio de abrir a frase.</p>
+    </div>
+    <div class="verdict-grid">
+      <div class="reply" data-verdict="desinformacao"><span class="verdict-label"><i data-lucide="circle-x" aria-hidden="true"></i>É mito</span><p class="verdict-headline">Pode respirar: pão francês não inflama o corpo.</p></div>
+      <div class="reply" data-verdict="seguro"><span class="verdict-label"><i data-lucide="circle-check" aria-hidden="true"></i>Tem base científica</span><p class="verdict-headline">É verdade: arroz com feijão é uma dupla completa de proteína.</p></div>
+      <div class="reply" data-verdict="cautela"><span class="verdict-label"><i data-lucide="scale" aria-hidden="true"></i>Depende</span><p class="verdict-headline">Depende de quanto você toma e de como está sua saúde.</p></div>
+      <div class="reply" data-verdict="sem_evidencia"><span class="verdict-label"><i data-lucide="search-x" aria-hidden="true"></i>Faltam estudos</span><p class="verdict-headline">Ainda não achei estudos suficientes para te responder com segurança.</p></div>
+      <div class="reply" data-verdict="recusa_segura"><span class="verdict-label"><i data-lucide="heart-handshake" aria-hidden="true"></i>Resposta de cuidado</span><p class="verdict-headline">Esse jejum eu não vou calcular, porque ele pode te fazer mal.</p></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Valor na API</th><th>Quando</th><th>Rótulo e ícone</th><th>Como a frase abre</th><th>O que a tela acrescenta</th></tr></thead>
+        <tbody>
+          <tr><td><code>desinformacao</code></td><td><code>risk_score</code> acima de 0,65</td><td>É mito, círculo com x</td><td>Alívio primeiro: "Pode respirar", "Pode continuar"</td><td>Fontes com DOI e botão Compartilhar</td></tr>
+          <tr><td><code>seguro</code></td><td>abaixo de 0,35</td><td>Tem base científica, círculo com visto</td><td>"É verdade:" e o fato em linguagem simples</td><td>Fontes com DOI e botão Compartilhar</td></tr>
+          <tr><td><code>cautela</code></td><td>de 0,35 a 0,65</td><td>Depende, balança</td><td>"Depende de..." e do quê</td><td>Aviso de evidência limitada da Ethics/03, seção 2.3</td></tr>
+          <tr><td><code>sem_evidencia</code></td><td>Base sem cobertura</td><td>Faltam estudos, lupa com x</td><td>"Ainda não achei estudos..."</td><td>Explica que falta de estudo não é mentira nem verdade</td></tr>
+          <tr><td><code>recusa_segura</code></td><td>Guardrail de risco</td><td>Resposta de cuidado, mãos com coração</td><td>Diz o que não vai fazer e por quê, sem bronca</td><td>Canais de apoio (CVV 188, UBS, CRN), sem fontes e sem compartilhar</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block" id="voz" aria-labelledby="h-voz">
+    <div class="block-head">
+      <h2 id="h-voz">Tom de voz</h2>
+      <p class="lede">Um amigo que entende do assunto. Fala na primeira pessoa, em frase de conversa, e nunca faz a pessoa se sentir boba por ter acreditado.</p>
+    </div>
+    <div class="voice">
+      <div class="voice-row">
+        <p class="say"><i data-lucide="check" aria-hidden="true"></i><span>Pode respirar: isso é mito.</span></p>
+        <p class="avoid"><i data-lucide="x" aria-hidden="true"></i><span>Alegação classificada como desinformação.<small>Soa como sistema, não como gente.</small></span></p>
+      </div>
+      <div class="voice-row">
+        <p class="say"><i data-lucide="check" aria-hidden="true"></i><span>Não tem evidência de que isso queime gordura.</span></p>
+        <p class="avoid"><i data-lucide="x" aria-hidden="true"></i><span>Os achados são inconclusivos quanto ao efeito termogênico.<small>Exemplo de jargão citado na persona do Lucas.</small></span></p>
+      </div>
+      <div class="voice-row">
+        <p class="say"><i data-lucide="check" aria-hidden="true"></i><span>Esse jejum eu não vou calcular, porque ele pode te fazer mal.</span></p>
+        <p class="avoid"><i data-lucide="x" aria-hidden="true"></i><span>Você não deveria fazer isso.<small>Bronca. A recusa segura precisa ser não punitiva.</small></span></p>
+      </div>
+      <div class="voice-row">
+        <p class="say"><i data-lucide="check" aria-hidden="true"></i><span>Muitas checagens seguidas. Você pode checar de novo em 42 segundos.</span></p>
+        <p class="avoid"><i data-lucide="x" aria-hidden="true"></i><span>Ops! Algo deu errado.<small>Erro vago não diz o que fazer.</small></span></p>
+      </div>
+    </div>
+    <div class="rules">
+      <p class="rule"><i data-lucide="minus" aria-hidden="true"></i><span><b>Sem travessão</b>Use vírgula, dois-pontos ou ponto. Vale para interface, commits e documentação.</span></p>
+      <p class="rule"><i data-lucide="mouse-pointer-click" aria-hidden="true"></i><span><b>Botão diz o que acontece</b>Checar, Salvar perfil, Enviar avaliação. A confirmação repete o verbo: Perfil salvo.</span></p>
+      <p class="rule"><i data-lucide="scale" aria-hidden="true"></i><span><b>Nada de peso ou culpa</b>As respostas não comentam peso, não usam "engorda" como ameaça e não chamam comida de veneno.</span></p>
+      <p class="rule"><i data-lucide="stethoscope" aria-hidden="true"></i><span><b>Informa, não prescreve</b>Nada de dieta, dose ou plano. Quando o caso pede, a frase encaminha para um profissional.</span></p>
+    </div>
+  </section>
+
+  <section class="block" id="conta" aria-labelledby="h-conta">
+    <div class="block-head">
+      <h2 id="h-conta">Conta e histórico</h2>
+      <p class="lede">Ninguém precisa criar conta para checar. A conta aparece quando ela passa a resolver um problema real da pessoa, que é não perder o que já foi salvo.</p>
+    </div>
+
+    <div class="fluxo">
+      <div class="etapa">
+        <span class="quando">Primeiro acesso</span>
+        <b>Usa sem conta</b>
+        <p>Termos, confirmação de 18 anos e pronto: já dá para checar. A primeira tela nunca é um formulário de cadastro.</p>
+      </div>
+      <div class="etapa">
+        <span class="quando">Durante o uso</span>
+        <b>Histórico e perfil ficam no aparelho</b>
+        <p>As checagens e o perfil de saúde são gravados localmente. O app diz isso com todas as letras, em vez de deixar a pessoa descobrir quando perder.</p>
+      </div>
+      <div class="etapa">
+        <span class="quando">Depois de 3 checagens</span>
+        <b>Convite para guardar</b>
+        <p>Um convite dispensável no histórico e uma seção no Perfil. Nunca um bloqueio no meio da checagem.</p>
+      </div>
+      <div class="etapa">
+        <span class="quando">Ao criar a conta</span>
+        <b>Nada se perde</b>
+        <p>O que já estava salvo continua igual. A tela mostra quantas checagens estão guardadas antes de pedir e-mail e senha.</p>
+      </div>
+    </div>
+
+    <div>
+      <p class="sub">O que exige conta</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Ação</th><th>Precisa de conta?</th><th>Por quê</th></tr></thead>
+          <tbody>
+            <tr><td>Checar por texto, link ou print</td><td><strong>Não</strong></td><td>É o valor do produto. Pedir cadastro antes de mostrar valor é o motivo mais comum de abandono no primeiro uso</td></tr>
+            <tr><td>Ver o histórico</td><td><strong>Não</strong></td><td>Fica no aparelho, como no app do Yuka e em qualquer leitor de código de barras</td></tr>
+            <tr><td>Preencher o perfil de saúde</td><td><strong>Não</strong></td><td>O perfil serve para proteger quem pergunta. Condicioná-lo a cadastro afastaria justamente quem mais precisa do filtro</td></tr>
+            <tr><td>Levar histórico e perfil para outro aparelho</td><td><strong>Sim</strong></td><td>É o que a conta resolve, e é por isso que o convite aparece aqui e não antes</td></tr>
+            <tr><td>Apagar os dados do servidor</td><td><strong>Sim</strong></td><td>Sem identidade permanente não dá para atender um pedido de exclusão com segurança</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <p class="sub">Como isso se sustenta no backend</p>
+      <div class="rules">
+        <p class="rule"><i data-lucide="user-round" aria-hidden="true"></i><span><b>Sessão anônima do Supabase</b>O <code class="mono">signInAnonymously</code> cria um usuário de verdade, com JWT e claim <code class="mono">is_anonymous</code>. A API continua exigindo <code class="mono">Authorization: Bearer</code>, então nada muda no contrato nem no rate limiting por identidade.</span></p>
+        <p class="rule"><i data-lucide="link" aria-hidden="true"></i><span><b>Conversão sem perder dado</b>Ao criar a conta, o <code class="mono">updateUser</code> ou o <code class="mono">linkIdentity</code> anexa a identidade ao mesmo usuário. O <code class="mono">user_id</code> não muda, então perfil e feedback continuam apontando para a mesma pessoa.</span></p>
+        <p class="rule"><i data-lucide="shield-alert" aria-hidden="true"></i><span><b>Sessão anônima é fácil de criar em massa</b>Como qualquer um gera identidades novas, o limite por usuário não basta sozinho. Ele precisa conviver com limite por IP e com CAPTCHA invisível no cadastro anônimo, que é a recomendação do próprio Supabase.</span></p>
+        <p class="rule"><i data-lucide="trash-2" aria-hidden="true"></i><span><b>Limpeza não é automática</b>Contas anônimas antigas ficam no banco até alguém apagar. Precisa de uma rotina, combinada com a frente de Dados.</span></p>
+        <p class="rule"><i data-lucide="lock" aria-hidden="true"></i><span><b>LGPD não muda por ser anônimo</b>Condição clínica continua sendo dado sensível, então o consentimento explícito continua obrigatório, com ou sem conta.</span></p>
+        <p class="rule"><i data-lucide="key" aria-hidden="true"></i><span><b>RLS por tipo de usuário</b>As políticas do banco olham o <code class="mono">is_anonymous</code> para decidir o que a sessão sem conta pode fazer.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="mobile" aria-labelledby="h-mob">
+    <div class="block-head">
+      <h2 id="h-mob">Mobile e PWA</h2>
+      <p class="lede">O produto é um PWA pensado para o celular de entrada, com uma mão, em sessões de um a dois minutos.</p>
+    </div>
+    <div class="rules">
+      <p class="rule"><i data-lucide="share" aria-hidden="true"></i><span><b>Compartilhar a partir do Instagram</b>No Android, o PWA instalado entra no menu Compartilhar pelo <code class="mono">share_target</code> do manifest. No iPhone isso não existe, então Colar e Enviar print ficam sempre visíveis.</span></p>
+      <p class="rule"><i data-lucide="smartphone" aria-hidden="true"></i><span><b>Convite para instalar</b>Aparece dentro da tela inicial e pode ser dispensado. Nunca como pop-up na primeira visita.</span></p>
+      <p class="rule"><i data-lucide="image-down" aria-hidden="true"></i><span><b>Print acima de 5 MB</b>O app reduz a imagem no aparelho antes de enviar. Só mostra erro se ainda passar do limite.</span></p>
+      <p class="rule"><i data-lucide="wifi-off" aria-hidden="true"></i><span><b>Sem internet</b>A tela avisa, guarda o que foi escrito e desativa o botão Checar até a conexão voltar.</span></p>
+      <p class="rule"><i data-lucide="hand" aria-hidden="true"></i><span><b>Polegar em primeiro lugar</b>Botão principal fixo no rodapé, alvos de 48 px e respeito às áreas seguras do sistema.</span></p>
+      <p class="rule"><i data-lucide="zoom-in" aria-hidden="true"></i><span><b>Campos com 17 px</b>Abaixo de 16 px o iPhone dá zoom sozinho ao tocar no campo.</span></p>
+    </div>
+    <pre><code>// manifest.webmanifest
+"share_target": {
+  "action": "/checar",
+  "method": "POST",
+  "enctype": "multipart/form-data",
+  "params": {
+    "text": "text",
+    "url": "url",
+    "files": [{ "name": "print", "accept": ["image/*"] }]
+  }
+}</code></pre>
+  </section>
+
+  <section class="block" aria-labelledby="h-pend">
+    <div class="block-head"><h2 id="h-pend">Pendências para o time</h2></div>
+    <p class="lede" style="max-width:66ch">Revisadas em 22 de setembro de 2026. Atenção ao ler: a <code class="mono">Dev</code> de hoje tem a API com autenticação, rate limiting e perfil, mas o pipeline de RAG ainda está nos PRs abertos #13 (modelo e treinamento) e #15 (produção sobre Ollama).</p>
+    <p class="sub" style="margin-top:8px">Resolvidas, aguardando merge</p>
+    <ul class="pending">
+      <li><i data-lucide="circle-check" aria-hidden="true" style="color:var(--c-seguro-ink)"></i><span><b>Nível de risco incoerente com o score.</b> Passa a ser derivado em <code class="mono">APP/model/generator.py</code>. Está nos PRs #13 e #15.</span></li>
+      <li><i data-lucide="circle-check" aria-hidden="true" style="color:var(--c-seguro-ink)"></i><span><b>Disclaimers e restrição de idade só no papel.</b> O <code class="mono">APP/model/disclaimers.py</code> aplica os textos homologados e a recusa para menor de 18. Está no PR #15.</span></li>
+      <li><i data-lucide="circle-check" aria-hidden="true" style="color:var(--c-seguro-ink)"></i><span><b>Gestação e amamentação sem tratamento.</b> O guardrail detecta a menção no texto e injeta o aviso, sem depender do perfil preenchido. Está no PR #15.</span></li>
+    </ul>
+    <p class="sub" style="margin-top:8px">Abertas</p>
+    <ul class="pending">
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>O canal ainda está descrito como app nativo.</b> A <code class="mono">Docs/User/02</code> trata PWA como plano B e a <code class="mono">Docs/Production/01</code> mantém Expo na tabela de deploy e no diagrama, mesmo com o backend já na Vercel. O protótipo assume PWA.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>A tabela de status da <code class="mono">Docs/Production/README</code> vence no merge.</b> Ela diz que o <code class="mono">/check-claim</code> é mockado, o que continua certo hoje e deixa de ser quando o #15 entrar.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>Uso sem conta ainda não existe no backend.</b> Depende de ligar o anonymous sign-in no Supabase, com CAPTCHA, limite por IP além do limite por identidade e limpeza das contas antigas.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>Conflito de dados na conversão.</b> Falta decidir o que acontece quando a pessoa entra numa conta que já tem histórico diferente do que está no aparelho.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>Perfil sem campo próprio para gestação e amamentação.</b> Hoje entram como texto livre em <code class="mono">conditions</code>, e quem detecta de verdade é o guardrail.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>O protótipo não está integrado.</b> A branch <code class="mono">docs/design-prototipo</code> não foi mesclada na <code class="mono">Dev</code>.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>Não existe frontend de produção.</b> O protótipo valida fluxo e visual, mas falta manifest, service worker e integração com a API.</span></li>
+      <li><i data-lucide="circle-alert" aria-hidden="true"></i><span><b>O nome é provisório.</b> Claudinho é o nome do repositório e da API.</span></li>
+    </ul>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js" integrity="sha384-hJnF5AwidE18GSWTAGHv3ByzzvfNZ1Tcx5y1UUV3WkauuMCEzBJBMSwSt/PUPXnM" crossorigin="anonymous"></script>
+<script>
+  window.lucide && window.lucide.createIcons();
+
+  // Seletor de tema desta pagina. No automatico o atributo sai e o prefers-color-scheme
+  // volta a mandar, que e o mesmo caminho do app.
+  const botoes = document.querySelectorAll('.tema-btn');
+  const guardado = (() => { try { return localStorage.getItem('claudinho:ds-tema'); } catch (e) { return null; } })();
+  function aplicar(tema) {
+    if (tema === 'auto') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', tema);
+    botoes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tema === tema)));
+    try { localStorage.setItem('claudinho:ds-tema', tema); } catch (e) { /* sem armazenamento */ }
+  }
+  botoes.forEach((b) => b.addEventListener('click', () => aplicar(b.dataset.tema)));
+  if (guardado) aplicar(guardado);
+</script>

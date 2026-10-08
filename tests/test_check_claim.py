@@ -99,3 +99,19 @@ def test_detalhe_do_erro_e_legivel_e_nao_vaza_interno_do_python(client):
     # O app mobile mostra esse texto: nao pode conter repr de excecao nem dict do pydantic.
     assert "ValueError" not in detalhe
     assert "'ctx'" not in detalhe
+
+
+def test_cors_expoe_os_cabecalhos_que_a_tela_precisa(client):
+    """Issue #20: sem expose_headers, o navegador esconde Retry-After e X-Trace-Id do
+    JavaScript, e a tela nao consegue dizer quanto falta para o limite liberar."""
+    # Na resposta REAL, e nao no preflight: o Starlette manda access-control-expose-headers
+    # so nas respostas de verdade, entao um OPTIONS nunca traria o cabecalho.
+    resposta = client.post(
+        "/api/v1/check-claim",
+        headers={**AUTH, "Origin": "http://localhost:5173"},
+        json={"text": "agua com limao emagrece?"},
+    )
+
+    expostos = resposta.headers.get("access-control-expose-headers", "")
+    assert "Retry-After" in expostos
+    assert "X-Trace-Id" in expostos

@@ -1,0 +1,47 @@
+name: Tela do front
+description: Uma tela do PWA, do começo ao fim
+title: "[front] "
+labels: ["front-end"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Antes de começar, leia o `web/CONTRIBUTING.md`. A tela `src/telas/BoasVindas.tsx`
+        é a referência de implementação.
+  - type: textarea
+    id: objetivo
+    attributes:
+      label: O que a tela precisa fazer
+      description: Do ponto de vista de quem usa, não do código.
+    validations:
+      required: true
+  - type: textarea
+    id: estados
+    attributes:
+      label: Estados obrigatórios
+      value: |
+        - [ ] Padrão
+        - [ ] Carregando
+        - [ ] Vazio
+        - [ ] Erro
+        - [ ] Tema escuro
+    validations:
+      required: true
+  - type: textarea
+    id: arquivos
+    attributes:
+      label: Onde mexer
+      description: Arquivos que a issue espera criar ou alterar.
+    validations:
+      required: true
+  - type: textarea
+    id: pronto
+    attributes:
+      label: Definição de pronto
+      value: |
+        - [ ] `npm run lint && npm run format:check && npm test && npm run build` passa
+        - [ ] Pelo menos um teste do comportamento que a pessoa vê
+        - [ ] Alvo de toque de 48 px, foco visível e rótulo em todo campo
+        - [ ] Sem cor ou tamanho escrito na mão, só tokens do design system
+    validations:
+      required: true

@@ -1,0 +1,5 @@
+# Mesma versao do sentence-transformers com que a base foi indexada: versoes diferentes
+# podem gerar vetores ligeiramente diferentes e piorar a busca sem erro aparente.
+fastapi==0.115.6
+uvicorn==0.34.0
+sentence-transformers==6.0.1

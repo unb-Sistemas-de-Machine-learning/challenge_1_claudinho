@@ -1,0 +1,390 @@
+/* Estrutura de tela do app. O visual dos componentes vem de claudinho.css, que e a
+   cópia do design system: mexa la, nao aqui, para o protótipo nao divergir do app. */
+
+/* Mobile first: no celular a casca ocupa a tela toda. Em tela grande ela vira uma
+   coluna centralizada, e TUDO fica dentro dela, inclusive o rodape e a barra de abas.
+   Sem isso, o botao principal e as abas escapam para a largura da janela. */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* Altura fixa, e nao min-height: a casca precisa ser do tamanho da tela para o rodape
+   (botao principal, barra de abas) ficar parado enquanto o conteudo rola por tras. Com
+   min-height a casca cresce junto com o conteudo e o rodape desce para fora da tela. */
+.app {
+  /* Ancora o .toast, que e position: absolute. Sem isso ele se prende a janela e, em
+     tela larga, escapa da coluna de 480px. No prototipo quem faz isso e a .phone. */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  max-width: 480px;
+  margin-inline: auto;
+  background: var(--c-ground);
+}
+
+.tela {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background: var(--c-ground);
+}
+
+@media (min-width: 560px) {
+  /* Fora do celular, o fundo da pagina recua para a coluna do app ficar evidente. */
+  body {
+    background: var(--c-desk);
+  }
+
+  .app {
+    border-inline: 1px solid var(--c-line);
+  }
+}
+
+.tela-topo {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: 60px;
+  flex: none;
+  padding-inline: var(--gutter) var(--s-3);
+  padding-top: env(safe-area-inset-top);
+}
+
+.tela-conteudo {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-inline: var(--gutter);
+  padding-block: var(--s-2) var(--s-8);
+}
+
+.tela-rodape {
+  flex: none;
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--gutter) calc(var(--s-3) + env(safe-area-inset-bottom));
+  background: var(--c-ground);
+  border-top: 1px solid var(--c-line);
+}
+
+.pilha {
+  display: grid;
+  gap: var(--s-6);
+}
+
+.pilha-curta {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.conversa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+/* A barra de abas usa <a> em vez de <button>, entao tira o sublinhado do link. */
+.tabbar a.tab {
+  text-decoration: none;
+}
+
+/* Marcacao temporaria das telas que ainda sao issue aberta. Apague junto com o TODO. */
+.pendente {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-6);
+  border: 1.5px dashed var(--c-line-strong);
+  border-radius: var(--r-lg);
+  color: var(--c-ink-2);
+}
+
+/* Boas-vindas. Estas classes sao de tela, nao de componente, por isso vivem aqui. */
+.hero {
+  display: grid;
+  gap: var(--s-5);
+  margin-inline: calc(var(--gutter) * -1);
+  margin-top: calc(var(--s-2) * -1);
+  padding: var(--s-8) var(--gutter);
+  background: var(--c-hero-bg);
+  color: var(--c-hero-ink);
+  border-radius: 0 0 var(--r-xl) var(--r-xl);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1.06;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.hero p {
+  color: var(--c-hero-ink-2);
+  font-size: var(--t-read);
+  line-height: 1.5;
+  max-width: 32ch;
+}
+
+.hero-nota {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--t-small);
+  font-weight: 700;
+  color: var(--c-accent-ink);
+}
+
+.hero-nota svg {
+  width: 18px;
+  height: 18px;
+}
+
+.terms {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.term {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: var(--s-3);
+  font-size: var(--t-small);
+  line-height: 1.5;
+  color: var(--c-ink-2);
+}
+
+.term svg {
+  color: var(--c-brand);
+  margin-top: 1px;
+}
+
+.term strong {
+  color: var(--c-ink);
+  display: block;
+  font-size: var(--t-body);
+}
+
+/* Composer da tela de checagem. */
+.composer {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-4) var(--s-4) var(--s-3);
+  background: var(--c-surface);
+  border: 1.5px solid var(--c-line-strong);
+  border-radius: var(--r-lg);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.composer:focus-within {
+  border-color: var(--c-brand);
+  box-shadow: 0 0 0 3px var(--c-brand-tint);
+}
+
+.composer.is-invalid {
+  border-color: var(--c-mito-ink);
+}
+
+.composer textarea {
+  width: 100%;
+  min-height: 104px;
+  resize: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font-size: 1.125rem;
+  line-height: 1.45;
+}
+
+.composer textarea:focus {
+  outline: none;
+}
+
+.composer textarea::placeholder {
+  color: var(--c-ink-3);
+}
+
+.composer-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+.detected {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--t-caption);
+  color: var(--c-ink-2);
+}
+
+.detected svg {
+  width: 15px;
+  height: 15px;
+}
+
+.attach {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: 'titulo remover' 'aviso remover';
+  gap: 2px var(--s-3);
+  align-items: center;
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-3);
+  border-radius: var(--r-md);
+  background: var(--c-sunken);
+}
+
+.attach > :first-child {
+  grid-area: titulo;
+}
+
+.attach > .caption {
+  grid-area: aviso;
+}
+
+.attach > .icon-btn {
+  grid-area: remover;
+}
+
+/* O seletor de arquivo some da tela, mas continua clicável pelo botão "Enviar print". */
+.campo-de-arquivo {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Lista de exemplos. */
+.examples {
+  display: grid;
+}
+
+.example {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: var(--s-3);
+  align-items: center;
+  min-height: 60px;
+  padding-block: var(--s-3);
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--c-line);
+  background: none;
+  text-align: left;
+  font-size: var(--t-body);
+  line-height: 1.4;
+  color: inherit;
+}
+
+.example:last-child {
+  border-bottom: 0;
+}
+
+.example svg {
+  color: var(--c-ink-3);
+}
+
+.example:active {
+  background: var(--c-sunken);
+}
+
+.topbar-title {
+  font-weight: 700;
+  font-size: var(--t-read);
+}
+
+/* Bloco da resposta enquanto a checagem roda: sem cor de veredito, que ainda nao existe. */
+.reply-pendente {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+}
+
+/* Links auxiliares do rodape das boas-vindas. */
+.rodape-links {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+/* Com um link só (o "Já tenho conta" desligado), o space-between o jogaria para a esquerda. */
+.rodape-links > :only-child {
+  margin-inline: auto;
+}
+
+/* Convite para instalar na tela inicial. Some quando a pessoa dispensa. */
+.install {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border-radius: var(--r-md);
+  border: 1.5px dashed var(--c-line-strong);
+}
+
+.install-head {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  gap: var(--s-3);
+  align-items: start;
+}
+
+.install-head svg {
+  color: var(--c-brand);
+  margin-top: 1px;
+}
+
+.install-head .icon-btn {
+  margin: -12px -12px 0 0;
+}
+
+.install ol {
+  display: grid;
+  gap: var(--s-2);
+  list-style: decimal;
+  padding-left: var(--s-5);
+  font-size: var(--t-small);
+  color: var(--c-ink-2);
+}
+
+.install summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--c-brand);
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  font-size: var(--t-small);
+}
+
+/* Telas de estado (bloqueio, vazio): conteudo alinhado a esquerda, com respiro. */
+.centro {
+  display: grid;
+  gap: var(--s-4);
+  justify-items: start;
+  padding-block: var(--s-8);
+}
+
+.icone-grande {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--c-brand-tint);
+  color: var(--c-brand);
+}
+
+.icone-grande svg {
+  width: 30px;
+  height: 30px;
+}

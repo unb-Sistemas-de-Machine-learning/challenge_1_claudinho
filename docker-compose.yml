@@ -12,3 +12,24 @@ services:
       # Codigo montado de fora para o reload pegar as alteracoes sem rebuild.
       - ./APP:/app/APP:ro
     command: uvicorn APP.main:app --host 0.0.0.0 --port 8000 --reload
+
+  web:
+    build:
+      context: ./web
+      target: dev
+    ports:
+      - "5173:5173"
+    environment:
+      # O navegador fala com a API pelo localhost da maquina, nao pelo nome do servico:
+      # quem faz a requisicao e o navegador, que esta fora da rede do compose.
+      VITE_API_URL: http://localhost:8000
+      # Com a API de pe ao lado, o mock sai do caminho. Para trabalhar sem backend,
+      # rode so o front (npm run dev) com VITE_API_MOCK=true.
+      VITE_API_MOCK: "false"
+    volumes:
+      - ./web:/app
+      # Volume anonimo: o node_modules do container nao pode ser sobrescrito pelo da
+      # maquina, que foi instalado para outro sistema operacional.
+      - /app/node_modules
+    depends_on:
+      - api

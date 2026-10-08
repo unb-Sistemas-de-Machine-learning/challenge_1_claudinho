@@ -1,0 +1,1210 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claudinho</title>
+<meta name="theme-color" content="#226FB3">
+<script>document.documentElement.lang = "pt-BR";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="claudinho.css">
+<style>
+  /* ---------- Palco: celular em tela cheia, moldura no desktop ---------- */
+  body { background: var(--c-ground); }
+  .stage { min-height: 100dvh; }
+  .panel { display: none; }
+  .phone {
+    position: relative; height: 100dvh; min-height: 600px; width: 100%;
+    background: var(--c-ground); overflow: hidden;
+  }
+  @media (min-width: 860px) {
+    body { background: var(--c-desk); }
+    .stage {
+      display: grid; grid-template-columns: minmax(240px, 320px) 390px;
+      justify-content: center; align-items: center; gap: 64px;
+      padding-block: 24px; padding-inline: 32px;
+    }
+    .panel { display: grid; gap: var(--s-6); align-self: center; max-height: calc(100dvh - 48px); overflow-y: auto; padding-right: var(--s-2); }
+    .phone {
+      height: min(844px, calc(100dvh - 48px)); min-height: 640px; width: 390px;
+      border-radius: 44px; border: 1px solid var(--c-line);
+      box-shadow: 0 30px 80px -40px oklch(0.25 0.05 310 / 0.45);
+    }
+  }
+
+  /* Painel lateral do protótipo */
+  .panel-intro { display: grid; gap: var(--s-3); }
+  .panel-intro p { color: var(--c-ink-2); font-size: var(--t-small); max-width: 34ch; }
+  .panel-group { display: grid; gap: var(--s-1); }
+  .panel-group h2 { font-size: var(--t-small); font-weight: 700; color: var(--c-ink); margin-bottom: var(--s-1); }
+  .go {
+    display: flex; align-items: center; gap: var(--s-2); width: 100%; min-height: 36px;
+    padding: 6px var(--s-3); border: 0; border-radius: var(--r-sm); background: none;
+    font-size: var(--t-small); color: var(--c-ink-2); text-align: left;
+  }
+  .go:hover { background: var(--c-sunken); color: var(--c-ink); }
+  .go[aria-current="true"] { background: var(--c-surface); color: var(--c-ink); font-weight: 700; }
+  .go .verdict-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--v-ink); flex: none; }
+
+  /* ---------- Estrutura de tela ---------- */
+  .screen { display: flex; flex-direction: column; height: 100%; }
+  .topbar {
+    display: flex; align-items: center; gap: var(--s-1); min-height: 60px;
+    padding-inline: var(--s-2) var(--s-3); padding-top: env(safe-area-inset-top);
+    flex: none;
+  }
+  .topbar-title { font-weight: 700; font-size: var(--t-read); }
+  .topbar .spacer { flex: 1; }
+  .topbar-home { padding-inline: var(--gutter) var(--s-3); }
+  .proto-tag {
+    font-size: var(--t-caption); color: var(--c-ink-2); background: var(--c-sunken);
+    padding: 3px 10px; border-radius: var(--r-pill);
+  }
+  .scroll {
+    flex: 1; overflow-y: auto; overscroll-behavior: contain;
+    padding-inline: var(--gutter); padding-block: var(--s-2) var(--s-8);
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) { .scroll { scroll-behavior: auto; } }
+  .stack { display: grid; gap: var(--s-6); }
+  .stack-sm { display: grid; gap: var(--s-3); }
+  .dock {
+    flex: none; display: grid; gap: var(--s-2);
+    padding: var(--s-3) var(--gutter) calc(var(--s-3) + env(safe-area-inset-bottom));
+    background: var(--c-ground); border-top: 1px solid var(--c-line);
+  }
+  .screen:has(.tabbar) .dock { padding-bottom: var(--s-3); }
+  .screen-title:focus { outline: none; }
+
+  /* ---------- Boas-vindas ---------- */
+  .hero {
+    display: grid; gap: var(--s-5);
+    margin-inline: calc(var(--gutter) * -1); margin-top: calc(var(--s-2) * -1);
+    padding: var(--s-8) var(--gutter) var(--s-8);
+    background: var(--c-hero-bg); color: var(--c-hero-ink);
+    border-radius: 0 0 var(--r-xl) var(--r-xl);
+  }
+  .hero .wordmark { color: var(--c-hero-ink); }
+  .hero-title { font-family: var(--font-display); font-size: 2rem; line-height: 1.06; font-weight: 700; letter-spacing: -0.025em; text-wrap: balance; }
+  .hero p { color: var(--c-hero-ink-2); font-size: var(--t-read); line-height: 1.5; max-width: 32ch; }
+  .hero-nota { display: inline-flex; align-items: center; gap: 6px; font-size: var(--t-small); font-weight: 700; color: var(--c-accent-ink); }
+  .hero-nota .lucide { width: 18px; height: 18px; }
+  .dock-links { display: flex; justify-content: space-between; gap: var(--s-2); }
+  .terms { display: grid; gap: var(--s-4); }
+  .term { display: grid; grid-template-columns: 24px 1fr; gap: var(--s-3); font-size: var(--t-small); line-height: 1.5; color: var(--c-ink-2); }
+  .term .lucide { color: var(--c-brand); margin-top: 1px; }
+  .term strong { color: var(--c-ink); display: block; font-size: var(--t-body); }
+
+  /* ---------- Início ---------- */
+  .composer {
+    display: grid; gap: var(--s-2);
+    padding: var(--s-4) var(--s-4) var(--s-3);
+    background: var(--c-surface); border: 1.5px solid var(--c-line-strong); border-radius: var(--r-lg);
+    transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+  }
+  .composer:focus-within { border-color: var(--c-brand); box-shadow: 0 0 0 3px var(--c-brand-tint); }
+  .composer.is-invalid { border-color: var(--c-mito-ink); }
+  .composer textarea {
+    width: 100%; min-height: 104px; resize: none; border: 0; padding: 0; background: transparent;
+    font-size: 1.125rem; line-height: 1.45;
+  }
+  .composer textarea:focus { outline: none; }
+  .composer textarea::placeholder { color: var(--c-ink-3); }
+  .composer-tools { display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; }
+  .detected { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; font-size: var(--t-caption); color: var(--c-ink-2); }
+  .detected .lucide { width: 15px; height: 15px; }
+  .attach { display: grid; grid-template-columns: 56px 1fr auto; gap: var(--s-3); align-items: center; padding: var(--s-2); border-radius: var(--r-md); background: var(--c-sunken); }
+  .attach img { width: 56px; height: 72px; object-fit: cover; border-radius: var(--r-tail); background: var(--c-line); }
+  .file-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+  .examples { display: grid; }
+  .example {
+    display: grid; grid-template-columns: 24px 1fr 20px; gap: var(--s-3); align-items: center;
+    min-height: 60px; padding-block: var(--s-3); width: 100%;
+    border: 0; border-bottom: 1px solid var(--c-line); background: none; text-align: left;
+    font-size: var(--t-body); line-height: 1.4;
+  }
+  .example:last-child { border-bottom: 0; }
+  .example .lucide { color: var(--c-ink-3); }
+  .example:active { background: var(--c-sunken); }
+
+  .install { display: grid; gap: var(--s-3); padding: var(--s-4); border-radius: var(--r-md); border: 1.5px dashed var(--c-line-strong); }
+  .install-head { display: grid; grid-template-columns: 24px 1fr auto; gap: var(--s-3); align-items: start; }
+  .install-head .lucide { color: var(--c-brand); margin-top: 1px; }
+  .install-head .icon-btn { margin: -12px -12px 0 0; }
+  .install ol { display: grid; gap: var(--s-2); list-style: decimal; padding-left: var(--s-5); font-size: var(--t-small); color: var(--c-ink-2); }
+  .install details summary { cursor: pointer; font-weight: 700; color: var(--c-brand); min-height: 40px; display: flex; align-items: center; font-size: var(--t-small); }
+
+  /* ---------- Resultado ---------- */
+  .convo { display: flex; flex-direction: column; gap: var(--s-4); }
+  .reply-pending { background: var(--c-surface); border: 1px solid var(--c-line); }
+  .support { display: grid; }
+  .support a, .support div.row { color: var(--c-ink); text-decoration: none; }
+  .support .row-title { font-weight: 700; }
+
+  /* ---------- Perfil ---------- */
+  .form-section { display: grid; gap: var(--s-4); padding-block: var(--s-2); }
+  .form-section + .form-section { border-top: 1px solid var(--c-line); padding-top: var(--s-6); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+  .routine { display: grid; gap: var(--s-2); }
+  .routine .chip { justify-content: flex-start; border-radius: var(--r-md); min-height: 56px; padding-block: var(--s-2); width: 100%; }
+  .routine .chip span { display: grid; }
+  .routine .chip small { font-weight: 400; color: var(--c-ink-2); font-size: var(--t-caption); }
+  .more { border-radius: var(--r-md); background: var(--c-sunken); padding-inline: var(--s-4); }
+  .more summary { min-height: 52px; display: flex; align-items: center; gap: var(--s-2); cursor: pointer; font-weight: 700; list-style: none; }
+  .more summary::-webkit-details-marker { display: none; }
+  .more summary .chev { margin-left: auto; transition: transform var(--dur) var(--ease-out); }
+  .more[open] summary .chev { transform: rotate(180deg); }
+  .more-body { display: grid; gap: var(--s-4); padding-bottom: var(--s-4); }
+
+  .center-state { display: grid; gap: var(--s-4); justify-items: start; padding-block: var(--s-8); }
+  .big-icon { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--c-brand-tint); color: var(--c-brand); }
+  .big-icon .lucide { width: 30px; height: 30px; }
+</style>
+
+<div class="stage">
+  <aside class="panel" aria-label="Navegação do protótipo">
+    <div class="panel-intro">
+      <span class="wordmark">claudinho</span>
+      <p>Protótipo navegável do PWA de checagem de desinformação nutricional. Respostas, estudos e DOIs são exemplos para validar o fluxo, não conteúdo real.</p>
+      <p><a href="https://claude.ai/artifact/FD7zDEu3oMPzRnfb6Uq1gf" target="_blank" rel="noopener">Abrir o design system</a></p>
+    </div>
+    <div class="panel-group">
+      <h2>Primeiro acesso</h2>
+      <button class="go" data-go="welcome">Boas-vindas e termos</button>
+      <button class="go" data-go="home">Uso sem conta</button>
+      <button class="go" data-go="conta">Criar conta (opcional)</button>
+      <button class="go" data-go="invite">Convite para o perfil</button>
+      <button class="go" data-go="profileEdit">Perfil de saúde</button>
+      <button class="go" data-go="blocked">Menor de 18 anos</button>
+    </div>
+    <div class="panel-group">
+      <h2>Checagem</h2>
+      <button class="go" data-go="home">Início</button>
+      <button class="go" data-go="loading:pao">Checando um link</button>
+      <button class="go" data-go="result:pao" data-verdict="desinformacao"><span class="verdict-dot"></span>É mito</button>
+      <button class="go" data-go="result:arroz" data-verdict="seguro"><span class="verdict-dot"></span>Tem base científica</button>
+      <button class="go" data-go="result:cafe" data-verdict="cautela"><span class="verdict-dot"></span>Depende</button>
+      <button class="go" data-go="result:kefir" data-verdict="sem_evidencia"><span class="verdict-dot"></span>Faltam estudos</button>
+      <button class="go" data-go="result:jejum" data-verdict="recusa_segura"><span class="verdict-dot"></span>Resposta de cuidado</button>
+      <button class="go" data-go="result:limao" data-verdict="desinformacao"><span class="verdict-dot"></span>Checagem de print</button>
+    </div>
+    <div class="panel-group">
+      <h2>Outros estados</h2>
+      <button class="go" data-go="history">Histórico</button>
+      <button class="go" data-go="state:offline">Sem internet</button>
+      <button class="go" data-go="state:rate">Limite de checagens</button>
+      <button class="go" data-go="state:upstream">Serviço fora do ar</button>
+      <button class="go" data-go="state:empty">Início sem dúvida escrita</button>
+    </div>
+  </aside>
+
+  <div class="phone" id="phone" aria-live="off"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js" integrity="sha384-hJnF5AwidE18GSWTAGHv3ByzzvfNZ1Tcx5y1UUV3WkauuMCEzBJBMSwSt/PUPXnM" crossorigin="anonymous"></script>
+<script>
+(() => {
+  /* ---------- Conteúdo de exemplo ---------- */
+  const DISCLAIMER = 'Esta análise tem caráter exclusivamente informativo e é gerada por inteligência artificial com base em literatura científica disponível. Não substitui o diagnóstico, aconselhamento ou tratamento de um nutricionista ou médico.';
+  const LIMITED = 'A alegação analisada aborda um tema onde a ciência atual apresenta estudos inconclusivos, de baixa qualidade metodológica ou com opiniões divergentes na comunidade acadêmica. O resultado apresentado reflete o consenso provisório da literatura e não deve ser tomado como verdade definitiva.';
+
+  const VERDICT = {
+    desinformacao: { label: 'É mito', icon: 'circle-x' },
+    seguro: { label: 'Tem base científica', icon: 'circle-check' },
+    cautela: { label: 'Depende', icon: 'scale' },
+    sem_evidencia: { label: 'Faltam estudos', icon: 'search-x' },
+    recusa_segura: { label: 'Resposta de cuidado', icon: 'heart-handshake' },
+  };
+
+  const RESULTS = {
+    pao: {
+      input: { type: 'url', url: 'https://www.instagram.com/reel/C9x2pao', excerpt: 'Pão francês inflama o corpo. Corta hoje e sente a diferença em 7 dias.' },
+      canonical: 'O consumo diário de pão francês causa inflamação no organismo de adultos saudáveis?',
+      verdict: 'desinformacao',
+      headline: 'Pode respirar: pão francês não inflama o corpo.',
+      answer: [
+        'Os estudos da base não mostram que o pão francês, dentro de uma alimentação variada, cause inflamação em adultos saudáveis {1}.',
+        'O que aparece ligado a marcadores de inflamação é o padrão alimentar como um todo, com muito ultraprocessado e pouca fibra, e não um alimento sozinho {2}. O pão pode continuar no seu café da manhã.',
+      ],
+      sources: [
+        { title: 'Consumo de pães e marcadores inflamatórios em adultos: revisão sistemática', authors: 'Oliveira, M. S.; Costa, L. R.', journal: 'Revista de Nutrição', year: 2022, doi: '10.1590/exemplo.2022.0141', excerpt: 'Não foi observada associação consistente entre o consumo habitual de pão branco e a elevação de proteína C-reativa em adultos sem doenças crônicas.' },
+        { title: 'Padrões alimentares e inflamação de baixo grau na população brasileira', authors: 'Santos, A. P.; Ferreira, J. C.; Lima, T. B.', journal: 'Cadernos de Saúde Pública', year: 2020, doi: '10.1590/exemplo.2020.0387', excerpt: 'A associação com marcadores inflamatórios foi observada para o padrão rico em ultraprocessados, e não para alimentos isolados.' },
+      ],
+    },
+    limao: {
+      input: { type: 'image', ocr: 'Água com limão em jejum desincha e queima gordura!' },
+      canonical: 'O consumo de água com limão em jejum possui efeito termogênico ou de redução de retenção hídrica?',
+      verdict: 'desinformacao',
+      headline: 'Água com limão hidrata, mas não queima gordura.',
+      answer: [
+        'Não há evidência de que água com limão acelere a queima de gordura {1}.',
+        'A sensação de desinchar costuma vir da hidratação em si. Beber água, com ou sem limão, já faz esse efeito.',
+      ],
+      sources: [
+        { title: 'Efeitos metabólicos de compostos cítricos: revisão sistemática', authors: 'Silva, R.; Almeida, C.', journal: 'Revista de Nutrição', year: 2021, doi: '10.1590/exemplo.2021.0052', excerpt: 'Não foram observadas diferenças significativas no gasto energético entre os grupos que consumiram água com suco de limão e água pura.' },
+      ],
+    },
+    arroz: {
+      input: { type: 'text', text: 'arroz com feijão é proteína completa mesmo?' },
+      canonical: 'A combinação de arroz e feijão fornece proteína de qualidade adequada?',
+      verdict: 'seguro',
+      headline: 'É verdade: arroz com feijão é uma dupla completa de proteína.',
+      answer: [
+        'Arroz e feijão se completam: os aminoácidos que faltam em um aparecem no outro, e juntos eles cobrem o que o corpo precisa {1}.',
+        'A dupla está associada a uma alimentação de melhor qualidade no Brasil e continua sendo uma escolha acessível {2}.',
+      ],
+      sources: [
+        { title: 'Complementaridade proteica da combinação arroz e feijão na dieta brasileira', authors: 'Pereira, F. A.; Rocha, D. M.', journal: 'Revista de Nutrição', year: 2019, doi: '10.1590/exemplo.2019.0213', excerpt: 'A combinação na proporção habitual fornece todos os aminoácidos essenciais em quantidade adequada para adultos.' },
+        { title: 'Arroz e feijão: tendências de consumo e qualidade da dieta no Brasil', authors: 'Almeida, C.; Silva, R.', journal: 'Ciência & Saúde Coletiva', year: 2021, doi: '10.1590/exemplo.2021.0418', excerpt: 'O consumo conjunto de arroz e feijão esteve associado a melhor qualidade global da dieta.' },
+      ],
+    },
+    cafe: {
+      input: { type: 'text', text: 'café faz mal pro coração?' },
+      canonical: 'O consumo de café aumenta o risco de doenças do coração?',
+      verdict: 'cautela',
+      headline: 'Depende de quanto você toma e de como está sua saúde.',
+      answer: [
+        'Para a maioria dos adultos, três a quatro xícaras por dia não aparecem ligadas a problemas no coração {1}.',
+        'Pessoas com arritmia ou pressão alta sem controle podem reagir de outro jeito à cafeína, e os estudos com esse grupo ainda são poucos {2}.',
+      ],
+      limited: true,
+      sources: [
+        { title: 'Consumo de café e risco cardiovascular: metanálise de estudos de coorte', authors: 'Martins, H. G.; Souza, P. R.', journal: 'Arquivos Brasileiros de Cardiologia', year: 2021, doi: '10.1590/exemplo.2021.0776', excerpt: 'O consumo moderado, de três a quatro xícaras diárias, não se associou a aumento do risco cardiovascular.' },
+        { title: 'Cafeína, pressão arterial e arritmias: o que dizem os ensaios clínicos', authors: 'Barbosa, L. F.; Nunes, C. A.', journal: 'Revista Brasileira de Hipertensão', year: 2020, doi: '10.1590/exemplo.2020.0931', excerpt: 'Os efeitos agudos da cafeína variaram entre indivíduos, e os dados em pessoas com hipertensão não controlada são limitados.' },
+      ],
+    },
+    kefir: {
+      input: { type: 'text', text: 'kefir de água ajuda na ansiedade?' },
+      canonical: 'O consumo de kefir de água reduz sintomas de ansiedade?',
+      verdict: 'sem_evidencia',
+      headline: 'Ainda não achei estudos suficientes para te responder com segurança.',
+      answer: [
+        'Procurei na base de artigos científicos brasileiros e não encontrei pesquisas que testem kefir de água e ansiedade em pessoas.',
+        'Isso não quer dizer que é mentira, nem que é verdade. Quer dizer que ninguém mediu isso ainda, ou que o estudo ainda não está na base.',
+      ],
+      sources: [],
+    },
+    jejum: {
+      input: { type: 'text', text: 'quantos dias posso ficar só no suco de limão pra secar 10kg antes de uma festa?' },
+      canonical: 'Por quantos dias é seguro consumir apenas suco de limão para perder 10 kg?',
+      verdict: 'recusa_segura',
+      headline: 'Esse jejum eu não vou calcular, porque ele pode te fazer mal.',
+      answer: [
+        'Compreendo a vontade de ter resultados rápidos, mas práticas como restrições extremas ou uso de substâncias sem indicação trazem riscos sérios à saúde (como fraqueza, deficiências nutricionais e alterações metabólicas).',
+        'A ciência indica que mudanças sustentáveis e orientadas por um profissional de saúde são o caminho mais seguro e eficaz.',
+      ],
+      sources: [],
+    },
+  };
+
+  const EXAMPLES = [
+    { key: 'pao', icon: 'link', text: 'Reel dizendo que pão francês inflama o corpo' },
+    { key: 'arroz', icon: 'message-square-text', text: 'arroz com feijão é proteína completa mesmo?' },
+    { key: 'cafe', icon: 'message-square-text', text: 'café faz mal pro coração?' },
+    { key: 'kefir', icon: 'message-square-text', text: 'kefir de água ajuda na ansiedade?' },
+    { key: 'jejum', icon: 'message-square-text', text: 'quantos dias posso ficar só no suco de limão pra secar 10kg?' },
+  ];
+
+  const CONDITIONS = [['diabetes_tipo_1', 'Diabetes tipo 1'], ['diabetes_tipo_2', 'Diabetes tipo 2'], ['hipertensao', 'Hipertensão'], ['doenca_renal_cronica', 'Doença renal crônica'], ['doenca_celiaca', 'Doença celíaca'], ['gestante', 'Gestação'], ['lactante', 'Amamentação'], ['transtorno_alimentar', 'Transtorno alimentar, atual ou passado']];
+  const RESTRICTIONS = [['lactose', 'Intolerância à lactose'], ['gluten', 'Sem glúten'], ['vegetariana', 'Vegetariana'], ['vegana', 'Vegana'], ['alergia_alimentar', 'Alergia alimentar']];
+  const ROUTINES = [['sedentaria', 'Sedentária', 'Pouco movimento no dia a dia'], ['leve', 'Leve', 'Caminhadas curtas e tarefas de casa'], ['moderada', 'Moderada', 'Exercício algumas vezes por semana'], ['intensa', 'Intensa', 'Treino quase todo dia ou trabalho físico']];
+  const SEXES = [['F', 'Feminino'], ['M', 'Masculino'], ['outro', 'Outro'], ['nao_informado', 'Prefiro não informar']];
+  const REASONS = [['fonte_irrelevante', 'A fonte não tem a ver'], ['resposta_confusa', 'Ficou confuso'], ['parece_errado', 'Parece errado'], ['tom_julgador', 'Me senti julgado'], ['nao_respondeu', 'Não respondeu minha dúvida'], ['outro', 'Outro motivo']];
+
+  const now = Date.now();
+  const SEED_HISTORY = [
+    { key: 'pao', at: now - 1000 * 60 * 38 },
+    { key: 'cafe', at: now - 1000 * 60 * 60 * 26 },
+    { key: 'arroz', at: now - 1000 * 60 * 60 * 24 * 3 },
+  ];
+
+  /* ---------- Estado ---------- */
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('claudinho:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('claudinho:' + k, JSON.stringify(v)); } catch (e) { /* sem armazenamento */ } },
+  };
+
+  const S = {
+    // Primeiro acesso cai nas boas-vindas: o termo de uso e a confirmação de 18 anos
+    // são obrigatórios antes de qualquer checagem (Docs/Ethics/03, seção 2.2). Quem já
+    // aceitou volta direto para a tela de checar.
+    screen: store.get('onboarded', false) ? 'home' : 'welcome',
+    onboarded: store.get('onboarded', false),
+    tab: 'home',
+    // Sem conta por padrao: o uso comeca no primeiro toque e a conta so entra quando
+    // o usuario quiser levar o histórico para outro aparelho.
+    conta: store.get('conta', null),
+    modoConta: 'criar',
+    contaDispensada: store.get('contaDispensada', false),
+    tema: store.get('tema', 'auto'),
+    profile: store.get('profile', null),
+    // Quem ainda não passou pelo primeiro acesso começa sem histórico, senão a tela de
+    // boas-vindas seria seguida por três checagens que a pessoa nunca fez.
+    history: store.get('history', store.get('onboarded', false) ? SEED_HISTORY : []),
+    installDismissed: store.get('installDismissed', false),
+    draft: { text: '', image: null },
+    useProfile: true,
+    current: null,
+    fb: null,
+    sim: { offline: false, upstream: false },
+    error: null,
+    reviewTerms: false,
+  };
+
+  const phone = document.getElementById('phone');
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const icon = (name, extra = '') => `<i data-lucide="${name}" aria-hidden="true" ${extra}></i>`;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isOffline = () => S.sim.offline || !navigator.onLine;
+
+  /* ---------- Utilidades de conteúdo ---------- */
+  function detectKey(text) {
+    const t = text.toLowerCase();
+    if (/(dias|semana).*(só|so|apenas).*(suco|água|agua|chá|cha)|secar|laxante|vomitar|purga|ficar sem comer/.test(t)) return 'jejum';
+    if (/lim[aã]o/.test(t)) return 'limao';
+    if (/p[aã]o/.test(t)) return 'pao';
+    if (/caf[eé]/.test(t)) return 'cafe';
+    if (/feij[aã]o|arroz/.test(t)) return 'arroz';
+    return 'kefir';
+  }
+  const isUrl = (t) => /^(https?:\/\/|www\.)\S+$/i.test(t.trim());
+  function inputKind(t) {
+    if (!t.trim()) return null;
+    if (!isUrl(t)) return { icon: 'message-square-text', label: 'Texto' };
+    const host = t.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0];
+    const name = /instagram/.test(host) ? 'do Instagram' : /tiktok/.test(host) ? 'do TikTok' : /youtu/.test(host) ? 'do YouTube' : '';
+    return { icon: 'link', label: `Link ${name}`.trim() };
+  }
+  const fmtSize = (b) => b >= 1024 * 1024 ? `${(b / 1024 / 1024).toFixed(1).replace('.', ',')} MB` : `${Math.max(1, Math.round(b / 1024))} KB`;
+  function relTime(at) {
+    const d = new Date(at), today = new Date();
+    const hm = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const days = Math.floor((new Date(today.toDateString()) - new Date(d.toDateString())) / 86400000);
+    if (days === 0) return `Hoje, ${hm}`;
+    if (days === 1) return `Ontem, ${hm}`;
+    return d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' });
+  }
+  function ageFrom(iso) {
+    if (!iso) return null;
+    const b = new Date(iso + 'T12:00:00'), t = new Date();
+    let a = t.getFullYear() - b.getFullYear();
+    if (t < new Date(t.getFullYear(), b.getMonth(), b.getDate())) a--;
+    return a;
+  }
+  const labelOf = (list, v) => (list.find((x) => x[0] === v) || [, v])[1];
+  function answerHTML(paragraphs) {
+    return paragraphs.map((p) => `<p>${esc(p).replace(/\{(\d)\}/g, (_, n) => `<button class="ref" data-action="ref" data-n="${n}" aria-label="Ver fonte ${n}">${n}</button>`)}</p>`).join('');
+  }
+  function profileNote() {
+    const p = S.profile;
+    if (!p || !p.conditions?.length || !S.current?.useProfile) return '';
+    const c = p.conditions;
+    let text;
+    if (c.includes('gestante') || c.includes('lactante')) text = 'Como você informou gestação ou amamentação, confirme qualquer mudança na alimentação com o seu pré-natal ou com quem te acompanha, mesmo quando a informação vale para a maioria das pessoas.';
+    else if (c.some((x) => x.startsWith('diabetes'))) text = 'Levei em conta que você tem diabetes. Antes de mudar a alimentação ou o remédio, fale com quem acompanha seu tratamento.';
+    else if (c.includes('transtorno_alimentar')) text = 'Levei em conta o que você contou no seu perfil. Se algo aqui mexer com você, vale conversar com a equipe que te acompanha.';
+    else text = `Levei em conta que você tem ${labelOf(CONDITIONS, c[0]).toLowerCase()}. Isso muda o que vale para você, então confirme com quem acompanha seu tratamento antes de mudar algo.`;
+    return `<div class="notice notice-care">${icon('stethoscope')}<div class="notice-body"><strong>Considerei seu perfil de saúde</strong><span>${esc(text)}</span></div></div>`;
+  }
+
+  /* ---------- Componentes de tela ---------- */
+  function tabbar(active) {
+    const tabs = [['home', 'Checar', 'scan-search'], ['history', 'Histórico', 'history'], ['profile', 'Perfil', 'user-round']];
+    return `<nav class="tabbar" aria-label="Principal">${tabs.map(([id, label, ic]) => `
+      <button class="tab" data-go="${id}" ${active === id ? 'aria-current="page"' : ''}>
+        <span class="tab-icon">${icon(ic)}</span>${label}
+      </button>`).join('')}</nav>`;
+  }
+  const back = (to, label = 'Voltar') => `<button class="icon-btn" data-go="${to}" aria-label="${label}">${icon('arrow-left')}</button>`;
+
+  /* ---------- Telas ---------- */
+  const SCREENS = {
+    welcome() {
+      return `<div class="screen">
+        <main class="scroll">
+          <div class="stack">
+            <section class="hero">
+              <span class="wordmark">claudinho</span>
+              <h1 class="hero-title screen-title" tabindex="-1">Viu algo sobre comida na internet e bateu a dúvida?</h1>
+              <p>Me manda o post, o print ou a pergunta. Eu checo nos estudos científicos brasileiros e te explico sem complicar.</p>
+              <p class="hero-nota">${icon('zap')}Sem cadastro para começar</p>
+            </section>
+            <section class="stack-sm" aria-labelledby="termos">
+              <h2 class="h2" id="termos">Importante saber antes de usar</h2>
+              <ul class="terms">
+                <li class="term">${icon('clipboard-x')}<div><strong>Não fazemos prescrições</strong>O aplicativo não elabora dietas, planos alimentares ou recomendações de suplementação individualizadas.</div></li>
+                <li class="term">${icon('stethoscope')}<div><strong>Não substitui profissionais de saúde</strong>Nenhuma resposta substitui consultas com nutricionistas ou médicos.</div></li>
+                <li class="term">${icon('heart-pulse')}<div><strong>Públicos com necessidades especiais</strong>Se você possui condições clínicas (como diabetes, hipertensão ou doença celíaca), gestação ou histórico de transtornos alimentares, consulte sempre seu profissional de referência.</div></li>
+                <li class="term">${icon('baby')}<div><strong>Gestantes e lactantes</strong>Se você está grávida ou amamentando, não siga recomendações genéricas de internet. A nutrição gestacional exige acompanhamento pré-natal individualizado para evitar riscos ao desenvolvimento fetal.</div></li>
+                <li class="term">${icon('shield-check')}<div><strong>Uso exclusivo para maiores de 18 anos</strong>O aplicativo é de uso estritamente proibido para menores de idade, em conformidade com o Art. 14 da LGPD sobre tratamento de dados de saúde de crianças e adolescentes.</div></li>
+              </ul>
+            </section>
+          </div>
+        </main>
+        <div class="dock">
+          ${S.reviewTerms
+            ? `<button class="btn btn-primary btn-block" data-go="profile">Voltar para o perfil</button>`
+            : `<label class="check" for="agree" style="padding-block:0 4px"><input type="checkbox" id="agree"><span>Tenho 18 anos ou mais e concordo com esses termos.</span></label>
+               <button class="btn btn-primary btn-block" id="agree-btn" data-action="agree" disabled>Começar a checar</button>
+               <div class="dock-links">
+                 <button class="btn btn-ghost btn-sm" data-action="entrar">Já tenho conta</button>
+                 <button class="btn btn-ghost btn-sm" data-go="blocked">Tenho menos de 18</button>
+               </div>`}
+        </div>
+      </div>`;
+    },
+
+    blocked() {
+      return `<div class="screen">
+        <header class="topbar">${back('welcome')}</header>
+        <main class="scroll">
+          <div class="center-state">
+            <span class="big-icon">${icon('shield-check')}</span>
+            <h1 class="h1 screen-title" tabindex="-1">O Claudinho é só para maiores de 18 anos</h1>
+            <p class="lede">O uso deste aplicativo é restrito a maiores de 18 anos (LGPD Art. 14). Recomendamos consultar um nutricionista com seu responsável legal.</p>
+            <p class="small muted">Na UBS mais perto de você dá para marcar consulta com nutricionista pelo SUS.</p>
+          </div>
+        </main>
+      </div>`;
+    },
+
+    conta() {
+      const criando = S.modoConta === 'criar';
+      const checagens = S.history.length;
+      return `<div class="screen">
+        <header class="topbar">${back(S.screen === 'conta' && S.voltarPara ? S.voltarPara : 'home')}</header>
+        <main class="scroll">
+          <form class="stack" id="signup-form" novalidate>
+            <div class="stack-sm">
+              <h1 class="h1 screen-title" tabindex="-1">${criando ? 'Criar conta' : 'Entrar na sua conta'}</h1>
+              <p class="lede">${criando
+                ? 'Hoje suas checagens e seu perfil ficam só neste aparelho. Com conta, eles continuam com você se trocar de celular ou reinstalar o app.'
+                : 'Entre para trazer de volta o que você já tinha salvo.'}</p>
+            </div>
+            ${criando && checagens ? `<div class="notice notice-care">${icon('history')}<div class="notice-body"><strong>${checagens} ${checagens === 1 ? 'checagem guardada' : 'checagens guardadas'} neste aparelho</strong><span>Elas continuam iguais depois que a conta for criada. Nada é reenviado nem apagado.</span></div></div>` : ''}
+            <div class="field">
+              <label class="field-label" for="email">E-mail</label>
+              <input class="input" id="email" type="email" autocomplete="email" inputmode="email" placeholder="voce@email.com" aria-describedby="email-err">
+              <div id="email-err"></div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="password">Senha</label>
+              <input class="input" id="password" type="password" autocomplete="new-password" aria-describedby="password-help password-err">
+              <span class="field-help" id="password-help">Pelo menos 8 caracteres.</span>
+              <div id="password-err"></div>
+            </div>
+            <button class="btn btn-primary btn-block" type="submit">${criando ? 'Criar conta' : 'Entrar'}</button>
+            <p class="small muted">${criando
+              ? 'Já tem conta? <a href="#" data-action="entrar">Entrar</a>'
+              : 'Ainda não tem conta? <a href="#" data-action="criar-conta">Criar agora</a>'}</p>
+          </form>
+        </main>
+      </div>`;
+    },
+
+    invite() {
+      return `<div class="screen">
+        <main class="scroll">
+          <div class="center-state">
+            <span class="big-icon">${icon('heart-handshake')}</span>
+            <h1 class="h1 screen-title" tabindex="-1">Quer que eu leve sua saúde em conta?</h1>
+            <p class="lede">Se você tem diabetes, está grávida ou convive com outra condição, eu aviso quando uma dica da internet não serve para você.</p>
+            <div class="notice">${icon('lock')}<div class="notice-body"><span>Dado de saúde é sensível pela LGPD. Só guardo com a sua autorização, e você edita quando quiser.</span></div></div>
+            <p class="small muted">Você já pode checar sem preencher nada.</p>
+          </div>
+        </main>
+        <div class="dock">
+          <button class="btn btn-primary btn-block" data-go="profileEdit">Preencher perfil</button>
+          <button class="btn btn-secondary btn-block" data-action="skip-profile">Agora não</button>
+        </div>
+      </div>`;
+    },
+
+    profileEdit() {
+      const p = S.profile || { sex: 'nao_informado', conditions: [], dietary_restrictions: [], consent_health_data: false };
+      const chips = (name, list, sel, type = 'checkbox') => list.map(([v, l]) => `
+        <label class="chip"><input type="${type}" name="${name}" value="${v}" ${sel.includes(v) ? 'checked' : ''}>${icon('check')}${esc(l)}</label>`).join('');
+      return `<div class="screen">
+        <header class="topbar">${back(S.profile ? 'profile' : 'invite')}<span class="topbar-title">Perfil de saúde</span></header>
+        <main class="scroll">
+          <form id="profile-form" class="stack" novalidate>
+            <p class="lede screen-title" tabindex="-1">Tudo aqui é opcional. Preencha só o que fizer sentido para você.</p>
+
+            <section class="form-section" aria-labelledby="sec-voce">
+              <h2 class="h3" id="sec-voce">Sobre você</h2>
+              <div class="field">
+                <label class="field-label" for="birth">Data de nascimento</label>
+                <input class="input" id="birth" name="birth_date" type="date" value="${esc(p.birth_date || '')}" aria-describedby="birth-err">
+                <div id="birth-err"></div>
+              </div>
+              <fieldset class="field" style="border:0;padding:0;margin:0">
+                <legend class="field-label" style="margin-bottom:8px">Sexo</legend>
+                <div class="chips">${chips('sex', SEXES, [p.sex], 'radio')}</div>
+              </fieldset>
+            </section>
+
+            <section class="form-section" aria-labelledby="sec-saude">
+              <div class="stack-sm">
+                <h2 class="h3" id="sec-saude">Condições de saúde</h2>
+                <p class="field-help">São elas que ativam os avisos de cuidado nas respostas.</p>
+              </div>
+              <div class="chips" role="group" aria-labelledby="sec-saude">${chips('conditions', CONDITIONS, p.conditions)}</div>
+              <label class="check" for="consent" style="padding-bottom:0"><input type="checkbox" id="consent" name="consent" ${p.consent_health_data ? 'checked' : ''} aria-describedby="consent-err">
+                <span>Autorizo o Claudinho a guardar minhas condições de saúde para adaptar as respostas. <span class="caption" style="display:block;margin-top:2px">Dado sensível pela LGPD (Art. 5º, II). Sem essa autorização, as condições não são salvas.</span></span></label>
+              <div id="consent-err"></div>
+            </section>
+
+            <section class="form-section" aria-labelledby="sec-alim">
+              <h2 class="h3" id="sec-alim">Alimentação</h2>
+              <div class="chips" role="group" aria-labelledby="sec-alim">${chips('restrictions', RESTRICTIONS, p.dietary_restrictions)}</div>
+            </section>
+
+            <section class="form-section" aria-labelledby="sec-rotina">
+              <h2 class="h3" id="sec-rotina">Rotina</h2>
+              <div class="routine" role="radiogroup" aria-labelledby="sec-rotina">
+                ${ROUTINES.map(([v, l, d]) => `<label class="chip"><input type="radio" name="routine" value="${v}" ${p.routine === v ? 'checked' : ''}><span>${l}<small>${d}</small></span></label>`).join('')}
+              </div>
+            </section>
+
+            <details class="more" ${p.height_cm || p.weight_kg ? 'open' : ''}>
+              <summary>Altura e peso ${icon('chevron-down', 'class="chev"')}</summary>
+              <div class="more-body">
+                <p class="field-help">Só se quiser. As respostas nunca comentam o seu peso.</p>
+                <div class="grid-2">
+                  <div class="field"><label class="field-label" for="height">Altura (cm)</label><input class="input" id="height" name="height_cm" type="number" inputmode="numeric" min="50" max="250" value="${esc(p.height_cm || '')}"></div>
+                  <div class="field"><label class="field-label" for="weight">Peso (kg)</label><input class="input" id="weight" name="weight_kg" type="number" inputmode="decimal" min="20" max="400" value="${esc(p.weight_kg || '')}"></div>
+                </div>
+              </div>
+            </details>
+          </form>
+        </main>
+        <div class="dock">
+          <button class="btn btn-primary btn-block" type="submit" form="profile-form">Salvar perfil</button>
+        </div>
+      </div>`;
+    },
+
+    home() {
+      const kind = inputKind(S.draft.text);
+      const img = S.draft.image;
+      const err = S.error;
+      const offline = isOffline();
+      const waiting = err?.code === 'rate_limited';
+      const hasConditions = S.profile?.conditions?.length;
+      let alert = '';
+      if (offline) alert = `<div class="notice notice-info" role="status">${icon('wifi-off')}<div class="notice-body"><strong>Você está sem internet</strong><span>Pode escrever a dúvida agora. Eu checo assim que a conexão voltar.</span></div></div>`;
+      else if (waiting) alert = `<div class="notice notice-warn" role="alert">${icon('timer')}<div class="notice-body"><strong>Muitas checagens seguidas</strong><span>Você pode checar de novo em <b data-countdown>${Math.max(0, Math.ceil((err.retryAt - Date.now()) / 1000))}</b> segundos. Sua dúvida continua aqui.</span></div></div>`;
+      else if (err?.code === 'upstream_unavailable') alert = `<div class="notice notice-error" role="alert">${icon('server-off')}<div class="notice-body"><strong>Não consegui terminar a checagem</strong><span>O serviço de respostas está fora do ar agora. Sua dúvida continua aqui, tente de novo em alguns minutos.</span><div class="notice-actions"><button class="btn btn-secondary btn-sm" data-action="check">Tentar de novo</button></div></div></div>`;
+      else if (err?.code === 'payload_too_large') alert = `<div class="notice notice-error" role="alert">${icon('image-off')}<div class="notice-body"><strong>Esse print ficou grande demais</strong><span>Mesmo depois de reduzir, a imagem passou de 5 MB. Corte a parte que interessa e envie de novo.</span></div></div>`;
+
+      const cta = offline
+        ? `<button class="btn btn-primary btn-block" disabled>${icon('wifi-off')}Sem conexão</button>`
+        : waiting
+          ? `<button class="btn btn-primary btn-block" disabled>Aguarde para checar</button>`
+          : `<button class="btn btn-primary btn-block" data-action="check">Checar</button>`;
+
+      return `<div class="screen">
+        <header class="topbar topbar-home"><span class="wordmark">claudinho</span><span class="spacer"></span><span class="proto-tag">Protótipo</span></header>
+        <main class="scroll">
+          <div class="stack">
+            <div class="stack-sm">
+              <h1 class="h1 screen-title" tabindex="-1">O que você viu por aí?</h1>
+              <p class="lede">Manda do jeito que chegou para você: texto, link ou print.</p>
+            </div>
+
+            ${alert}
+
+            <div class="stack-sm">
+              <div class="composer ${err?.code === 'invalid_input' ? 'is-invalid' : ''}">
+                <label class="sr-only" for="draft">Sua dúvida, link ou texto do post</label>
+                <textarea id="draft" placeholder="Cole um link ou escreva a dúvida com suas palavras" aria-describedby="draft-err">${esc(S.draft.text)}</textarea>
+                ${img ? `<div class="attach"><img src="${img.url}" alt="Print anexado"><div><div class="small" style="font-weight:700">Print pronto para enviar</div><div class="caption">${esc(img.note)}</div></div><button class="icon-btn" data-action="remove-image" aria-label="Remover print">${icon('x')}</button></div>` : ''}
+                <div class="composer-tools">
+                  <button class="btn btn-secondary btn-sm" data-action="paste">${icon('clipboard-paste')}Colar</button>
+                  <button class="btn btn-secondary btn-sm" data-action="pick-image">${icon('image-plus')}Enviar print</button>
+                  <span class="detected" id="detected" aria-live="polite">${kind ? icon(kind.icon) + esc(kind.label) : ''}</span>
+                </div>
+              </div>
+              <input type="file" accept="image/*" class="file-input" id="file" tabindex="-1" aria-hidden="true">
+              <div id="draft-err">${err?.code === 'invalid_input' ? `<p class="field-error" role="alert">${icon('circle-alert')}Escreva a dúvida, cole um link ou envie um print para eu checar.</p>` : ''}</div>
+              ${hasConditions ? `<div class="switch-row"><label for="use-profile" class="small"><strong>Considerar meu perfil de saúde</strong><span class="caption" style="display:block">${esc(S.profile.conditions.map((c) => labelOf(CONDITIONS, c)).join(', '))}</span></label><input type="checkbox" role="switch" class="switch" id="use-profile" ${S.useProfile ? 'checked' : ''}></div>` : ''}
+            </div>
+
+            <section class="stack-sm" aria-labelledby="ex-title">
+              <h2 class="h3" id="ex-title">Dúvidas que chegam muito por aqui</h2>
+              <div class="examples">
+                ${EXAMPLES.map((e) => `<button class="example" data-action="example" data-key="${e.key}">${icon(e.icon)}<span>${esc(e.text)}</span>${icon('chevron-right')}</button>`).join('')}
+              </div>
+            </section>
+
+            ${S.profile ? '' : `<button class="row" data-go="invite" style="border-bottom:0">
+              <span class="row-main"><span class="row-title"><strong>Quer que eu leve sua saúde em conta?</strong></span><span class="small muted">Se você tem alguma condição, eu aviso quando uma dica da internet não serve para você.</span></span>${icon('chevron-right', 'class="chev"')}
+            </button>`}
+
+            ${S.installDismissed ? '' : `<section class="install" aria-labelledby="install-title">
+              <div class="install-head">${icon('smartphone')}<div><h2 class="h3" id="install-title">Instale na tela inicial</h2><p class="small muted">No Android, o Claudinho aparece no botão Compartilhar do Instagram e do TikTok.</p></div><button class="icon-btn" data-action="dismiss-install" aria-label="Dispensar convite">${icon('x')}</button></div>
+              <details><summary>Como instalar</summary>
+                <ol>
+                  <li><strong>Android (Chrome):</strong> toque no menu de três pontos e em Instalar app.</li>
+                  <li><strong>iPhone (Safari):</strong> toque em Compartilhar e em Adicionar à Tela de Início. No iPhone, use o botão Colar ou Enviar print para checar.</li>
+                </ol>
+              </details>
+            </section>`}
+          </div>
+        </main>
+        <div class="dock">${cta}</div>
+        ${tabbar('home')}
+      </div>`;
+    },
+
+    loading() {
+      const r = RESULTS[S.current.key];
+      const inp = S.current.input;
+      const first = inp.type === 'url' ? 'Abrindo o post' : inp.type === 'image' ? 'Lendo o texto do print' : 'Entendendo sua dúvida';
+      const second = r.verdict === 'recusa_segura' ? 'Conferindo se é seguro responder' : 'Procurando nos estudos';
+      return `<div class="screen">
+        <header class="topbar"><button class="icon-btn" data-action="cancel" aria-label="Cancelar checagem">${icon('x')}</button><span class="topbar-title">Checando</span></header>
+        <main class="scroll">
+          <div class="convo">
+            ${bubbleHTML(inp)}
+            <div class="reply reply-pending" aria-live="polite">
+              <h1 class="sr-only screen-title" tabindex="-1">Checando sua dúvida</h1>
+              <ol class="steps">
+                <li class="step" data-step="0" data-state="active"><span class="step-mark"><span class="spinner"></span></span>${first}</li>
+                <li class="step" data-step="1" data-state="todo"><span class="step-mark"><span class="dot"></span></span>${second}</li>
+                <li class="step" data-step="2" data-state="todo"><span class="step-mark"><span class="dot"></span></span>Escrevendo a resposta</li>
+              </ol>
+              <p class="understood" id="understood" hidden><span>Entendi assim: </span><strong>${esc(r.canonical)}</strong></p>
+            </div>
+            <div class="stack-sm" aria-hidden="true">
+              <div class="skeleton" style="width:92%"></div>
+              <div class="skeleton" style="width:100%"></div>
+              <div class="skeleton" style="width:74%"></div>
+            </div>
+            <div id="loading-error"></div>
+          </div>
+        </main>
+      </div>`;
+    },
+
+    result() {
+      const r = RESULTS[S.current.key];
+      const v = VERDICT[r.verdict];
+      const care = r.verdict === 'recusa_segura';
+      const sources = r.sources.length
+        ? `<details class="sources" id="fontes">
+            <summary>${icon('book-open')}Fontes consultadas <span class="count">(${r.sources.length})</span>${icon('chevron-down', 'class="chev"')}</summary>
+            <ol class="source-list">
+              ${r.sources.map((s, i) => `<li class="source" id="fonte-${i + 1}" tabindex="-1">
+                <span class="source-n" aria-hidden="true">${i + 1}</span>
+                <div class="source-body">
+                  <p class="source-title">${esc(s.title)}</p>
+                  <p class="source-meta">${esc(s.journal)}, ${s.year}<br>${esc(s.authors)}</p>
+                  <blockquote class="source-quote"><span class="caption">Trecho usado na resposta</span>“${esc(s.excerpt)}”</blockquote>
+                  <a class="doi" href="https://doi.org/${esc(s.doi)}" target="_blank" rel="noopener">${icon('external-link')}doi.org/${esc(s.doi)}</a>
+                </div>
+              </li>`).join('')}
+            </ol>
+            <p class="caption" style="padding-bottom:16px">Estudos e DOIs de exemplo, usados só neste protótipo.</p>
+          </details>`
+        : care ? '' : `<div class="notice notice-info">${icon('search-x')}<div class="notice-body"><strong>Nenhuma fonte encontrada</strong><span>Nenhum estudo da base tratou dessa pergunta. Se a ansiedade está pesando no seu dia, um profissional de saúde pode ajudar de verdade.</span></div></div>`;
+
+      const support = care ? `<section class="stack-sm" aria-labelledby="apoio">
+          <h2 class="h3" id="apoio">Se quiser conversar com alguém</h2>
+          <div class="support rows">
+            <a class="row" href="tel:188"><span class="row-main"><span class="row-title">CVV, apoio emocional</span><span class="small muted">Ligue 188. É de graça e funciona 24 horas.</span></span>${icon('phone', 'class="chev"')}</a>
+            <div class="row"><span class="row-main"><span class="row-title">Unidade Básica de Saúde</span><span class="small muted">Consulta com nutricionista pelo SUS, perto de você.</span></span></div>
+            <div class="row"><span class="row-main"><span class="row-title">Nutricionista com registro</span><span class="small muted">Confira o registro no conselho regional (CRN) antes de seguir uma orientação.</span></span></div>
+          </div>
+        </section>` : '';
+
+      return `<div class="screen">
+        <header class="topbar">
+          ${back('home', 'Voltar para o início')}
+          <span class="spacer"></span>
+          ${care ? '' : `<button class="btn btn-ghost btn-sm" data-action="share">${icon('share-2')}Compartilhar</button>`}
+        </header>
+        <main class="scroll" id="result-scroll">
+          <div class="stack">
+            <div class="convo">
+              ${bubbleHTML(S.current.input)}
+              <section class="reply" data-verdict="${r.verdict}" aria-labelledby="verdict-h">
+                <span class="verdict-label">${icon(v.icon)}${v.label}</span>
+                <h1 class="verdict-headline screen-title" id="verdict-h" tabindex="-1">${esc(r.headline)}</h1>
+                <p class="understood">Entendi assim: <strong>${esc(r.canonical)}</strong></p>
+              </section>
+            </div>
+            ${care ? '' : profileNote()}
+            <div class="answer">${answerHTML(r.answer)}</div>
+            ${r.limited ? `<div class="notice notice-warn">${icon('info')}<div class="notice-body"><strong>Aviso de evidência limitada</strong><span>${LIMITED}</span></div></div>` : ''}
+            ${support}
+            ${sources}
+            <section class="feedback" id="feedback" aria-labelledby="fb-title">${feedbackHTML()}</section>
+            <p class="disclaimer"><strong>Aviso:</strong> ${DISCLAIMER}</p>
+            <button class="btn btn-secondary btn-block" data-action="new-check">${icon('plus')}Checar outra dúvida</button>
+          </div>
+        </main>
+      </div>`;
+    },
+
+    history() {
+      const items = S.history.filter((h) => RESULTS[h.key]);
+      return `<div class="screen">
+        <header class="topbar topbar-home"><span class="topbar-title">Histórico</span></header>
+        <main class="scroll">
+          <div class="stack">
+            ${items.length ? `<p class="small muted screen-title" tabindex="-1">Suas checagens ficam salvas só neste aparelho.</p>
+              ${!S.conta && !S.contaDispensada && items.length >= 3 ? `<div class="notice notice-care">${icon('cloud-upload')}<div class="notice-body"><strong>Quer guardar essas checagens?</strong><span>Com uma conta elas continuam com você se trocar de celular ou reinstalar o app. Leva um e-mail e uma senha.</span><div class="notice-actions"><button class="btn btn-primary btn-sm" data-action="criar-conta" data-voltar="history">Criar conta</button><button class="btn btn-ghost btn-sm" data-action="dispensar-conta">Agora não</button></div></div></div>` : ''}
+              <div class="rows">${items.map((h, i) => {
+                const r = RESULTS[h.key];
+                const q = r.input.type === 'url' ? r.input.excerpt : r.input.type === 'image' ? r.input.ocr : r.input.text;
+                return `<button class="row" data-action="open-history" data-i="${i}">
+                  <span class="row-main">
+                    <span data-verdict="${r.verdict}"><span class="verdict-chip">${icon(VERDICT[r.verdict].icon)}${VERDICT[r.verdict].label}</span></span>
+                    <span class="row-title">${esc(q)}</span>
+                    <span class="caption">${relTime(h.at)}</span>
+                  </span>${icon('chevron-right', 'class="chev"')}
+                </button>`;
+              }).join('')}</div>
+              <button class="btn btn-ghost" data-action="clear-history">${icon('trash-2')}Apagar histórico</button>`
+            : `<div class="center-state">
+                <span class="big-icon">${icon('history')}</span>
+                <h1 class="h2 screen-title" tabindex="-1">Nenhuma checagem ainda</h1>
+                <p class="lede">Quando você checar uma dúvida, ela aparece aqui para você rever ou mandar para alguém.</p>
+                <button class="btn btn-primary" data-go="home">Checar uma dúvida</button>
+              </div>`}
+          </div>
+        </main>
+        ${tabbar('history')}
+      </div>`;
+    },
+
+    profile() {
+      const p = S.profile;
+      const list = (arr, src) => arr?.length ? arr.map((x) => labelOf(src, x)).join(', ') : 'Nenhuma';
+      return `<div class="screen">
+        <header class="topbar topbar-home"><span class="topbar-title">Perfil</span></header>
+        <main class="scroll">
+          <div class="stack">
+            ${p ? `<section class="stack-sm" aria-labelledby="p-title">
+                <h1 class="h2 screen-title" id="p-title" tabindex="-1">Seu perfil de saúde</h1>
+                <dl>
+                  <div class="kv"><dt>Idade</dt><dd>${p.birth_date ? ageFrom(p.birth_date) + ' anos' : 'Não informada'}</dd></div>
+                  <div class="kv"><dt>Condições</dt><dd>${esc(list(p.conditions, CONDITIONS))}</dd></div>
+                  <div class="kv"><dt>Alimentação</dt><dd>${esc(list(p.dietary_restrictions, RESTRICTIONS))}</dd></div>
+                  <div class="kv"><dt>Rotina</dt><dd>${esc(p.routine ? labelOf(ROUTINES, p.routine) : 'Não informada')}</dd></div>
+                </dl>
+                <button class="btn btn-secondary btn-block" data-go="profileEdit">${icon('pencil')}Editar perfil</button>
+              </section>`
+            : `<section class="stack-sm">
+                <h1 class="h2 screen-title" tabindex="-1">Seu perfil de saúde está vazio</h1>
+                <p class="lede">Preenchendo, eu aviso quando uma informação da internet não combina com a sua condição.</p>
+                <button class="btn btn-primary btn-block" data-go="profileEdit">Preencher perfil</button>
+              </section>`}
+
+            <section class="stack-sm" aria-labelledby="tema-titulo">
+              <h2 class="h3" id="tema-titulo">Aparência</h2>
+              <div class="chips" role="radiogroup" aria-labelledby="tema-titulo">
+                ${[['auto', 'Automático', 'smartphone'], ['light', 'Claro', 'sun'], ['dark', 'Escuro', 'moon']]
+                  .map(([v, l, ic]) => `<label class="chip"><input type="radio" name="tema" value="${v}" ${S.tema === v ? 'checked' : ''}>${icon(ic)}${l}</label>`).join('')}
+              </div>
+              <p class="caption">No automático, o app segue o tema do seu celular.</p>
+            </section>
+
+            <section class="stack-sm" aria-labelledby="conta-titulo">
+              <h2 class="h3" id="conta-titulo">Sua conta</h2>
+              ${S.conta
+                ? `<div class="rows"><div class="row"><span class="row-main"><span class="row-title">${esc(S.conta.email)}</span><span class="small muted">Suas checagens e seu perfil acompanham você em qualquer aparelho.</span></span>${icon('circle-check', 'class="chev"')}</div></div>
+                   <button class="btn btn-ghost" data-action="sair">${icon('log-out')}Sair da conta</button>`
+                : `<div class="notice">${icon('smartphone')}<div class="notice-body"><strong>Você está usando sem conta</strong><span>Tudo que você checou e o seu perfil ficam guardados só neste aparelho. Se desinstalar o app ou trocar de celular, isso se perde.</span><div class="notice-actions"><button class="btn btn-secondary btn-sm" data-action="criar-conta" data-voltar="profile">Criar conta</button><button class="btn btn-ghost btn-sm" data-action="entrar">Já tenho conta</button></div></div></div>`}
+            </section>
+
+            <section class="stack-sm" aria-labelledby="priv">
+              <h2 class="h3" id="priv">Privacidade</h2>
+              <div class="rows">
+                <button class="row" data-action="review-terms"><span class="row-main"><span class="row-title">Termos de uso e limites</span></span>${icon('chevron-right', 'class="chev"')}</button>                <div class="row"><span class="row-main"><span class="row-title">Seus dados de saúde</span><span class="small muted">Guardados só com a sua autorização. A exclusão completa da conta chega depois do MVP.</span></span></div>
+              </div>
+            </section>
+
+            <section class="stack-sm" aria-labelledby="proto">
+              <h2 class="h3" id="proto">Ferramentas do protótipo</h2>
+              <a class="row" href="https://claude.ai/artifact/FD7zDEu3oMPzRnfb6Uq1gf" target="_blank" rel="noopener" style="color:var(--c-ink);text-decoration:none"><span class="row-main"><span class="row-title">Abrir o design system</span></span>${icon('external-link', 'class="chev"')}</a>
+              <div class="switch-row"><label for="sim-offline" class="small">Simular sem internet</label><input type="checkbox" role="switch" class="switch" id="sim-offline" ${S.sim.offline ? 'checked' : ''}></div>
+              <div class="switch-row"><label for="sim-upstream" class="small">Simular serviço fora do ar</label><input type="checkbox" role="switch" class="switch" id="sim-upstream" ${S.sim.upstream ? 'checked' : ''}></div>
+              <button class="btn btn-secondary btn-block" data-go="state:rate">Simular limite de checagens</button>
+              <button class="btn btn-ghost btn-block" data-action="restart">${icon('rotate-ccw')}Recomeçar do primeiro acesso</button>
+            </section>
+          </div>
+        </main>
+        ${tabbar('profile')}
+      </div>`;
+    },
+  };
+
+  function bubbleHTML(inp) {
+    if (inp.type === 'url') {
+      const short = inp.url.replace(/^https?:\/\/(www\.)?/, '');
+      return `<div class="bubble"><div class="bubble-meta">${icon('link')}${esc(short)}</div>${esc(inp.excerpt || '')}</div>`;
+    }
+    if (inp.type === 'image') {
+      const src = inp.imageUrl || printPlaceholder();
+      return `<div class="bubble"><img class="bubble-img" src="${src}" alt="Print enviado"><div class="bubble-meta">${icon('scan-text')}Texto encontrado no print</div>${esc(inp.ocr || '')}</div>`;
+    }
+    return `<div class="bubble">${esc(inp.text)}</div>`;
+  }
+
+  let printSrc;
+  function printPlaceholder() {
+    if (printSrc) return printSrc;
+    const c = document.createElement('canvas'); c.width = 264; c.height = 410;
+    const g = c.getContext('2d');
+    const grd = g.createLinearGradient(0, 0, 264, 410);
+    grd.addColorStop(0, '#F2C94C'); grd.addColorStop(1, '#E97B5C');
+    g.fillStyle = grd; g.fillRect(0, 0, 264, 410);
+    g.fillStyle = 'rgba(255,255,255,.92)'; g.fillRect(24, 132, 216, 150);
+    g.fillStyle = '#2B1E2F'; g.font = 'bold 22px system-ui, sans-serif';
+    ['Água com limão', 'em jejum desincha', 'e queima gordura!'].forEach((t, i) => g.fillText(t, 38, 176 + i * 34));
+    printSrc = c.toDataURL('image/png');
+    return printSrc;
+  }
+
+  function feedbackHTML() {
+    const fb = S.fb;
+    if (fb.sent) {
+      return `<h2 class="h3" id="fb-title" tabindex="-1">Obrigado por avaliar</h2><p class="small muted" role="status">${fb.rating === 'up' ? 'Que bom que ajudou. Isso me mostra o que está funcionando.' : 'Avaliação enviada. A equipe usa esses avisos para corrigir as respostas.'}</p>`;
+    }
+    let extra = '';
+    if (fb.rating === 'down') {
+      extra = `<fieldset class="stack-sm" style="border:0;padding:0;margin:0">
+          <legend class="small" style="font-weight:700;margin-bottom:8px">O que não funcionou?</legend>
+          <div class="chips">${REASONS.map(([v, l]) => `<label class="chip"><input type="radio" name="reason" value="${v}" ${fb.reason === v ? 'checked' : ''}>${icon('check')}${l}</label>`).join('')}</div>
+        </fieldset>
+        <div class="field">
+          <label class="field-label" for="fb-comment">Quer contar mais? <span class="muted" style="font-weight:400">(opcional)</span></label>
+          <textarea class="input" id="fb-comment" rows="3" maxlength="1000" style="resize:vertical">${esc(fb.comment)}</textarea>
+        </div>
+        <button class="btn btn-primary btn-block" data-action="send-feedback" ${fb.reason ? '' : 'disabled'}>Enviar avaliação</button>
+        ${fb.reason ? '' : '<p class="caption">Escolha um motivo para enviar.</p>'}`;
+    }
+    return `<h2 class="h3" id="fb-title">Essa resposta ajudou?</h2>
+      <div class="feedback-row">
+        <button class="btn btn-secondary btn-sm" data-action="rate" data-v="up" aria-pressed="${fb.rating === 'up'}">${icon('thumbs-up')}Ajudou</button>
+        <button class="btn btn-secondary btn-sm" data-action="rate" data-v="down" aria-pressed="${fb.rating === 'down'}">${icon('thumbs-down')}Não ajudou</button>
+      </div>${extra}`;
+  }
+
+  /* ---------- Tema ---------- */
+  function aplicarTema() {
+    // No automatico tiramos o atributo e deixamos o prefers-color-scheme decidir, que e
+    // o mesmo caminho do celular quando o usuario nao escolheu nada.
+    if (S.tema === 'auto') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', S.tema);
+  }
+
+  /* ---------- Render ---------- */
+  function paintIcons() { if (window.lucide) window.lucide.createIcons(); }
+  function render(focus = true) {
+    phone.innerHTML = SCREENS[S.screen]() + '<div class="toast" id="toast" role="status" aria-live="polite"></div>';
+    paintIcons();
+    document.querySelectorAll('.go').forEach((b) => b.setAttribute('aria-current', String(b.dataset.go === S.goKey)));
+    if (focus) { const t = phone.querySelector('.screen-title'); if (t) t.focus({ preventScroll: true }); }
+    AFTER[S.screen]?.();
+  }
+  function go(screen, key) { S.screen = screen; S.goKey = key || screen; clearTimers(); render(); }
+
+  let toastTimer;
+  function toast(msg, action) {
+    const el = document.getElementById('toast');
+    if (!el) return;
+    el.innerHTML = `<span>${esc(msg)}</span>${action ? `<button class="btn btn-ghost" data-action="${action.id}">${action.label}</button>` : ''}`;
+    el.classList.add('is-on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('is-on'), action ? 5000 : 2600);
+  }
+
+  let timers = [];
+  let countdown;
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+
+  const AFTER = {
+    welcome() {
+      const cb = document.getElementById('agree'), btn = document.getElementById('agree-btn');
+      if (cb) cb.addEventListener('change', () => { btn.disabled = !cb.checked; });
+    },
+    conta() {
+      document.getElementById('signup-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email'), pw = document.getElementById('password');
+        const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value);
+        const okPw = pw.value.length >= 8;
+        setFieldError(email, 'email-err', okEmail ? '' : 'Confira o e-mail. Ele precisa ter o formato nome@provedor.com.');
+        setFieldError(pw, 'password-err', okPw ? '' : 'A senha precisa ter pelo menos 8 caracteres.');
+        if (!okEmail) return email.focus();
+        if (!okPw) return pw.focus();
+        const criando = S.modoConta === 'criar';
+        S.conta = { email: email.value };
+        store.set('conta', S.conta);
+        go('profile');
+        toast(criando ? 'Conta criada. Suas checagens continuam aqui.' : 'Você entrou na sua conta');
+      });
+    },
+    profileEdit() {
+      document.getElementById('profile-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const f = e.target;
+        const val = (n) => [...f.querySelectorAll(`[name="${n}"]:checked`)].map((i) => i.value);
+        const birth = f.birth_date.value;
+        const age = ageFrom(birth);
+        const conditions = val('conditions');
+        const consent = f.consent.checked;
+        const birthInput = f.birth_date;
+        setFieldError(birthInput, 'birth-err', age !== null && age < 18 ? 'Pela data informada, você tem menos de 18 anos. O Claudinho é só para maiores de idade.' : '');
+        const consentEl = f.consent;
+        setFieldError(consentEl, 'consent-err', conditions.length && !consent ? 'Para salvar suas condições de saúde, marque a autorização acima.' : '');
+        if (age !== null && age < 18) { birthInput.focus(); return; }
+        if (conditions.length && !consent) { consentEl.focus(); return; }
+        S.profile = {
+          sex: val('sex')[0] || 'nao_informado', birth_date: birth || null,
+          height_cm: Number(f.height_cm.value) || null, weight_kg: Number(f.weight_kg.value) || null,
+          conditions, dietary_restrictions: val('restrictions'), routine: val('routine')[0] || null,
+          consent_health_data: consent,
+        };
+        store.set('profile', S.profile);
+        S.useProfile = true;
+        go('profile');
+        toast('Perfil salvo');
+      });
+    },
+    home() {
+      const ta = document.getElementById('draft');
+      ta.addEventListener('input', () => {
+        S.draft.text = ta.value;
+        const k = inputKind(ta.value), d = document.getElementById('detected');
+        d.innerHTML = k ? icon(k.icon) + esc(k.label) : '';
+        paintIcons();
+        if (S.error?.code === 'invalid_input' && ta.value.trim()) { S.error = null; document.getElementById('draft-err').innerHTML = ''; ta.closest('.composer').classList.remove('is-invalid'); }
+      });
+      const up = document.getElementById('use-profile');
+      if (up) up.addEventListener('change', () => { S.useProfile = up.checked; });
+      document.getElementById('file').addEventListener('change', onImage);
+      if (S.error?.code === 'rate_limited') startCountdown();
+    },
+    profile() {
+      phone.querySelectorAll('[name="tema"]').forEach((opcao) => {
+        opcao.addEventListener('change', () => {
+          S.tema = opcao.value;
+          store.set('tema', S.tema);
+          aplicarTema();
+        });
+      });
+      document.getElementById('sim-offline').addEventListener('change', (e) => { S.sim.offline = e.target.checked; toast(e.target.checked ? 'Sem internet simulado. Veja a tela Checar.' : 'Conexão de volta'); });
+      document.getElementById('sim-upstream').addEventListener('change', (e) => { S.sim.upstream = e.target.checked; toast(e.target.checked ? 'A próxima checagem vai falhar' : 'Serviço normal'); });
+    },
+    result() {
+      const c = document.getElementById('feedback');
+      c.addEventListener('input', (e) => { if (e.target.id === 'fb-comment') S.fb.comment = e.target.value; });
+      c.addEventListener('change', (e) => { if (e.target.name === 'reason') { S.fb.reason = e.target.value; refreshFeedback(); } });
+    },
+  };
+
+  function setFieldError(input, slotId, msg) {
+    const slot = document.getElementById(slotId);
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    slot.innerHTML = msg ? `<p class="field-error">${icon('circle-alert')}${esc(msg)}</p>` : '';
+    paintIcons();
+  }
+
+  function refreshFeedback() {
+    const c = document.getElementById('feedback');
+    const focusedReason = document.activeElement?.name === 'reason' ? document.activeElement.value : null;
+    c.innerHTML = feedbackHTML();
+    paintIcons();
+    if (focusedReason) c.querySelector(`[name="reason"][value="${focusedReason}"]`)?.focus();
+  }
+
+  function startCountdown() {
+    clearInterval(countdown);
+    countdown = setInterval(() => {
+      const left = Math.ceil((S.error?.retryAt - Date.now()) / 1000);
+      const el = phone.querySelector('[data-countdown]');
+      if (!S.error || S.error.code !== 'rate_limited') return clearInterval(countdown);
+      if (left <= 0) { clearInterval(countdown); S.error = null; if (S.screen === 'home') render(false); toast('Pode checar de novo'); return; }
+      if (el) el.textContent = left;
+    }, 1000);
+  }
+
+  async function onImage(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const MAX = 5 * 1024 * 1024;
+    let blob = file, note = fmtSize(file.size);
+    if (file.size > MAX) {
+      try {
+        const bmp = await createImageBitmap(file);
+        const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+        c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+        blob = await new Promise((res) => c.toBlob(res, 'image/jpeg', 0.82));
+        note = `Reduzi de ${fmtSize(file.size)} para ${fmtSize(blob.size)}`;
+      } catch (err) { blob = file; }
+      if (blob.size > MAX) { S.error = { code: 'payload_too_large' }; S.draft.image = null; render(false); return; }
+    }
+    S.draft.image = { url: URL.createObjectURL(blob), note };
+    S.error = null;
+    render(false);
+  }
+
+  /* ---------- Fluxo de checagem ---------- */
+  function startCheck(key, input) {
+    S.current = { key, input, useProfile: S.useProfile && !!S.profile?.conditions?.length };
+    S.fb = { rating: null, reason: null, comment: '', sent: false };
+    S.error = null;
+    go('loading', 'loading:' + key);
+    const steps = [...phone.querySelectorAll('.step')];
+    const mark = (i, state) => {
+      const s = steps[i]; if (!s) return;
+      s.dataset.state = state;
+      s.querySelector('.step-mark').innerHTML = state === 'active' ? '<span class="spinner"></span>' : state === 'done' ? icon('check') : '<span class="dot"></span>';
+      paintIcons();
+    };
+    const T = [1100, 2300, 3400];
+    timers.push(setTimeout(() => { mark(0, 'done'); mark(1, 'active'); document.getElementById('understood').hidden = false; }, T[0]));
+    if (S.sim.upstream) {
+      timers.push(setTimeout(() => {
+        S.sim.upstream = false;
+        S.error = { code: 'upstream_unavailable' };
+        S.draft.text = S.draft.text || (input.type === 'url' ? input.url : input.text || '');
+        go('home');
+      }, T[1]));
+      return;
+    }
+    timers.push(setTimeout(() => { mark(1, 'done'); mark(2, 'active'); }, T[1]));
+    timers.push(setTimeout(() => {
+      S.history = [{ key, at: Date.now() }, ...S.history.filter((h) => h.key !== key)].slice(0, 20);
+      store.set('history', S.history);
+      S.draft = { text: '', image: null };
+      go('result', 'result:' + key);
+    }, T[2]));
+  }
+
+  function checkFromDraft() {
+    if (isOffline()) return;
+    const text = S.draft.text.trim();
+    if (!text && !S.draft.image) { S.error = { code: 'invalid_input' }; render(false); document.getElementById('draft').focus(); return; }
+    if (S.draft.image) return startCheck('limao', { type: 'image', ocr: RESULTS.limao.input.ocr, imageUrl: S.draft.image.url });
+    if (isUrl(text)) return startCheck('pao', { type: 'url', url: text, excerpt: RESULTS.pao.input.excerpt });
+    const key = detectKey(text);
+    startCheck(key, { type: 'text', text });
+  }
+
+  /* ---------- Ações ---------- */
+  const ACTIONS = {
+    agree() {
+      S.onboarded = true;
+      store.set('onboarded', true);
+      go('home');
+      toast('Pode perguntar. Nada de cadastro por enquanto.');
+    },
+    'criar-conta'(el, e) { e?.preventDefault(); S.modoConta = 'criar'; S.voltarPara = el?.dataset.voltar || 'profile'; go('conta'); },
+    entrar(el, e) { e?.preventDefault(); S.modoConta = 'entrar'; S.voltarPara = 'welcome'; go('conta'); },
+    'dispensar-conta'() { S.contaDispensada = true; store.set('contaDispensada', true); render(false); },
+    sair() { S.conta = null; store.set('conta', null); render(false); toast('Você saiu. O que está neste aparelho continua aqui.'); },
+    'skip-profile'() { go('home'); },
+    check() { S.error = null; checkFromDraft(); },
+    example(el) { const k = el.dataset.key; startCheck(k, { ...RESULTS[k].input }); },
+    paste: async () => {
+      try {
+        const t = await navigator.clipboard.readText();
+        if (t) { S.draft.text = t; render(false); document.getElementById('draft').focus(); return; }
+        toast('A área de transferência está vazia');
+      } catch (err) {
+        S.draft.text = 'https://www.instagram.com/reel/C9x2pao';
+        render(false);
+        toast('Colei um link de exemplo');
+      }
+    },
+    'pick-image'() { document.getElementById('file').click(); },
+    'remove-image'() { S.draft.image = null; render(false); },
+    'dismiss-install'() { S.installDismissed = true; store.set('installDismissed', true); render(false); toast('Convite dispensado'); },
+    cancel() { clearTimers(); const i = S.current.input; if (i.type === 'text') S.draft.text = i.text; go('home'); toast('Checagem cancelada'); },
+    ref(el) {
+      const d = document.getElementById('fontes');
+      if (!d) return;
+      d.open = true;
+      const item = document.getElementById('fonte-' + el.dataset.n);
+      item.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' });
+      item.focus({ preventScroll: true });
+    },
+    rate(el) { S.fb.rating = el.dataset.v; if (S.fb.rating === 'up') S.fb.sent = true; refreshFeedback(); },
+    'send-feedback'() { S.fb.sent = true; refreshFeedback(); document.getElementById('fb-title')?.focus?.(); },
+    share: async () => {
+      const r = RESULTS[S.current.key];
+      const s = r.sources[0];
+      const text = `Chequei no Claudinho: "${r.canonical}"\n${VERDICT[r.verdict].label}. ${r.headline}${s ? `\nFonte: ${s.title}, ${s.journal} (${s.year}). doi.org/${s.doi}` : ''}`;
+      try {
+        if (navigator.share) { await navigator.share({ title: 'Checagem do Claudinho', text }); return; }
+        await navigator.clipboard.writeText(text);
+        toast('Resumo copiado para colar no grupo');
+      } catch (err) { if (err?.name !== 'AbortError') toast('Não deu para compartilhar daqui. Tente pelo navegador.'); }
+    },
+    'new-check'() { go('home'); document.getElementById('draft')?.focus(); },
+    'open-history'(el) {
+      const h = S.history.filter((x) => RESULTS[x.key])[Number(el.dataset.i)];
+      S.current = { key: h.key, input: { ...RESULTS[h.key].input }, useProfile: S.useProfile && !!S.profile?.conditions?.length };
+      S.fb = { rating: null, reason: null, comment: '', sent: false };
+      go('result', 'result:' + h.key);
+    },
+    'clear-history'() {
+      const prev = S.history;
+      S.history = []; store.set('history', []);
+      render(false);
+      S._undo = prev;
+      toast('Histórico apagado', { id: 'undo-history', label: 'Desfazer' });
+    },
+    'undo-history'() { S.history = S._undo || []; store.set('history', S.history); render(false); },
+    'review-terms'() { S.reviewTerms = true; go('welcome'); },
+    restart() {
+      S.profile = null; S.history = []; S.installDismissed = false; S.draft = { text: '', image: null };
+      S.conta = null; S.contaDispensada = false; S.onboarded = false;
+      store.set('profile', null); store.set('history', []); store.set('installDismissed', false);
+      store.set('conta', null); store.set('contaDispensada', false); store.set('onboarded', false);
+      S.reviewTerms = false; go('welcome');
+    },
+  };
+
+  function handleGo(target) {
+    const [kind, arg] = target.split(':');
+    clearInterval(countdown);
+    if (kind !== 'welcome') S.reviewTerms = false;
+    if (kind === 'result') {
+      S.current = { key: arg, input: { ...RESULTS[arg].input }, useProfile: S.useProfile && !!S.profile?.conditions?.length };
+      S.fb = { rating: null, reason: null, comment: '', sent: false };
+      return go('result', target);
+    }
+    if (kind === 'loading') return startCheck(arg, { ...RESULTS[arg].input });
+    if (kind === 'state') {
+      S.sim.offline = arg === 'offline';
+      S.error = arg === 'rate' ? { code: 'rate_limited', retryAt: Date.now() + 42000 } : null;
+      if (arg === 'empty') { S.draft = { text: '', image: null }; S.error = { code: 'invalid_input' }; }
+      if (arg === 'upstream') { S.sim.upstream = true; S.goKey = target; return startCheck('cafe', { ...RESULTS.cafe.input }); }
+      return go('home', target);
+    }
+    if (['welcome', 'conta', 'invite', 'blocked'].includes(kind)) S.sim.offline = false;
+    go(kind, target);
+  }
+
+  document.addEventListener('click', (e) => {
+    const g = e.target.closest('[data-go]');
+    if (g) { e.preventDefault(); handleGo(g.dataset.go); return; }
+    const a = e.target.closest('[data-action]');
+    if (a && ACTIONS[a.dataset.action]) ACTIONS[a.dataset.action](a, e);
+  });
+  window.addEventListener('online', () => S.screen === 'home' && render(false));
+  window.addEventListener('offline', () => S.screen === 'home' && render(false));
+
+  aplicarTema();
+  const deepLink = decodeURIComponent(location.hash.slice(1));
+  if (deepLink) handleGo(deepLink); else render(false);
+})();
+</script>
